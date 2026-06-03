@@ -16,6 +16,17 @@ export default defineConfig({
     starlight({
       title: 'semrel',
       description: 'Semantic Versioning for Go',
+      defaultLocale: 'root',
+      locales: {
+        root: {
+          label: 'English',
+          lang: 'en',
+        },
+        de: {
+          label: 'Deutsch',
+          lang: 'de',
+        },
+      },
       logo: {
         src: './public/semrel.svg',
         alt: 'semrel logo',

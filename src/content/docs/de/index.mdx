@@ -1,0 +1,35 @@
+---
+title: semrel
+description: Automatisierte semantische Versionierung und Changelog-Generierung für Go-Projekte.
+template: splash
+hero:
+  tagline: Mit Vertrauen releasen. semrel liest eure Commits, berechnet die nächste Version und veröffentlicht das Release — automatisch.
+  actions:
+    - text: Loslegen
+      link: /de/getting-started/introduction/
+      icon: right-arrow
+      variant: primary
+    - text: Auf GitHub ansehen
+      link: https://github.com/GoSemantics/semrel
+      icon: github
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Warum semrel?
+
+<CardGrid stagger>
+  <Card title="Keine manuelle Versionierung" icon="approve-check">
+    semrel analysiert eure [Conventional Commits](https://www.conventionalcommits.org/) und entscheidet automatisch, ob `major`, `minor` oder `patch` erhöht wird — ohne manuelles Eingreifen.
+  </Card>
+  <Card title="Vollständig plugin-basiert" icon="puzzle">
+    Jeder Schritt der Pipeline ist ein austauschbares Subprocess-Plugin. GitHub-Provider durch GitLab ersetzen, den Changelog-Renderer tauschen oder Slack-Benachrichtigungen hinzufügen — alles ohne Änderungen am Core.
+  </Card>
+  <Card title="Monorepo-ready" icon="seti:folder">
+    Mehrere unabhängige Module in einem Repository versionieren, jedes mit eigenem Tag-Series und Konfigurations-Datei.
+  </Card>
+  <Card title="Supply-Chain-Security" icon="shield">
+    Signierte Releases mit Sigstore Cosign, CycloneDX/SPDX SBOM, SLSA Level 1 Provenance. DCO Sign-off und REUSE/SPDX-Compliance bei jedem PR.
+  </Card>
+</CardGrid>
