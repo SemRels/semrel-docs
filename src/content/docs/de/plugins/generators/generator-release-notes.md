@@ -30,7 +30,7 @@ plugins:
 
 | Name | Erforderlich | Standard | Beschreibung |
 | --- | --- | --- | --- |
-| `SEMREL_PLUGIN_TEMPLATE` | nein | `eingebautes Template` | Pfad zu einem Go-Template, das zum Rendern der Release Notes verwendet wird. |
+| `SEMREL_PLUGIN_TEMPLATE` | nein | `eingebaute Vorlage` | Pfad zu einer Go-Vorlage, die zum Rendern der Release Notes verwendet wird. |
 | `SEMREL_PLUGIN_MAX_COMMITS` | nein | `50` | Maximale Anzahl an Commits, die aufgenommen werden. |
 | `SEMREL_PLUGIN_INCLUDE_BODY` | nein | `false` | Den vollständigen Commit-Text in die erzeugten Notizen aufnehmen. |
 

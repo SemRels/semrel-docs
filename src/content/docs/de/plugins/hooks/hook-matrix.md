@@ -32,9 +32,9 @@ plugins:
 | Name | Erforderlich | Standard | Beschreibung |
 | --- | --- | --- | --- |
 | `SEMREL_PLUGIN_HOMESERVER` | ja | `—` | Basis-URL des Matrix-Homeservers. |
-| `SEMREL_PLUGIN_TOKEN` | ja | `—` | Access-Token zum Senden von Nachrichten. |
+| `SEMREL_PLUGIN_TOKEN` | ja | `—` | Zugriffs-Token zum Senden von Nachrichten. |
 | `SEMREL_PLUGIN_ROOM_ID` | ja | `—` | Ziel-Raum-ID, z. B. `!room:server`. |
-| `SEMREL_PLUGIN_MESSAGE_TEMPLATE` | nein | `vom Plugin definiert` | Optionales Matrix-Nachrichten-Template. |
+| `SEMREL_PLUGIN_MESSAGE_TEMPLATE` | nein | `vom Plugin definiert` | Optionale Matrix-Nachrichtenvorlage. |
 
 ## Release-Kontextvariablen
 

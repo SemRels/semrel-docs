@@ -31,7 +31,7 @@ Die Registry wird aktuell als **statischer `plugins.json`-Index** ausgeliefert, 
 
 | Endpunkt | Zweck |
 | --- | --- |
-| `GET /health` | Health-Check für Load Balancer und Deployment-Verifikation |
+| `GET /health` | Zustandsprüfung für Load Balancer und Deployment-Verifikation |
 | `GET /api/v1/plugins` | Plugins mit Paginierung und optionalen Filtern `category`, `search` und `sort` auflisten |
 | `GET /api/v1/plugins/:id` | Ein einzelnes Plugin anhand numerischer ID oder Plugin-Name abrufen |
 | `GET /api/v1/plugins/:id/versions` | Versionen eines Plugins mit `limit` und `offset` auflisten |
@@ -41,14 +41,14 @@ Die Registry wird aktuell als **statischer `plugins.json`-Index** ausgeliefert, 
 | `POST /api/v1/plugins/:id/versions` | Einen Plugin-Versionsdatensatz erstellen (Admin-Token erforderlich) |
 | `GET /api/v1/admin/status` | Platzhalter-Endpunkt für Admin-Status für zukünftige Dashboard-Arbeit |
 
-## Datenbank und Deployment
+## Datenbank und Bereitstellung
 
 Das aktuelle Backend-Grundgerüst nutzt:
 
 - **Go + Gin** für die HTTP-API
 - **PostgreSQL 16** für persistente Plugin- und Versionsdaten
 - **`golang-migrate`** zum automatischen Ausführen von SQL-Migrationen beim Start
-- **Docker** für lokale Entwicklung und Container-Image-Builds
+- **Docker** für lokale Entwicklung und Builds von Container-Images
 
 Wichtige Laufzeiteinstellungen:
 

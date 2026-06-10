@@ -21,7 +21,7 @@ Der Plugin-Vertrag von semrel ist in [`api/proto/v1/semantic_release.proto`](htt
 | `minor` | uint32 | Nebenversion-Komponente |
 | `patch` | uint32 | Patch-Komponente |
 | `pre_release` | string | Pre-Release-Bezeichner, z. B. `alpha.1`, `rc.2` |
-| `build_metadata` | string | Build-Metadaten, z. B. `20240101` |
+| `build_metadata` | string | Erstellungsmetadaten, z. B. `20240101` |
 
 ### `Commit`
 
@@ -42,7 +42,7 @@ Wird an jedes Plugin-RPC übergeben. Enthält alle Informationen, die ein Plugin
 |---|---|---|
 | `repo_owner` | string | Repository-Eigentümer |
 | `repo_name` | string | Repository-Name |
-| `repo_url` | string | Clone-URL |
+| `repo_url` | string | Klon-URL |
 | `branch` | string | Veröffentlichte Branch |
 | `last_version` | SemanticVersion | Zuletzt veröffentlichte Version (leer, wenn keine vorhanden ist) |
 | `next_version` | SemanticVersion | Nächste berechnete Version |

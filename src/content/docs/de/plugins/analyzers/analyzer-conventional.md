@@ -30,7 +30,7 @@ plugins:
 
 | Name | Erforderlich | Standard | Beschreibung |
 | --- | --- | --- | --- |
-| `SEMREL_PLUGIN_BREAKING_CHANGE_LABEL` | nein | `BREAKING CHANGE` | Footer-Label zum Erkennen von Breaking Changes. |
+| `SEMREL_PLUGIN_BREAKING_CHANGE_LABEL` | nein | `BREAKING CHANGE` | Footer-Bezeichner zum Erkennen von Breaking Changes. |
 | `SEMREL_PLUGIN_MINOR_TYPES` | nein | `feat` | Kommagetrennte Commit-Typen, die einen Minor-Bump auslösen. |
 | `SEMREL_PLUGIN_PATCH_TYPES` | nein | `fix,perf,refactor` | Kommagetrennte Commit-Typen, die einen Patch-Bump auslösen. |
 

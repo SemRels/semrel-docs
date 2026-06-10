@@ -34,7 +34,7 @@ plugins:
 | `SEMREL_PLUGIN_BASE_URL` | ja | `—` | Basis-URL der Jira-Instanz. |
 | `SEMREL_PLUGIN_TOKEN` | ja | `—` | API-Token für die Jira-Authentifizierung. |
 | `SEMREL_PLUGIN_PROJECT` | ja | `—` | Jira-Projektschlüssel. |
-| `SEMREL_PLUGIN_FIX_VERSION_TEMPLATE` | nein | `vom Plugin definiert` | Template zum Benennen der Jira-Fix-Version. |
+| `SEMREL_PLUGIN_FIX_VERSION_TEMPLATE` | nein | `vom Plugin definiert` | Vorlage zum Benennen der Jira-Fix-Version. |
 
 ## Release-Kontextvariablen
 

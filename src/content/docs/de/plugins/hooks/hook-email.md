@@ -40,7 +40,7 @@ plugins:
 | `SEMREL_PLUGIN_SMTP_PASS` | ja | `—` | SMTP-Passwort oder App-Passwort. |
 | `SEMREL_PLUGIN_FROM` | ja | `—` | E-Mail-Adresse des Absenders. |
 | `SEMREL_PLUGIN_TO` | ja | `—` | Kommagetrennte Liste der Empfänger-E-Mail-Adressen. |
-| `SEMREL_PLUGIN_SUBJECT_TEMPLATE` | nein | `vom Plugin definiert` | Optionales Betreff-Template für die Release-E-Mail. |
+| `SEMREL_PLUGIN_SUBJECT_TEMPLATE` | nein | `vom Plugin definiert` | Optionale Betreffvorlage für die Release-E-Mail. |
 | `SEMREL_PLUGIN_TLS` | nein | `true` | TLS für die SMTP-Verbindung aktivieren oder deaktivieren. |
 
 ## Release-Kontextvariablen

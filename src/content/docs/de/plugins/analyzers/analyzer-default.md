@@ -30,9 +30,9 @@ plugins:
 
 | Name | Erforderlich | Standard | Beschreibung |
 | --- | --- | --- | --- |
-| `SEMREL_PLUGIN_MINOR_PATTERN` | nein | `vom Plugin definierter Regex` | Regulärer Ausdruck, der einen Minor-Bump auslöst. |
-| `SEMREL_PLUGIN_PATCH_PATTERN` | nein | `vom Plugin definierter Regex` | Regulärer Ausdruck, der einen Patch-Bump auslöst. |
-| `SEMREL_PLUGIN_MAJOR_PATTERN` | nein | `vom Plugin definierter Regex` | Regulärer Ausdruck, der einen Major-Bump auslöst. |
+| `SEMREL_PLUGIN_MINOR_PATTERN` | nein | `vom Plugin definierter regulärer Ausdruck` | Regulärer Ausdruck, der einen Minor-Bump auslöst. |
+| `SEMREL_PLUGIN_PATCH_PATTERN` | nein | `vom Plugin definierter regulärer Ausdruck` | Regulärer Ausdruck, der einen Patch-Bump auslöst. |
+| `SEMREL_PLUGIN_MAJOR_PATTERN` | nein | `vom Plugin definierter regulärer Ausdruck` | Regulärer Ausdruck, der einen Major-Bump auslöst. |
 
 ## Release-Kontextvariablen
 
