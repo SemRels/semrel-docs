@@ -1,0 +1,379 @@
+---
+title: CLI-Referenz
+description: Vollständige Referenz für alle semrel-Befehle und Flags.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Globale Flags
+
+Diese Flags gelten für jeden semrel-Befehl.
+
+| Flag | Standard | Beschreibung |
+|------|---------|-------------|
+| `--config` | Auto-Erkennung | Pfad zur Konfigurationsdatei (`.semrel.yaml`, `.semrel.yml`, `.semrel.toml`, `.semrel.json`) |
+| `--dry-run` | `false` | Simulation ohne Änderungen |
+| `--env-file` | `.env` | Pfad zur `.env`-Datei, die vor dem Ausführen geladen wird |
+| `--no-color` | `false` | Farbausgabe im Terminal deaktivieren |
+| `-o, --output` | `text` | Ausgabeformat: `text` oder `json` |
+| `-v, --version` | — | Version ausgeben und beenden |
+
+---
+
+## `semrel release`
+
+Führe die vollständige Release Pipeline aus.
+
+```bash
+semrel release [flags]
+```
+
+### Pipeline-Schritte
+
+1. `.semrel.yaml` laden und validieren
+2. **condition-phase** Plugins ausführen — bei Fehler abbrechen
+3. Prüfen, ob der aktuelle Branch für Releases konfiguriert ist
+4. Den letzten git-Tag finden und Commits seitdem sammeln
+5. Commits anhand der Regeln von Conventional Commits parsen
+6. Die nächste SemVer-Version berechnen (`major` / `minor` / `patch`)
+7. Changelog und Release Notes erzeugen
+8. **pre-tag** Plugins ausführen (z. B. Versionsdatei-Updater)
+9. `CHANGELOG.md` committen (außer bei `commit_changelog: false`)
+10. Den git-Tag erstellen und pushen
+11. **release-phase** Plugins ausführen (Provider, Hooks, Paket-Publisher)
+
+### Flags
+
+| Flag | Beschreibung |
+|------|-------------|
+| `--dry-run` | Release ohne Änderungen vorschauen |
+| `--edit` | Erzeugte Release Notes vor dem Tagging in `$EDITOR` öffnen |
+| `--interactive` | Vor dem Tagging auf Bestätigung warten (benötigt ein TTY) |
+| `--force-bump-patch-version` | Ein Patch-Release erzwingen, auch wenn keine releasbaren Commits gefunden wurden |
+| `--github-output` | Release-Metadaten nach `$GITHUB_OUTPUT` schreiben (GitHub Actions) |
+| `--gitlab-dotenv <file>` | Release-Metadaten als dotenv-Artefakt schreiben (GitLab CI) |
+| `--output-file <file>` | Release-Metadaten in eine Datei schreiben (`.json` oder `.env`) |
+
+### Beispiele
+
+```bash
+# Preview without making changes
+semrel release --dry-run
+
+# Edit release notes before tagging
+semrel release --edit
+
+# Force a patch bump
+semrel release --force-bump-patch-version
+
+# Export metadata for GitHub Actions
+semrel release --github-output
+
+# Use a non-default config file
+semrel release --config .github/semrel.yaml
+```
+
+---
+
+## `semrel changelog`
+
+Erzeuge einen Changelog aus unreleasten Commits, **ohne** einen Release-Tag zu erstellen.
+
+```bash
+semrel changelog [flags]
+```
+
+### Flags
+
+| Flag | Beschreibung |
+|------|-------------|
+| `--write` | Den erzeugten Eintrag am Anfang von `CHANGELOG.md` einfügen |
+| `--since <ref>` | Statt des letzten Tags bei diesem Tag oder Ref starten |
+
+### Beispiele
+
+```bash
+# Preview unreleased changes on stdout
+semrel changelog
+
+# Prepend to CHANGELOG.md
+semrel changelog --write
+
+# Start from a specific tag
+semrel changelog --since v1.0.0
+
+# Machine-readable output
+semrel changelog --output json
+```
+
+### Exit-Codes
+
+| Code | Bedeutung |
+|------|---------|
+| `0` | Unreleaste releasbare Commits gefunden |
+| `2` | Nichts zu releasen (keine releasbaren Commits) |
+
+---
+
+## `semrel lint`
+
+Validiere alle Commit-Messages seit dem letzten Release-Tag anhand von [Conventional Commits](https://www.conventionalcommits.org/).
+
+```bash
+semrel lint [flags]
+```
+
+### Beispiele
+
+```bash
+semrel lint
+semrel lint --output json
+```
+
+### Exit-Codes
+
+| Code | Bedeutung |
+|------|---------|
+| `0` | Alle Commits sind gültig |
+| `1` | Ein oder mehrere Commits sind ungültig |
+
+---
+
+## `semrel commitlint`
+
+Validiere Commit-Messages anhand von Conventional Commits.
+
+Ohne Argumente lintet der Befehl alle Commits seit dem letzten Release-Tag — derselbe Scope wie `semrel lint`, aber mit Details pro Commit.
+
+```bash
+semrel commitlint [message...] [flags]
+```
+
+### Flags
+
+| Flag | Beschreibung |
+|------|-------------|
+| `--from <ref>` | Start-Ref (exklusiv) für einen Commit-Bereich |
+| `--to <ref>` | End-Ref (inklusiv) für einen Commit-Bereich (Standard: `HEAD`) |
+| `--stdin` | Eine einzelne Commit-Message von stdin lesen |
+
+### Beispiele
+
+```bash
+# Lint commits since last release tag (default)
+semrel commitlint
+
+# Lint a single message
+semrel commitlint "feat(auth): add OAuth2 support"
+
+# Lint a commit range
+semrel commitlint --from HEAD~5 --to HEAD
+
+# Lint from stdin (useful as a git commit-msg hook)
+echo "fix: typo" | semrel commitlint --stdin
+
+# Machine-readable output
+semrel commitlint --output json
+```
+
+---
+
+## `semrel doctor`
+
+Führe Pre-Flight-Checks vor einem Release aus.
+
+Checks:
+- `.semrel.yaml` existiert und ist gültig
+- Jede konfigurierte Plugin-Binärdatei ist auffindbar
+- Erforderliche Umgebungsvariablen sind gesetzt (soweit erkennbar)
+- Der aktuelle Branch ist ein konfigurierter Release-Branch
+- Ein git-Repository mit mindestens einem Tag ist vorhanden
+
+```bash
+semrel doctor [flags]
+```
+
+### Flags
+
+| Flag | Beschreibung |
+|------|-------------|
+| `--online` | Zusätzlicher Ping an die semrel Registry, um Plugin-Verfügbarkeit zu prüfen |
+
+### Beispiele
+
+```bash
+semrel doctor
+semrel doctor --online
+semrel doctor --output json
+```
+
+### Exit-Codes
+
+| Code | Bedeutung |
+|------|---------|
+| `0` | Alle Checks bestanden (Warnungen beeinflussen den Exit-Code nicht) |
+| `1` | Ein oder mehrere Checks sind fehlgeschlagen |
+
+---
+
+## `semrel config`
+
+Verwalte die semrel-Konfigurationsdatei.
+
+```bash
+semrel config <subcommand> [flags]
+```
+
+### `semrel config init`
+
+Erstelle eine neue `.semrel.yaml` interaktiv oder mit Standardwerten.
+
+```bash
+semrel config init [flags]
+```
+
+| Flag | Beschreibung |
+|------|-------------|
+| `--no-interactive` | Prompts überspringen und eine minimale Standardkonfiguration schreiben |
+| `--force` | Eine vorhandene Konfigurationsdatei überschreiben |
+
+```bash
+semrel config init
+semrel config init --no-interactive
+semrel config init --force
+```
+
+### `semrel config show`
+
+Die aufgelöste Konfiguration ausgeben.
+
+```bash
+semrel config show
+semrel config show --output json
+```
+
+### `semrel config validate`
+
+Die aktuelle Konfigurationsdatei validieren.
+
+```bash
+semrel config validate
+```
+
+### `semrel config set`
+
+Einen einzelnen Konfigurationsschlüssel in `.semrel.yaml` aktualisieren.
+
+```bash
+semrel config set <key> <value>
+```
+
+```bash
+semrel config set tagPrefix v
+semrel config set version_ceiling 2.0.0
+semrel config set commit_changelog false
+semrel config set tag_exists_strategy skip
+```
+
+---
+
+## `semrel migrate`
+
+`.semrel.yaml` von einer älteren Schema-Version auf die aktuelle aktualisieren.
+
+```bash
+semrel migrate [flags]
+```
+
+### Flags
+
+| Flag | Beschreibung |
+|------|-------------|
+| `--dry-run` | Ausstehende Migrationen anzeigen, ohne Dateien zu schreiben |
+| `--no-backup` | Kein Backup mit Zeitstempel vor der Migration schreiben |
+
+### Beispiele
+
+```bash
+semrel migrate
+semrel migrate --dry-run
+semrel migrate --no-backup
+```
+
+---
+
+## `semrel plugin`
+
+Verwalte semrel-Plugins.
+
+```bash
+semrel plugin <subcommand>
+```
+
+### `semrel plugin list`
+
+Alle verfügbaren Plugins in der Registry auflisten.
+
+```bash
+semrel plugin list [--no-header]
+```
+
+### `semrel plugin search`
+
+Plugins nach Namen, Beschreibung oder Tag durchsuchen.
+
+```bash
+semrel plugin search <query>
+```
+
+```bash
+semrel plugin search github
+semrel plugin search changelog
+```
+
+### `semrel plugin install`
+
+Eine Plugin-Binärdatei nach `~/.semrel/plugins/` herunterladen und installieren.
+
+```bash
+semrel plugin install <name[@version]> [--plugin-dir <dir>]
+```
+
+```bash
+# Install the latest version
+semrel plugin install github
+
+# Install a specific version
+semrel plugin install npm@1.2.0
+
+# Install into a custom directory
+semrel plugin install github --plugin-dir ./tools/plugins
+```
+
+---
+
+## `semrel update`
+
+Prüfe, ob es ein neueres semrel-Release gibt, und installiere es direkt an Ort und Stelle.
+
+Holt das neueste Release von [GitHub Releases](https://github.com/SemRels/semrel/releases) und ersetzt die aktuelle Executable.
+
+```bash
+semrel update [flags]
+```
+
+### Flags
+
+| Flag | Beschreibung |
+|------|-------------|
+| `--check` | Nur auf eine neuere Version prüfen; nichts herunterladen |
+
+### Beispiele
+
+```bash
+# Check and install the latest release
+semrel update
+
+# Check only — no download
+semrel update --check
+```

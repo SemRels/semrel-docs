@@ -1,0 +1,102 @@
+---
+title: Monorepo-Unterstützung
+description: Versioniere mit semrel mehrere unabhängige Module in einem einzelnen Repository.
+---
+
+import { Aside, FileTree } from '@astrojs/starlight/components';
+
+semrel unterstützt Repositories, die mehrere unabhängig versionierte Module enthalten. Jedes Modul hat seine eigene Versionshistorie, seine eigene Tag-Serie und seine eigene `.semrel.yaml`.
+
+## Repository-Struktur
+
+<FileTree>
+- my-monorepo/
+  - services/
+    - api/
+      - .semrel.yaml
+      - go.mod
+    - worker/
+      - .semrel.yaml
+      - go.mod
+  - libs/
+    - core/
+      - .semrel.yaml
+      - go.mod
+</FileTree>
+
+Jede Komponente hat ihre eigene `.semrel.yaml` und wird unabhängig releast.
+
+## Tagging-Konvention
+
+In einem Monorepo stellt semrel jedem Tag den Modulpfad voran:
+
+```
+services/api/v1.4.0
+services/worker/v0.9.1
+libs/core/v2.0.0
+```
+
+Das bedeutet: `git log --tags` liefert dir eine saubere Historie pro Modul ohne Vermischung.
+
+## Konfiguration pro Modul
+
+Jede `.semrel.yaml` eines Moduls ist vollständig unabhängig. Du kannst pro Modul unterschiedliche Bump-Regeln, unterschiedliche Branches oder unterschiedliche Plugins konfigurieren:
+
+```yaml
+# services/api/.semrel.yaml
+version: 1
+
+branches:
+  - name: main
+
+release:
+  rules:
+    - type: feat
+      bump: minor
+    - type: fix
+      bump: patch
+
+plugins:
+  - name: github
+    args:
+      owner: MyOrg
+      repo: my-monorepo
+      # The release is scoped to the services/api subfolder
+      tag_prefix: services/api/
+```
+
+## Releases ausführen
+
+Führe semrel aus dem Modulverzeichnis aus oder verwende `--config`, um auf eine Modul-Konfiguration zu zeigen:
+
+```bash
+# From the module root
+cd services/api
+semrel release
+
+# Or from the repo root
+semrel release --config ./services/api/.semrel.yaml
+```
+
+## CI-Beispiel (GitHub Actions)
+
+```yaml
+jobs:
+  release-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required: semrel needs full git history
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - run: go install github.com/GoSemantics/semrel/cmd/semrel@latest
+      - run: semrel release --config ./services/api/.semrel.yaml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+<Aside type="caution">
+  Checke das Repository immer mit `fetch-depth: 0` aus. Ohne die vollständige Historie kann semrel den vorherigen Release-Tag nicht finden und behandelt jeden Commit wie ein erstes Release.
+</Aside>

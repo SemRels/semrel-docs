@@ -1,0 +1,710 @@
+---
+title: Konfiguration
+description: Alle .semrel.yaml-Konfigurationsoptionen erklärt.
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+Das gesamte Verhalten von semrel wird über eine einzige Konfigurationsdatei im Root deines Repository gesteuert. Mit `--config` kannst du einen anderen Pfad angeben.
+
+## Unterstützte Formate
+
+semrel findet die Konfigurationsdatei automatisch in dieser Reihenfolge:
+
+| File | Format |
+| --- | --- |
+| `.semrel.yaml` / `.semrel.yml` | YAML |
+| `.semrel.toml` | TOML |
+| `.semrel.json` | JSON |
+
+YAML verwendet für einige Schlüssel `camelCase` (z. B. `tagPrefix`). TOML und JSON verwenden immer `snake_case` (z. B. `tag_prefix`).
+
+## Vollständiges Beispiel
+
+<Tabs>
+  <TabItem label="YAML (.semrel.yaml)">
+    ```yaml
+    tagPrefix: v
+
+    branches:
+      - name: main
+      - name: "*.x"
+        maintenance: true
+      - name: next
+        prerelease: beta
+
+    rules:
+      - type: feat
+        bump: minor
+      - type: fix
+        bump: patch
+      - type: perf
+        bump: patch
+      - type: revert
+        bump: patch
+
+    commit_changelog: true
+    tag_exists_strategy: update-changelog
+
+    version_ceiling: "1.0.0"
+    ceiling_strategy: clamp
+
+    plugins:
+      - uses: github-actions
+        phase: condition
+
+      - uses: github
+        phase: release
+        args:
+          token: ${{ env.GITHUB_TOKEN }}
+          owner: MyOrg
+          repo: my-repo
+
+      - uses: gobinary
+        phase: pre-tag
+        args:
+          file: internal/version/version.go
+          var_name: Version
+
+      - uses: slack
+        args:
+          webhook_url: ${{ env.SLACK_WEBHOOK }}
+    ```
+  </TabItem>
+  <TabItem label="TOML (.semrel.toml)">
+    ```toml
+    tag_prefix = "v"
+    commit_changelog = true
+    tag_exists_strategy = "update-changelog"
+    version_ceiling = "1.0.0"
+    ceiling_strategy = "clamp"
+
+    [[branches]]
+    name = "main"
+
+    [[branches]]
+    name = "*.x"
+    maintenance = true
+
+    [[branches]]
+    name = "next"
+    prerelease = "beta"
+
+    [[rules]]
+    type = "feat"
+    bump = "minor"
+
+    [[rules]]
+    type = "fix"
+    bump = "patch"
+
+    [[rules]]
+    type = "perf"
+    bump = "patch"
+
+    [[rules]]
+    type = "revert"
+    bump = "patch"
+
+    [[plugins]]
+    uses = "github-actions"
+    phase = "condition"
+
+    [[plugins]]
+    uses = "github"
+    phase = "release"
+    [plugins.args]
+    token = "${GITHUB_TOKEN}"
+    owner = "MyOrg"
+    repo = "my-repo"
+
+    [[plugins]]
+    uses = "gobinary"
+    phase = "pre-tag"
+    [plugins.args]
+    file = "internal/version/version.go"
+    var_name = "Version"
+
+    [[plugins]]
+    uses = "slack"
+    [plugins.args]
+    webhook_url = "${SLACK_WEBHOOK}"
+    ```
+  </TabItem>
+  <TabItem label="JSON (.semrel.json)">
+    ```json
+    {
+      "tag_prefix": "v",
+      "commit_changelog": true,
+      "tag_exists_strategy": "update-changelog",
+      "version_ceiling": "1.0.0",
+      "ceiling_strategy": "clamp",
+      "branches": [
+        { "name": "main" },
+        { "name": "*.x", "maintenance": true },
+        { "name": "next", "prerelease": "beta" }
+      ],
+      "rules": [
+        { "type": "feat", "bump": "minor" },
+        { "type": "fix",  "bump": "patch" },
+        { "type": "perf", "bump": "patch" },
+        { "type": "revert", "bump": "patch" }
+      ],
+      "plugins": [
+        {
+          "uses": "github-actions",
+          "phase": "condition"
+        },
+        {
+          "uses": "github",
+          "phase": "release",
+          "args": {
+            "token": "${GITHUB_TOKEN}",
+            "owner": "MyOrg",
+            "repo": "my-repo"
+          }
+        },
+        {
+          "uses": "gobinary",
+          "phase": "pre-tag",
+          "args": {
+            "file": "internal/version/version.go",
+            "var_name": "Version"
+          }
+        },
+        {
+          "uses": "slack",
+          "args": {
+            "webhook_url": "${SLACK_WEBHOOK}"
+          }
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## `tagPrefix` / `tag_prefix`
+
+Das Präfix wird beim Erstellen von git-Tags vor die Versionsnummer gesetzt.
+
+<Tabs>
+  <TabItem label="YAML">
+    ```yaml
+    tagPrefix: v   # creates tags like v1.2.3 (default)
+    tagPrefix: ""  # creates tags like 1.2.3
+    ```
+  </TabItem>
+  <TabItem label="TOML">
+    ```toml
+    tag_prefix = "v"   # creates tags like v1.2.3 (default)
+    tag_prefix = ""    # creates tags like 1.2.3
+    ```
+  </TabItem>
+  <TabItem label="JSON">
+    ```json
+    { "tag_prefix": "v" }
+    ```
+  </TabItem>
+</Tabs>
+
+| Value | Standard | Beschreibung |
+| --- | --- | --- |
+| beliebiger String | `v` | Wird jedem Tag vorangestellt, den semrel erstellt |
+
+## `branches`
+
+Eine Liste von Branches, aus denen Releases erstellt werden dürfen. Commits auf nicht aufgeführten Branches werden ignoriert.
+
+<Tabs>
+  <TabItem label="YAML">
+    ```yaml
+    branches:
+      - name: main
+      - name: "*.x"
+        maintenance: true
+      - name: next
+        prerelease: beta
+    ```
+  </TabItem>
+  <TabItem label="TOML">
+    ```toml
+    [[branches]]
+    name = "main"
+
+    [[branches]]
+    name = "*.x"
+    maintenance = true
+
+    [[branches]]
+    name = "next"
+    prerelease = "beta"
+    ```
+  </TabItem>
+  <TabItem label="JSON">
+    ```json
+    {
+      "branches": [
+        { "name": "main" },
+        { "name": "*.x", "maintenance": true },
+        { "name": "next", "prerelease": "beta" }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+### Branch-Felder
+
+| Field | Type | Standard | Beschreibung |
+| --- | --- | --- | --- |
+| `name` | string | — | Branch-Name oder Glob-Muster (z. B. `main`, `"*.x"`, `release/*`) |
+| `prerelease` | string | — | Pre-Release-Bezeichner, der an die Version angehängt wird (z. B. `beta` → `1.0.0-beta.1`) |
+| `maintenance` | bool | `false` | Beschränkt diesen Branch auf reine Patch-Bumps. Wird auch automatisch aus Mustern wie `N.x` / `N.M.x` erkannt |
+
+<Aside type="tip">
+  Maintenance-Branches wie `1.x` oder `2.3.x` werden automatisch erkannt — du musst `maintenance: true` bei Namensmustern, die `N.x` oder `N.M.x` entsprechen, nicht explizit setzen.
+</Aside>
+
+## `rules`
+
+Ordnet Conventional-Commit-Typen SemVer-Bump-Stufen zu. Wenn du `rules:` weglässt, verwendet semrel die eingebauten Standardwerte.
+
+<Tabs>
+  <TabItem label="YAML">
+    ```yaml
+    rules:
+      - type: feat
+        bump: minor
+      - type: fix
+        bump: patch
+      - type: perf
+        bump: patch
+      - type: revert
+        bump: patch
+    ```
+  </TabItem>
+  <TabItem label="TOML">
+    ```toml
+    [[rules]]
+    type = "feat"
+    bump = "minor"
+
+    [[rules]]
+    type = "fix"
+    bump = "patch"
+
+    [[rules]]
+    type = "perf"
+    bump = "patch"
+
+    [[rules]]
+    type = "revert"
+    bump = "patch"
+    ```
+  </TabItem>
+  <TabItem label="JSON">
+    ```json
+    {
+      "rules": [
+        { "type": "feat",   "bump": "minor" },
+        { "type": "fix",    "bump": "patch" },
+        { "type": "perf",   "bump": "patch" },
+        { "type": "revert", "bump": "patch" }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+### Regel-Felder
+
+| Field | Type | Erforderlich | Beschreibung |
+| --- | --- | --- | --- |
+| `type` | string | ja | Conventional-Commit-Typ (z. B. `feat`, `fix`, `perf`) |
+| `bump` | string | ja | Einer von `major`, `minor`, `patch` |
+
+<Aside type="note">
+  Breaking Changes (`BREAKING CHANGE`-Footer oder `!`-Suffix wie `feat!:`) führen unabhängig von den Regeln immer zu einem `major`-Bump.
+</Aside>
+
+### Standardregeln
+
+Wenn `rules:` fehlt, verwendet semrel:
+
+| Type | Bump |
+| --- | --- |
+| `feat` | `minor` |
+| `fix` | `patch` |
+| `perf` | `patch` |
+| `revert` | `patch` |
+
+Commit-Typen, die nicht in `rules` aufgeführt sind, erzeugen kein Release.
+
+## `commit_changelog`
+
+Steuert, ob semrel `CHANGELOG.md` vor dem Erstellen des Release-Tags zurück ins Repository committet.
+
+<Tabs>
+  <TabItem label="YAML">
+    ```yaml
+    commit_changelog: true   # default
+    ```
+  </TabItem>
+  <TabItem label="TOML">
+    ```toml
+    commit_changelog = true
+    ```
+  </TabItem>
+  <TabItem label="JSON">
+    ```json
+    { "commit_changelog": true }
+    ```
+  </TabItem>
+</Tabs>
+
+| Value | Verhalten |
+| --- | --- |
+| `true` (Standard) | semrel schreibt `CHANGELOG.md`, committet die Datei als `chore(changelog): update for vX.Y.Z [skip ci]` und erstellt dann den Tag auf diesem Commit |
+| `false` | semrel schreibt `CHANGELOG.md` lokal, committet sie aber nicht (praktisch, wenn du den Changelog extern verwaltest) |
+
+<Aside type="tip">
+  Das Suffix `[skip ci]` in der Changelog-Commit-Message verhindert in den meisten CI-Systemen, dass für den Changelog-Commit selbst eine neue Pipeline ausgelöst wird.
+</Aside>
+
+## `tag_exists_strategy`
+
+Steuert, was semrel macht, wenn der berechnete Tag der nächsten Version lokal bereits existiert.
+
+<Tabs>
+  <TabItem label="YAML">
+    ```yaml
+    tag_exists_strategy: update-changelog   # default
+    ```
+  </TabItem>
+  <TabItem label="TOML">
+    ```toml
+    tag_exists_strategy = "update-changelog"
+    ```
+  </TabItem>
+  <TabItem label="JSON">
+    ```json
+    { "tag_exists_strategy": "update-changelog" }
+    ```
+  </TabItem>
+</Tabs>
+
+| Strategy | Verhalten |
+| --- | --- |
+| `update-changelog` (Standard) | Aktualisiert und committet `CHANGELOG.md` für die vorhandene Version und beendet sich dann ohne Fehler. Idempotent — praktisch für Reparaturläufe. |
+| `skip` | Beendet sich stillschweigend ohne Änderungen. |
+| `error` | Beendet sich mit einem Exit-Code ungleich null. Verwende das, wenn du strikte One-Shot-Pipelines willst. |
+
+**Beispielszenario:** Du hast `v0.1.0` manuell erstellt, um das Projekt zu bootstrappen. Der nächste Pipeline-Lauf erkennt, dass der Tag bereits existiert, und erzeugt mit der Standardstrategie den Changelog für diese Version neu und committet ihn — es wird kein doppeltes Release erstellt.
+
+## `version_ceiling`
+
+Verhindert, dass semrel auf oder oberhalb dieser Version releast. Praktisch, wenn du ein Projekt unter `1.0.0` halten willst, bis du es bewusst auf stabil hebst.
+
+<Tabs>
+  <TabItem label="YAML">
+    ```yaml
+    version_ceiling: "1.0.0"
+    ceiling_strategy: clamp
+    ```
+  </TabItem>
+  <TabItem label="TOML">
+    ```toml
+    version_ceiling = "1.0.0"
+    ceiling_strategy = "clamp"
+    ```
+  </TabItem>
+  <TabItem label="JSON">
+    ```json
+    {
+      "version_ceiling": "1.0.0",
+      "ceiling_strategy": "clamp"
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+| Value | Effekt |
+| --- | --- |
+| Nicht gesetzt | Keine Obergrenze — semrel erhöht frei |
+| `"1.0.0"` | Releases sind niemals `>= 1.0.0` |
+
+### `ceiling_strategy`
+
+Steuert, was passiert, wenn die berechnete nächste Version `version_ceiling` erreichen oder überschreiten würde.
+
+| Strategy | Verhalten |
+| --- | --- |
+| `clamp` | Stuften den Bump herunter (`major` → `minor` → `patch`), bis die Version unter der Obergrenze bleibt. Schreibt eine Warnung ins Log. |
+| `skip` | Tut nichts — gibt einen Hinweis aus und beendet sich ohne Release. |
+| `error` | Beendet sich mit einem Exit-Code ungleich null, sodass die Pipeline explizit fehlschlägt. |
+
+**Beispiel:** aktuell `0.9.5`, Breaking-Change-Commit, Obergrenze `1.0.0`
+
+- `clamp` → releast `0.9.6` (auf `patch` heruntergestuft)
+- `skip` → kein Release, Exit 0
+- `error` → kein Release, Exit 1
+
+Um die Obergrenze zu überschreiten, entferne `version_ceiling` aus deiner Konfigurationsdatei oder setze sie höher und committe die Änderung.
+
+## `plugins`
+
+Eine geordnete Liste von Plugins, die für die Release Pipeline geladen werden.
+
+| Field | Type | Erforderlich | Beschreibung |
+| --- | --- | --- | --- |
+| `uses` | string | ja* | Plugin-Typ oder Installationsname. semrel löst ihn zu `semrel-plugin-<uses>` auf |
+| `name` | string | nein | Optionaler Instanzbezeichner (praktisch, wenn dasselbe Plugin mehrfach vorkommt) |
+| `path` | string | nein | Expliziter Pfad zu einer Plugin-Binärdatei (überschreibt die Auflösung über `uses`) |
+| `args` | map | nein | Beliebige Schlüssel-Wert-Paare, die als `SEMREL_PLUGIN_*`-Umgebungsvariablen an das Plugin übergeben werden |
+| `phase` | string | nein | Wann es ausgeführt wird: `condition`, `pre-tag` oder `release` (Standard) |
+
+*Entweder `uses` oder `path` muss gesetzt sein.
+
+### Plugin-Phasen
+
+| Phase | Wann sie läuft | Typische Verwendung |
+| --- | --- | --- |
+| `condition` | Nach dem Laden der Konfiguration, **vor** jeder Commit-Analyse oder Tag-Erstellung | `github-actions`, `gitlab-ci` — abbrechen, wenn die Umgebung nicht passt |
+| `pre-tag` | Nach Versionsberechnung und Changelog-Schreiben, **bevor** der git-Tag erstellt wird | `gobinary` — Versionsdatei aktualisieren und committen, damit der getaggte Quellcode die echte Version enthält |
+| `release` | Nachdem der Tag erstellt wurde (Standard) | `github`, `hook-slack`, `updater-npm` — veröffentlichen und benachrichtigen |
+
+<Tabs>
+  <TabItem label="YAML">
+    ```yaml
+    plugins:
+      # Gate: abort if not running in GitHub Actions
+      - uses: github-actions
+        phase: condition
+
+      # Pre-tag: update Go version variable before tagging
+      - uses: gobinary
+        phase: pre-tag
+        args:
+          file: internal/version/version.go
+          var_name: Version
+
+      # Release: create GitHub release with changelog
+      - uses: github
+        phase: release   # default, can be omitted
+        args:
+          token: ${{ env.GITHUB_TOKEN }}
+          owner: MyOrg
+          repo: my-repo
+
+      # Hook: notify Slack after release
+      - uses: slack
+        args:
+          webhook_url: ${{ env.SLACK_WEBHOOK }}
+    ```
+  </TabItem>
+  <TabItem label="TOML">
+    ```toml
+    [[plugins]]
+    uses = "github-actions"
+    phase = "condition"
+
+    [[plugins]]
+    uses = "gobinary"
+    phase = "pre-tag"
+    [plugins.args]
+    file = "internal/version/version.go"
+    var_name = "Version"
+
+    [[plugins]]
+    uses = "github"
+    phase = "release"
+    [plugins.args]
+    token = "${GITHUB_TOKEN}"
+    owner = "MyOrg"
+    repo = "my-repo"
+
+    [[plugins]]
+    uses = "slack"
+    [plugins.args]
+    webhook_url = "${SLACK_WEBHOOK}"
+    ```
+  </TabItem>
+  <TabItem label="JSON">
+    ```json
+    {
+      "plugins": [
+        {
+          "uses": "github-actions",
+          "phase": "condition"
+        },
+        {
+          "uses": "gobinary",
+          "phase": "pre-tag",
+          "args": {
+            "file": "internal/version/version.go",
+            "var_name": "Version"
+          }
+        },
+        {
+          "uses": "github",
+          "phase": "release",
+          "args": {
+            "token": "${GITHUB_TOKEN}",
+            "owner": "MyOrg",
+            "repo": "my-repo"
+          }
+        },
+        {
+          "uses": "slack",
+          "args": {
+            "webhook_url": "${SLACK_WEBHOOK}"
+          }
+        }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+### Plugin-Auflösung
+
+Wenn `path:` fehlt, löst semrel Plugins in dieser Reihenfolge auf:
+
+1. `~/.semrel/plugins/semrel-plugin-<uses>`
+2. `semrel-plugin-<uses>` aus `$PATH`
+
+Verwende `path:`, wenn du eine bestimmte lokale Binärdatei statt des Standard-Discovery-Flows pinnen willst.
+
+<Aside type="tip">
+  Installiere offizielle Plugins mit `semrel plugin install <name>`. Standardmäßig lädt die CLI sie nach `~/.semrel/plugins/` herunter.
+</Aside>
+
+### Plugin-Argumente als Umgebungsvariablen
+
+Jeder Schlüssel in `args:` wird dem Plugin-Prozess als Umgebungsvariable mit dem Präfix `SEMREL_PLUGIN_` bereitgestellt.
+
+<Tabs>
+  <TabItem label="YAML">
+    ```yaml
+    plugins:
+      - uses: github
+        args:
+          token: ${{ env.GITHUB_TOKEN }}
+          owner: MyOrg
+          repo: my-repo
+    ```
+  </TabItem>
+  <TabItem label="TOML">
+    ```toml
+    [[plugins]]
+    uses = "github"
+    [plugins.args]
+    token = "${GITHUB_TOKEN}"
+    owner = "MyOrg"
+    repo = "my-repo"
+    ```
+  </TabItem>
+  <TabItem label="JSON">
+    ```json
+    {
+      "plugins": [{
+        "uses": "github",
+        "args": {
+          "token": "${GITHUB_TOKEN}",
+          "owner": "MyOrg",
+          "repo": "my-repo"
+        }
+      }]
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+Das Plugin erhält:
+
+| Config key | Environment variable |
+| --- | --- |
+| `token` | `SEMREL_PLUGIN_TOKEN` |
+| `owner` | `SEMREL_PLUGIN_OWNER` |
+| `repo` | `SEMREL_PLUGIN_REPO` |
+
+Plugins erhalten den Release-Kontext außerdem über Standard-Umgebungsvariablen:
+
+| Variable | Beschreibung |
+| --- | --- |
+| `SEMREL_CURRENT_VERSION` | Die Version vor diesem Release |
+| `SEMREL_NEXT_VERSION` | Die neue Version, die releast wird |
+| `SEMREL_TAG_NAME` | Der vollständige Tag-Name inklusive Präfix (z. B. `v1.2.3`) |
+| `SEMREL_CHANGELOG` | Pfad zur geschriebenen `CHANGELOG.md`-Datei |
+| `SEMREL_DRY_RUN` | `true`, wenn semrel mit `--dry-run` aufgerufen wurde |
+
+semrel-Plugins sind einfache Executables, die als Subprocesses gestartet werden. Sie verwenden kein gRPC.
+
+---
+
+## Editor-Validierung mit JSON Schema
+
+Die semrel Registry stellt [JSON Schema](https://json-schema.org/)-Dokumente für `.semrel.yaml` und jedes Plugin bereit. Wenn du einen `$schema`-Kommentar hinzufügst, bekommst du **Inline-Validierung und Autovervollständigung** in VS Code, JetBrains IDEs, Neovim (mit LSP) und jedem anderen Editor, der `yaml-language-server` unterstützt.
+
+### Core-Config-Schema
+
+Füge den `$schema`-Kommentar als erste Zeile deiner `.semrel.yaml` hinzu:
+
+```yaml
+# yaml-language-server: $schema=https://registry.semrel.io/schemas/core/v1.json
+schemaVersion: 1
+tagPrefix: "v"
+
+plugins:
+  - uses: analyzer-conventional
+  - uses: generator-changelog-md
+  - uses: provider-github
+```
+
+Dein Editor markiert jetzt unbekannte Schlüssel, warnt vor fehlenden Pflichtfeldern und bietet Autovervollständigung für alle bekannten Optionen.
+
+### Plugin-Config-Schemas
+
+Jeder `args:`-Block eines Plugins kann unabhängig validiert werden. Platziere den Schema-Kommentar direkt über dem `args:`-Schlüssel:
+
+```yaml
+# yaml-language-server: $schema=https://registry.semrel.io/schemas/core/v1.json
+plugins:
+  - uses: provider-github
+    # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/provider-github/latest.json
+    args:
+      token: ${{ env.GITHUB_TOKEN }}
+      owner: MyOrg
+      repo: my-repo
+```
+
+### Schema-URLs
+
+| Resource | URL |
+|---|---|
+| Core config | `https://registry.semrel.io/schemas/core/v1.json` |
+| Plugin (by name) | `https://registry.semrel.io/schemas/plugins/{name}/v1.json` |
+| Plugin (latest) | `https://registry.semrel.io/schemas/plugins/{name}/latest.json` |
+| Namespaced plugin | `https://registry.semrel.io/schemas/plugins/@semrel/{name}/v1.json` |
+
+`latest.json` leitet immer (HTTP 301) auf die neueste stabile Schema-Version weiter.
+
+### Selbst gehostete Registry
+
+Wenn du eine private semrel-registry-Instanz betreibst, ersetze `registry.semrel.io` durch deine eigene Basis-URL:
+
+```yaml
+# yaml-language-server: $schema=https://my-registry.example.com/schemas/core/v1.json
+```
+
+### Über die CLI validieren
+
+Du kannst deine Konfiguration mit `semrel config validate` auch gegen das veröffentlichte Schema validieren:
+
+```bash
+semrel config validate
+# ✓ Config is valid (schema version 1)
+```
+
+Die vollständige Befehlsreferenz findest du unter [semrel config](/guide/cli#semrel-config).

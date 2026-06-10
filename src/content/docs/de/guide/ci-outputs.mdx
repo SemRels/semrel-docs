@@ -1,0 +1,147 @@
+---
+title: CI-Outputs
+description: Exportiere Release-Metadaten aus semrel für nachgelagerte CI-Jobs in GitHub Actions und GitLab CI.
+---
+
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Nachdem semrel gelaufen ist, brauchen nachgelagerte Jobs oder Schritte oft die berechneten Release-Informationen — die neue Version, den Tag, den Changelog — um Docker-Images zu bauen, Helm-Charts auszurollen oder eigene Benachrichtigungen zu senden.
+
+semrel kann diese Daten nativ für GitHub Actions und GitLab CI exportieren.
+
+## Exportierte Variablen
+
+| Variable | Example | Beschreibung |
+| --- | --- | --- |
+| `version` | `1.4.0` | Nächste Version (ohne Tag-Präfix) |
+| `tag` | `v1.4.0` | Vollständiger Tag-Name (mit Präfix) |
+| `bump` | `minor` | Bump-Stufe: `none`, `patch`, `minor` oder `major` |
+| `previous_version` | `1.3.0` | Vorherige Version |
+| `released` | `true` | Ob tatsächlich ein Release erstellt wurde |
+| `dry_run` | `false` | Ob es sich um einen Dry-Run gehandelt hat |
+| `branch` | `main` | Aktueller git-Branch |
+| `ceiling_applied` | `false` | Ob `version_ceiling` den Bump begrenzt hat |
+| `changelog` | `## What's Changed…` | Erzeugter Changelog-Inhalt (mehrzeilig) |
+
+Wenn kein Release erstellt wird (`released=false`), sind `version` und `tag` leer.
+
+## GitHub Actions
+
+Verwende `--github-output`, um alle Variablen nach `$GITHUB_OUTPUT` zu schreiben. Sie werden zu Step-Outputs, die du im selben Job oder in nachgelagerten Jobs via `needs` verwenden kannst.
+
+```yaml
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.semrel.outputs.version }}
+      released: ${{ steps.semrel.outputs.released }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run semrel
+        id: semrel
+        run: semrel release --github-output
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    needs: release
+    if: needs.release.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Docker image
+        run: docker build -t myapp:${{ needs.release.outputs.version }} .
+
+      - name: Deploy Helm chart
+        run: helm upgrade myapp ./chart --set image.tag=${{ needs.release.outputs.version }}
+```
+
+<Aside type="tip">
+  Der `changelog`-Output verwendet das GitHub-Mehrzeilenformat (`value<<SEMREL_EOF … SEMREL_EOF`) und lässt sich sicher an Benachrichtigungs-Schritte weitergeben.
+</Aside>
+
+## GitLab CI
+
+Verwende `--gitlab-dotenv <file>`, um ein [dotenv-Artefakt](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportsdotenv) zu schreiben. Nachgelagerte Jobs, die `needs:` mit dem dotenv-Artefakt deklarieren, können `$VERSION`, `$TAG` usw. direkt referenzieren.
+
+```yaml
+semrel:
+  stage: release
+  script:
+    - semrel release --gitlab-dotenv semrel.env
+  artifacts:
+    reports:
+      dotenv: semrel.env
+
+docker-build:
+  stage: deploy
+  needs:
+    - job: semrel
+      artifacts: true
+  rules:
+    - if: '$RELEASED == "true"'
+  script:
+    - docker build -t myapp:$VERSION .
+    - docker push myapp:$VERSION
+
+helm-deploy:
+  stage: deploy
+  needs:
+    - job: semrel
+      artifacts: true
+  rules:
+    - if: '$RELEASED == "true"'
+  script:
+    - helm upgrade myapp ./chart --set image.tag=$VERSION
+```
+
+<Aside type="note">
+  GitLab-dotenv-Artefakte unterstützen keine mehrzeiligen Werte. Der `changelog` wird deshalb im dotenv-Output weggelassen. Verwende `--output-file release.json` und lies das JSON in deinem Skript ein, wenn du den vollständigen Changelog brauchst.
+</Aside>
+
+## Generische Output-Datei
+
+Verwende `--output-file <path>` für jeden anderen Anwendungsfall:
+
+```bash
+# JSON output (detected by .json extension)
+semrel release --output-file release.json
+
+# dotenv output (any other extension)
+semrel release --output-file release.env
+```
+
+**JSON-Beispiel (`release.json`):**
+
+```json
+{
+  "released": true,
+  "dry_run": false,
+  "version": "1.4.0",
+  "tag": "v1.4.0",
+  "bump": "minor",
+  "previous_version": "1.3.0",
+  "branch": "main",
+  "ceiling_applied": false,
+  "changelog": "## What's Changed\n..."
+}
+```
+
+## Flags kombinieren
+
+Alle drei Output-Flags können im selben Lauf zusammen verwendet werden:
+
+```bash
+semrel release --github-output --output-file release.json
+```
+
+## Dry-Run-Verhalten
+
+Die Output-Flags funktionieren auch im Dry-Run-Modus. Der exportierte Wert `released` ist dann `false` und `dry_run` ist `true`. So kannst du deine Pipeline-Integration validieren, ohne ein echtes Release auszuführen.
+
+```bash
+semrel release --dry-run --github-output
+```

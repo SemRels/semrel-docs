@@ -1,0 +1,105 @@
+---
+title: Docker
+description: Führe semrel als Docker-Container mit dem offiziellen ghcr.io/SemRels/semrel-Image aus.
+---
+
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+semrel ist als offizielles Docker-Image unter `ghcr.io/SemRels/semrel` verfügbar.
+
+## Image-Varianten
+
+| Tag | Base | Hinweise |
+| --- | --- | --- |
+| `ghcr.io/SemRels/semrel:latest` | distroless | Minimal, keine Shell. Erfordert `git` auf dem Host oder im Mount. |
+| `ghcr.io/SemRels/semrel:1.4.0` | distroless | distroless mit fest gepinnter Version |
+| `ghcr.io/SemRels/semrel:latest-alpine` | Alpine 3 | Enthält `git`, `ca-certificates`, Shell |
+| `ghcr.io/SemRels/semrel:1.4.0-alpine` | Alpine 3 | Alpine mit fest gepinnter Version |
+
+<Aside type="tip">
+  Verwende in CI-Pipelines die **alpine**-Variante — sie bringt `git` und `ca-certificates` mit, die für Repository-Operationen erforderlich sind.
+</Aside>
+
+## Schnellstart
+
+```bash
+# Dry run in current directory
+docker run --rm \
+  -v "$(pwd):/workspace" \
+  -w /workspace \
+  -e GITHUB_TOKEN="$GITHUB_TOKEN" \
+  ghcr.io/SemRels/semrel:latest-alpine release --dry-run
+```
+
+## GitHub Actions
+
+```yaml
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/SemRels/semrel:latest-alpine
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run semrel
+        run: semrel release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+Oder verwende es als Docker-Action:
+
+```yaml
+- name: Run semrel
+  uses: docker://ghcr.io/SemRels/semrel:latest-alpine
+  with:
+    args: release
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+## GitLab CI
+
+```yaml
+semrel:
+  image: ghcr.io/SemRels/semrel:latest-alpine
+  stage: release
+  script:
+    - semrel release --gitlab-dotenv semrel.env
+  artifacts:
+    reports:
+      dotenv: semrel.env
+```
+
+## Umgebungsvariablen
+
+Der Container erbt alle Umgebungsvariablen vom Host oder CI-Job. Übergib Geheimnisse per `-e` oder über das Secret-Management deiner CI:
+
+| Variable | Erforderlich | Beschreibung |
+| --- | --- | --- |
+| `GITHUB_TOKEN` | Für GitHub-Provider | GitHub-API-Token |
+| `GITLAB_TOKEN` | Für GitLab-Provider | GitLab-API-Token |
+| `SEMREL_DRY_RUN` | Nein | Auf `true` setzen, um zu simulieren |
+
+## Workspace mounten
+
+semrel arbeitet auf dem aktuellen Working Directory. Mounte dein Repository nach `/workspace`:
+
+```bash
+docker run --rm \
+  -v "$(pwd):/workspace" \
+  -w /workspace \
+  -e GITHUB_TOKEN="$GITHUB_TOKEN" \
+  ghcr.io/SemRels/semrel:latest-alpine release
+```
+
+## Versions-Pinning
+
+Pinne auf eine bestimmte Version für reproduzierbare Builds:
+
+```bash
+ghcr.io/SemRels/semrel:1.0.0-alpine
+```
