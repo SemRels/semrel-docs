@@ -1,0 +1,278 @@
+---
+title: Registry API
+description: REST API reference for the semrel-registry plugin registry service.
+---
+
+import { Aside, Badge } from '@astrojs/starlight/components';
+
+The semrel-registry exposes a JSON REST API for discovering, managing, and downloading semrel plugins.
+The base URL is configurable — for the official registry use `https://registry.semrel.io`.
+
+<Aside type="note">
+  Authentication uses GitHub OAuth. Most read operations are public; write operations require a valid JWT token obtained via the `/auth/github` flow.
+</Aside>
+
+## Authentication
+
+### `GET /auth/github`
+
+Initiates GitHub OAuth login. Redirects the browser to GitHub for authorisation.
+
+### `GET /auth/github/callback`
+
+OAuth callback — exchanges the GitHub code for a JWT and redirects back to the configured frontend URL.
+
+### `GET /auth/config`
+
+Returns OAuth application configuration for the frontend.
+
+**Response**
+
+```json
+{
+  "clientId": "Ov23liXXXXXX",
+  "callbackUrl": "https://registry.semrel.io/auth/github/callback"
+}
+```
+
+### `GET /api/v1/auth/me` <Badge text="Requires Auth" variant="caution" />
+
+Returns the authenticated user profile.
+
+**Response**
+
+```json
+{
+  "login": "mwaldheim",
+  "name": "Markus Waldheim",
+  "avatarUrl": "https://avatars.githubusercontent.com/...",
+  "isAdmin": false
+}
+```
+
+---
+
+## Plugins
+
+### `GET /api/v1/plugins`
+
+Lists plugins with pagination and filtering.
+
+**Query parameters**
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `page` | integer | `1` | Page number |
+| `limit` | integer | `20` | Results per page (max 100) |
+| `category` | string | — | Filter by category (`analyzer`, `generator`, `provider`, `condition`, `hook`, `updater`) |
+| `author` | string | — | Filter by GitHub login |
+| `search` | string | — | Full-text search across name, description, and tags |
+| `status` | string | `active` | Status filter (admins only: `pending`, `rejected`) |
+
+**Response**
+
+```json
+{
+  "plugins": [
+    {
+      "id": 1,
+      "namespace": "@semrel",
+      "name": "provider-github",
+      "description": "Publishes GitHub releases and uploads assets.",
+      "author": "mwaldheim",
+      "category": "provider",
+      "repository": "https://github.com/SemRels/provider-github",
+      "license": "MIT",
+      "status": "active",
+      "tags": ["github", "release"],
+      "latestVersion": "1.2.0",
+      "views": 1240,
+      "downloads": 4891,
+      "createdAt": "2024-01-15T10:00:00Z",
+      "updatedAt": "2024-03-20T14:30:00Z"
+    }
+  ],
+  "total": 42,
+  "page": 1,
+  "limit": 20
+}
+```
+
+### `GET /api/v1/plugins/:id`
+
+Returns a single plugin by its numeric ID.
+
+### `GET /api/v1/plugins/@:namespace/:name`
+
+Returns a plugin by namespace and name (e.g. `GET /api/v1/plugins/@semrel/provider-github`).
+
+### `GET /api/v1/plugins/:id/versions`
+
+Lists all published versions of a plugin.
+
+**Response**
+
+```json
+[
+  {
+    "id": 7,
+    "pluginId": 1,
+    "version": "1.2.0",
+    "changelog": "## 1.2.0\n\n- Added asset upload support",
+    "downloadUrl": "https://github.com/SemRels/provider-github/releases/download/v1.2.0/provider-github-linux-amd64",
+    "checksums": {
+      "linux/amd64": "sha256:abc123..."
+    },
+    "prerelease": false,
+    "downloads": 1240,
+    "createdAt": "2024-03-20T14:30:00Z"
+  }
+]
+```
+
+### `GET /api/v1/plugins/:id/versions/:version/download`
+
+Records a download event and returns a redirect to the binary download URL.
+
+---
+
+## Plugin management <Badge text="Requires Auth" variant="caution" />
+
+### `POST /api/v1/plugins/submit`
+
+Submits a plugin for community review. The plugin is created with `status: pending` until an admin approves it.
+
+**Request body**
+
+```json
+{
+  "name": "my-custom-analyzer",
+  "description": "A custom commit analyzer.",
+  "author": "mwaldheim",
+  "category": "analyzer",
+  "repository": "https://github.com/mwaldheim/my-custom-analyzer",
+  "license": "MIT",
+  "tags": ["analyzer", "custom"]
+}
+```
+
+### `POST /api/v1/plugins/validate`
+
+Validates a plugin specification against the official plugin standards.
+
+### `POST /api/v1/plugins`
+
+Creates a plugin directly (requires auth). Use `submit` for community plugins.
+
+### `PUT /api/v1/plugins/:id`
+
+Updates plugin metadata.
+
+### `DELETE /api/v1/plugins/:id`
+
+Deletes a plugin.
+
+---
+
+## Admin endpoints <Badge text="Admin only" variant="danger" />
+
+### `GET /api/v1/stats`
+
+Returns registry-wide statistics.
+
+**Response**
+
+```json
+{
+  "totalPlugins": 42,
+  "totalDownloads": 98234,
+  "totalVersions": 156,
+  "categories": {
+    "analyzer": 8,
+    "generator": 6,
+    "provider": 5,
+    "condition": 10,
+    "hook": 7,
+    "updater": 6
+  }
+}
+```
+
+### `POST /api/v1/admin/sync`
+
+Triggers a synchronisation from the configured `PLUGINS_JSON_PATH` file.
+
+### `POST /api/v1/admin/sync-github-org`
+
+Syncs all plugin repositories from a GitHub organisation.
+
+### `PUT /api/v1/admin/plugins/:id/approve`
+
+Approves a pending community plugin submission.
+
+### `PUT /api/v1/admin/plugins/:id/reject`
+
+Rejects a community plugin submission.
+
+---
+
+## Schema endpoints
+
+### `GET /schemas/core/v{N}.json`
+
+Returns the JSON Schema for the `.semrel.yaml` configuration file. Use with editor tooling for inline validation.
+
+```yaml
+# .semrel.yaml
+# yaml-language-server: $schema=https://registry.semrel.io/schemas/core/v1.json
+tagPrefix: "v"
+```
+
+### `GET /schemas/plugins/{name}/v{N}.json`
+
+Returns the JSON Schema for a specific plugin's configuration.
+
+### `GET /schemas/plugins/{name}/latest.json`
+
+Redirects (301) to the latest schema version for the named plugin.
+
+---
+
+## Webhook
+
+### `POST /api/v1/webhooks/release`
+
+Receives `repository_dispatch` events from plugin release workflows to automatically register new plugin versions. Protected by `WEBHOOK_SECRET`.
+
+---
+
+## Rate limiting
+
+Public endpoints are rate-limited per client IP:
+
+| Endpoint group | Limit |
+|---|---|
+| Plugin read endpoints | 60 req/min |
+| `/plugins.json` | 10 req/min |
+| OAuth endpoints | 20 req/min |
+
+Responses exceeding the limit return `HTTP 429 Too Many Requests` with a `Retry-After: 60` header.
+
+---
+
+## `GET /plugins.json`
+
+Returns the full plugin catalogue as a flat JSON array — this is the endpoint consumed by the `semrel` CLI when `SEMREL_REGISTRY_URL` is set.
+
+```json
+[
+  {
+    "name": "provider-github",
+    "namespace": "@semrel",
+    "description": "Publishes GitHub releases and uploads assets.",
+    "repository": "https://github.com/SemRels/provider-github",
+    "category": "provider",
+    "latestVersion": "1.2.0"
+  }
+]
+```
