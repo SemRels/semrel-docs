@@ -5,13 +5,13 @@ description: Alle .semrel.yaml-Konfigurationsoptionen erklärt.
 
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
-Das gesamte Verhalten von semrel wird über eine einzige Konfigurationsdatei im Root deines Repository gesteuert. Mit `--config` kannst du einen anderen Pfad angeben.
+Das gesamte Verhalten von semrel wird über eine einzige Konfigurationsdatei im Wurzelverzeichnis deines Repositorys gesteuert. Mit `--config` kannst du einen anderen Pfad angeben.
 
 ## Unterstützte Formate
 
 semrel findet die Konfigurationsdatei automatisch in dieser Reihenfolge:
 
-| File | Format |
+| Datei | Format |
 | --- | --- |
 | `.semrel.yaml` / `.semrel.yml` | YAML |
 | `.semrel.toml` | TOML |
@@ -208,7 +208,7 @@ Das Präfix wird beim Erstellen von git-Tags vor die Versionsnummer gesetzt.
   </TabItem>
 </Tabs>
 
-| Value | Standard | Beschreibung |
+| Wert | Standard | Beschreibung |
 | --- | --- | --- |
 | beliebiger String | `v` | Wird jedem Tag vorangestellt, den semrel erstellt |
 
@@ -256,7 +256,7 @@ Eine Liste von Branches, aus denen Releases erstellt werden dürfen. Commits auf
 
 ### Branch-Felder
 
-| Field | Type | Standard | Beschreibung |
+| Feld | Typ | Standard | Beschreibung |
 | --- | --- | --- | --- |
 | `name` | string | — | Branch-Name oder Glob-Muster (z. B. `main`, `"*.x"`, `release/*`) |
 | `prerelease` | string | — | Pre-Release-Bezeichner, der an die Version angehängt wird (z. B. `beta` → `1.0.0-beta.1`) |
@@ -319,7 +319,7 @@ Ordnet Conventional-Commit-Typen SemVer-Bump-Stufen zu. Wenn du `rules:` wegläs
 
 ### Regel-Felder
 
-| Field | Type | Erforderlich | Beschreibung |
+| Feld | Typ | Erforderlich | Beschreibung |
 | --- | --- | --- | --- |
 | `type` | string | ja | Conventional-Commit-Typ (z. B. `feat`, `fix`, `perf`) |
 | `bump` | string | ja | Einer von `major`, `minor`, `patch` |
@@ -332,7 +332,7 @@ Ordnet Conventional-Commit-Typen SemVer-Bump-Stufen zu. Wenn du `rules:` wegläs
 
 Wenn `rules:` fehlt, verwendet semrel:
 
-| Type | Bump |
+| Typ | Bump |
 | --- | --- |
 | `feat` | `minor` |
 | `fix` | `patch` |
@@ -363,7 +363,7 @@ Steuert, ob semrel `CHANGELOG.md` vor dem Erstellen des Release-Tags zurück ins
   </TabItem>
 </Tabs>
 
-| Value | Verhalten |
+| Wert | Verhalten |
 | --- | --- |
 | `true` (Standard) | semrel schreibt `CHANGELOG.md`, committet die Datei als `chore(changelog): update for vX.Y.Z [skip ci]` und erstellt dann den Tag auf diesem Commit |
 | `false` | semrel schreibt `CHANGELOG.md` lokal, committet sie aber nicht (praktisch, wenn du den Changelog extern verwaltest) |
@@ -394,7 +394,7 @@ Steuert, was semrel macht, wenn der berechnete Tag der nächsten Version lokal b
   </TabItem>
 </Tabs>
 
-| Strategy | Verhalten |
+| Strategie | Verhalten |
 | --- | --- |
 | `update-changelog` (Standard) | Aktualisiert und committet `CHANGELOG.md` für die vorhandene Version und beendet sich dann ohne Fehler. Idempotent — praktisch für Reparaturläufe. |
 | `skip` | Beendet sich stillschweigend ohne Änderungen. |
@@ -429,7 +429,7 @@ Verhindert, dass semrel auf oder oberhalb dieser Version releast. Praktisch, wen
   </TabItem>
 </Tabs>
 
-| Value | Effekt |
+| Wert | Effekt |
 | --- | --- |
 | Nicht gesetzt | Keine Obergrenze — semrel erhöht frei |
 | `"1.0.0"` | Releases sind niemals `>= 1.0.0` |
@@ -438,9 +438,9 @@ Verhindert, dass semrel auf oder oberhalb dieser Version releast. Praktisch, wen
 
 Steuert, was passiert, wenn die berechnete nächste Version `version_ceiling` erreichen oder überschreiten würde.
 
-| Strategy | Verhalten |
+| Strategie | Verhalten |
 | --- | --- |
-| `clamp` | Stuften den Bump herunter (`major` → `minor` → `patch`), bis die Version unter der Obergrenze bleibt. Schreibt eine Warnung ins Log. |
+| `clamp` | Stuft den Bump herunter (`major` → `minor` → `patch`), bis die Version unter der Obergrenze bleibt. Schreibt eine Warnung ins Log. |
 | `skip` | Tut nichts — gibt einen Hinweis aus und beendet sich ohne Release. |
 | `error` | Beendet sich mit einem Exit-Code ungleich null, sodass die Pipeline explizit fehlschlägt. |
 
@@ -456,7 +456,7 @@ Um die Obergrenze zu überschreiten, entferne `version_ceiling` aus deiner Konfi
 
 Eine geordnete Liste von Plugins, die für die Release Pipeline geladen werden.
 
-| Field | Type | Erforderlich | Beschreibung |
+| Feld | Typ | Erforderlich | Beschreibung |
 | --- | --- | --- | --- |
 | `uses` | string | ja* | Plugin-Typ oder Installationsname. semrel löst ihn zu `semrel-plugin-<uses>` auf |
 | `name` | string | nein | Optionaler Instanzbezeichner (praktisch, wenn dasselbe Plugin mehrfach vorkommt) |
@@ -623,7 +623,7 @@ Jeder Schlüssel in `args:` wird dem Plugin-Prozess als Umgebungsvariable mit de
 
 Das Plugin erhält:
 
-| Config key | Environment variable |
+| Konfigurationsschlüssel | Umgebungsvariable |
 | --- | --- |
 | `token` | `SEMREL_PLUGIN_TOKEN` |
 | `owner` | `SEMREL_PLUGIN_OWNER` |
@@ -647,7 +647,7 @@ semrel-Plugins sind einfache Executables, die als Subprocesses gestartet werden.
 
 Die semrel Registry stellt [JSON Schema](https://json-schema.org/)-Dokumente für `.semrel.yaml` und jedes Plugin bereit. Wenn du einen `$schema`-Kommentar hinzufügst, bekommst du **Inline-Validierung und Autovervollständigung** in VS Code, JetBrains IDEs, Neovim (mit LSP) und jedem anderen Editor, der `yaml-language-server` unterstützt.
 
-### Core-Config-Schema
+### Schema für die Core-Konfiguration
 
 Füge den `$schema`-Kommentar als erste Zeile deiner `.semrel.yaml` hinzu:
 
@@ -664,7 +664,7 @@ plugins:
 
 Dein Editor markiert jetzt unbekannte Schlüssel, warnt vor fehlenden Pflichtfeldern und bietet Autovervollständigung für alle bekannten Optionen.
 
-### Plugin-Config-Schemas
+### Schemas für Plugin-Konfigurationen
 
 Jeder `args:`-Block eines Plugins kann unabhängig validiert werden. Platziere den Schema-Kommentar direkt über dem `args:`-Schlüssel:
 
@@ -681,12 +681,12 @@ plugins:
 
 ### Schema-URLs
 
-| Resource | URL |
+| Ressource | URL |
 |---|---|
-| Core config | `https://registry.semrel.io/schemas/core/v1.json` |
-| Plugin (by name) | `https://registry.semrel.io/schemas/plugins/{name}/v1.json` |
-| Plugin (latest) | `https://registry.semrel.io/schemas/plugins/{name}/latest.json` |
-| Namespaced plugin | `https://registry.semrel.io/schemas/plugins/@semrel/{name}/v1.json` |
+| Core-Konfiguration | `https://registry.semrel.io/schemas/core/v1.json` |
+| Plugin (nach Name) | `https://registry.semrel.io/schemas/plugins/{name}/v1.json` |
+| Plugin (neueste Version) | `https://registry.semrel.io/schemas/plugins/{name}/latest.json` |
+| Plugin mit Namespace | `https://registry.semrel.io/schemas/plugins/@semrel/{name}/v1.json` |
 
 `latest.json` leitet immer (HTTP 301) auf die neueste stabile Schema-Version weiter.
 

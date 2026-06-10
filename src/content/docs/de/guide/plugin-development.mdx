@@ -7,7 +7,7 @@ import { Aside, Steps, Code, Tabs, TabItem } from '@astrojs/starlight/components
 
 semrel-Plugins sind **eigenständige Executables** — jede Sprache, die Umgebungsvariablen lesen, JSON nach stdout schreiben und mit einem sinnvollen Code beenden kann, kann den Plugin-Vertrag umsetzen.
 
-Dieser Guide führt dich durch den Bau eines minimalen **Provider Plugins** in Go.
+Diese Anleitung führt dich durch den Bau eines minimalen **Provider Plugins** in Go.
 
 <Aside type="tip">
   Ein bestehendes Plugin anzuschauen ist der schnellste Einstieg.
@@ -18,12 +18,12 @@ Dieser Guide führt dich durch den Bau eines minimalen **Provider Plugins** in G
 
 Jedes semrel-Plugin kommuniziert über zwei Kanäle:
 
-| Channel | Direction | Zweck |
+| Kanal | Richtung | Zweck |
 |---|---|---|
-| Environment variables | → plugin | Release-Kontext + Plugin-Konfiguration |
-| stdout (JSON) | plugin → | Ergebnisse (nur Analyzer) |
-| stderr | plugin → | Logs, Warnungen, `plugin_schema_version=N` |
-| Exit code | plugin → | 0 = Erfolg, ungleich null = Release abbrechen |
+| Umgebungsvariablen | → Plugin | Release-Kontext + Plugin-Konfiguration |
+| stdout (JSON) | Plugin → | Ergebnisse (nur Analyzer) |
+| stderr | Plugin → | Logs, Warnungen, `plugin_schema_version=N` |
+| Exit-Code | Plugin → | 0 = Erfolg, ungleich null = Release abbrechen |
 
 ### Umgebungsvariablen
 
@@ -225,7 +225,7 @@ Dieses Schema wird von der Registry unter `/schemas/plugins/my-provider/v1.json`
 
 ## Referenz der Plugin-Typen
 
-| Type | Output | Exit bei Fehler | Zweck |
+| Typ | Ausgabe | Exit bei Fehler | Zweck |
 |---|---|---|---|
 | **Analyzer** | JSON nach stdout | Ja | Bestimmt aus Commits die nächste Version |
 | **Generator** | Nichts (Side Effects) | Ja | Erzeugt Release-Artefakte (Changelog usw.) |

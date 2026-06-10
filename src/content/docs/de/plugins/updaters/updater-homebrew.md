@@ -31,7 +31,7 @@ plugins:
 | Name | Erforderlich | Standard | Beschreibung |
 | --- | --- | --- | --- |
 | `SEMREL_PLUGIN_FORMULA_FILE` | ja | `—` | Homebrew-Formula-Datei, die aktualisiert werden soll. |
-| `SEMREL_PLUGIN_URL_TEMPLATE` | nein | `plugin-defined` | Template zum Erzeugen der Download-URL für die neue Release. |
+| `SEMREL_PLUGIN_URL_TEMPLATE` | nein | `vom Plugin definiert` | Template zum Erzeugen der Download-URL für die neue Release. |
 | `SEMREL_PLUGIN_SHA256` | nein | `—` | Prüfsumme, die in die Formula geschrieben werden soll. |
 
 ## Release-Kontextvariablen

@@ -9,7 +9,7 @@ semrel ist als offizielles Docker-Image unter `ghcr.io/SemRels/semrel` verfügba
 
 ## Image-Varianten
 
-| Tag | Base | Hinweise |
+| Tag | Basis | Hinweise |
 | --- | --- | --- |
 | `ghcr.io/SemRels/semrel:latest` | distroless | Minimal, keine Shell. Erfordert `git` auf dem Host oder im Mount. |
 | `ghcr.io/SemRels/semrel:1.4.0` | distroless | distroless mit fest gepinnter Version |
@@ -86,7 +86,7 @@ Der Container erbt alle Umgebungsvariablen vom Host oder CI-Job. Übergib Geheim
 
 ## Workspace mounten
 
-semrel arbeitet auf dem aktuellen Working Directory. Mounte dein Repository nach `/workspace`:
+semrel arbeitet im aktuellen Arbeitsverzeichnis. Binde dein Repository nach `/workspace` ein:
 
 ```bash
 docker run --rm \

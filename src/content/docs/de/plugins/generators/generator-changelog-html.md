@@ -30,7 +30,7 @@ plugins:
 
 | Name | Erforderlich | Standard | Beschreibung |
 | --- | --- | --- | --- |
-| `SEMREL_PLUGIN_TEMPLATE` | nein | `built-in template` | Pfad zu einem Go-Template, das zum Rendern des Changelogs verwendet wird. |
+| `SEMREL_PLUGIN_TEMPLATE` | nein | `eingebautes Template` | Pfad zu einem Go-Template, das zum Rendern des Changelogs verwendet wird. |
 | `SEMREL_PLUGIN_CSS_FILE` | nein | `—` | Optionale CSS-Datei, die in die HTML-Ausgabe eingebettet oder referenziert wird. |
 | `SEMREL_PLUGIN_MAX_COMMITS` | nein | `100` | Maximale Anzahl an Commits, die aufgenommen werden. |
 

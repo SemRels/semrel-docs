@@ -35,7 +35,7 @@ Gibt die OAuth-Anwendungskonfiguration für das Frontend zurück.
 }
 ```
 
-### `GET /api/v1/auth/me` <Badge text="Requires Auth" variant="caution" />
+### `GET /api/v1/auth/me` <Badge text="Auth nötig" variant="caution" />
 
 Gibt das Profil des authentifizierten Benutzers zurück.
 
@@ -136,7 +136,7 @@ Protokolliert einen Download und gibt eine Weiterleitung zur Download-URL der Bi
 
 ---
 
-## Plugin-Verwaltung <Badge text="Requires Auth" variant="caution" />
+## Plugin-Verwaltung <Badge text="Auth nötig" variant="caution" />
 
 ### `POST /api/v1/plugins/submit`
 
@@ -174,7 +174,7 @@ Löscht ein Plugin.
 
 ---
 
-## Admin-Endpunkte <Badge text="Admin only" variant="danger" />
+## Admin-Endpunkte <Badge text="Nur Admins" variant="danger" />
 
 ### `GET /api/v1/stats`
 
@@ -246,7 +246,7 @@ Empfängt `repository_dispatch`-Ereignisse aus Release-Workflows von Plugins, um
 
 ---
 
-## Rate Limiting
+## Ratenbegrenzung
 
 Öffentliche Endpunkte sind pro Client-IP rate-limitiert:
 

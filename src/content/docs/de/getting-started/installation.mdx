@@ -25,7 +25,7 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
     ```
 
     Die **alpine**-Variante bringt `git` und `ca-certificates` mit — alles, was semrel braucht.
-    Sieh im [Docker-Guide](/guide/docker/) nach, wenn du mehr über Image-Varianten und Versions-Pinning wissen willst.
+    Sieh im [Docker-Anleitung](/guide/docker/) nach, wenn du mehr über Image-Varianten und Versions-Pinning wissen willst.
   </TabItem>
   <TabItem label="go install">
     ```bash
@@ -135,7 +135,7 @@ semrel version v0.9.0
     ```
 
     Das `dotenv`-Artefakt stellt `SEMREL_VERSION`, `SEMREL_TAG` und `SEMREL_CHANGELOG` für Folgejobs automatisch bereit.
-    Mehr Details findest du im [CI-Outputs-Guide](/guide/ci-outputs/).
+    Mehr Details findest du im [CI-Outputs-Anleitung](/guide/ci-outputs/).
   </TabItem>
   <TabItem label="GitHub Actions (go install)">
     Installiere semrel über die Go-Toolchain, wenn du ein Setup ohne Docker bevorzugst:
@@ -205,7 +205,7 @@ semrel version v0.9.0
 
 <Aside type="tip">
   **Pinne deine Image-Version in Produktion fest.** Verwende `ghcr.io/semrels/semrel:0.9.0-alpine` statt `latest`, damit deine Releases reproduzierbar bleiben.
-  Im [Docker-Guide](/guide/docker/) findest du alle verfügbaren Tags.
+  Im [Docker-Anleitung](/guide/docker/) findest du alle verfügbaren Tags.
 </Aside>
 
 ## Plugins aus der Registry installieren
@@ -229,7 +229,7 @@ export SEMREL_CACHE_DIR=.semrel
 export SEMREL_CACHE_TTL=24h
 ```
 
-Mehr Details findest du in der [Plugin Registry-Übersicht](/plugins/registry/) und im [Plugin Publishing Guide](/plugins/publishing/).
+Mehr Details findest du in der [Plugin Registry-Übersicht](/plugins/registry/) und im [Plugin-Publishing-Anleitung](/plugins/publishing/).
 
 ## Shell-Completion
 
