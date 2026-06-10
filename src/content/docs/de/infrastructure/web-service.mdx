@@ -1,0 +1,89 @@
+---
+title: Registry-Web-Service
+description: Backend-Architektur der Phase 2 für die SemRels Plugin Registry.
+---
+
+import { Card, CardGrid, Aside } from '@astrojs/starlight/components';
+
+Die Registry wird aktuell als **statischer `plugins.json`-Index** ausgeliefert, der über GitHub Pages bereitgestellt wird. Der **Registry-Web-Service** ist die nächste Phase: ein Go-Backend, das `registry.semrel.io` mit umfangreicheren Discovery- und Verwaltungsfunktionen versorgen wird.
+
+## Warum es einen Web-Service gibt
+
+<CardGrid>
+  <Card title="Bessere Erkennung" icon="magnifier">
+    Eine REST-API macht es einfacher, Plugins zu suchen, zu filtern, zu paginieren und Plugin-Versionen zu prüfen.
+  </Card>
+  <Card title="Operative Abläufe" icon="pencil">
+    Admin-Endpunkte ermöglichen verwaltete Plugin- und Versions-Updates, statt generierte Dateien von Hand zu bearbeiten.
+  </Card>
+  <Card title="Zukünftige UI" icon="information">
+    Das Backend schafft die Grundlage für eine browserbasierte Registry-UI und später ein Admin-Dashboard.
+  </Card>
+</CardGrid>
+
+## Aufteilung in Phasen
+
+- **Phase 1 (MVP):** statische `plugins.json`, bereitgestellt über GitHub Pages
+- **Phase 2:** Go-Web-Service plus PostgreSQL-gestützter Speicher auf `registry.semrel.io`
+- **Später:** umfangreichere Admin-Abläufe, Moderation und Dashboard-Ansichten
+
+## Überblick über die REST-API-Endpunkte
+
+| Endpunkt | Zweck |
+| --- | --- |
+| `GET /health` | Health-Check für Load Balancer und Deployment-Verifikation |
+| `GET /api/v1/plugins` | Plugins mit Paginierung und optionalen Filtern `category`, `search` und `sort` auflisten |
+| `GET /api/v1/plugins/:id` | Ein einzelnes Plugin anhand numerischer ID oder Plugin-Name abrufen |
+| `GET /api/v1/plugins/:id/versions` | Versionen eines Plugins mit `limit` und `offset` auflisten |
+| `POST /api/v1/plugins` | Einen Plugin-Datensatz erstellen (Admin-Token erforderlich) |
+| `PUT /api/v1/plugins/:id` | Plugin-Metadaten aktualisieren (Admin-Token erforderlich) |
+| `DELETE /api/v1/plugins/:id` | Ein Plugin per Soft-Delete löschen (Admin-Token erforderlich) |
+| `POST /api/v1/plugins/:id/versions` | Einen Plugin-Versionsdatensatz erstellen (Admin-Token erforderlich) |
+| `GET /api/v1/admin/status` | Platzhalter-Endpunkt für Admin-Status für zukünftige Dashboard-Arbeit |
+
+## Datenbank und Deployment
+
+Das aktuelle Backend-Grundgerüst nutzt:
+
+- **Go + Gin** für die HTTP-API
+- **PostgreSQL 16** für persistente Plugin- und Versionsdaten
+- **`golang-migrate`** zum automatischen Ausführen von SQL-Migrationen beim Start
+- **Docker** für lokale Entwicklung und Container-Image-Builds
+
+Wichtige Laufzeiteinstellungen:
+
+| Variable | Zweck |
+| --- | --- |
+| `PORT` | HTTP-Listenadresse |
+| `DATABASE_URL` | PostgreSQL-Verbindungszeichenfolge |
+| `MIGRATE_DIR` | Migrationsverzeichnis, das beim Start geladen wird |
+| `ENVIRONMENT` | Laufzeitmodus wie `dev` oder `prod` |
+| `ADMIN_TOKEN` | Bearer-Token, das Admin-Endpunkte schützt |
+
+Für die lokale Entwicklung startest du PostgreSQL über `docker compose` und führst die API mit `go run main.go` aus.
+
+```bash
+docker compose up -d
+cp .env.example .env
+go run main.go
+curl http://localhost:8080/health
+```
+
+<Aside type="note">
+  Der Web-Service ergänzt die statische Registry; er ersetzt nicht die stabile Anforderung an einen maschinenlesbaren öffentlichen Plugin-Index.
+</Aside>
+
+## Später: Admin-Dashboard
+
+Für eine spätere Phase ist ein browserbasiertes Admin-Dashboard geplant. Die erwarteten Ziele sind:
+
+- Plugin-Datensätze verwalten, ohne generierte Dateien direkt zu bearbeiten
+- Versionen, Prüfsummen und Kompatibilitätsmetadaten prüfen
+- Moderation und operative Sichtbarkeit für Registry-Maintainer unterstützen
+
+Aktuell enthält die API die Backend-Grundlagen und eine Platzhalter-Route `GET /api/v1/admin/status`, die sich parallel zur Dashboard-Arbeit weiterentwickeln wird.
+
+## Zugehörige Dokumentation
+
+- [Plugin Registry](/plugins/registry/)
+- [Plugin Publishing Guide](/plugins/publishing/)

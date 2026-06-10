@@ -1,0 +1,166 @@
+---
+title: Anleitung zum Veröffentlichen von Plugins
+description: Veröffentliche ein semrel-Plugin-Release, erzeuge Registry-Metadaten und reiche sie bei der SemRels Plugin Registry ein.
+---
+
+import { Steps, Aside, Card, CardGrid } from '@astrojs/starlight/components';
+
+Diese Anleitung richtet sich an **Plugin-Autor:innen**, die ein Plugin-Release veröffentlichen und über die SemRels Plugin Registry auffindbar machen möchten.
+
+Die Kurzfassung:
+
+1. Erstelle eine versionierte Release in deinem Plugin-Repository,
+2. lade plattformspezifische Binärdateien hoch,
+3. erzeuge SHA-256-Prüfsummen,
+4. reiche die Release-Metadaten im Registry-Repository ein.
+
+<CardGrid>
+  <Card title="Release-Quelle" icon="github">
+    Veröffentliche aus deinem eigenen Plugin-Repository. Die Registry indexiert Releases; sie baut deine Binärdateien nicht für dich.
+  </Card>
+  <Card title="Binärdatei-Bereitstellung" icon="document">
+    Lade direkte ausführbare Assets für jede unterstützte Plattform hoch. semrel lädt diese Dateien unverändert herunter.
+  </Card>
+  <Card title="Verifizierung" icon="approve-check-circle">
+    Jeder Registry-Eintrag sollte SHA-256-Prüfsummen enthalten, damit semrel die heruntergeladene Binärdatei validieren kann.
+  </Card>
+</CardGrid>
+
+## Namenskonvention für Releases
+
+Verwende Standard-SemVer-Tags und GitHub-Release-Namen:
+
+- Stable release: `v1.2.3`
+- Prerelease: `v1.2.3-rc.1`
+- Patch release: `v1.2.4`
+
+Halte Git-Tag, GitHub-Release-Titel und die Versionsangabe in den Registry-Metadaten exakt synchron. So vermeidest du defekte Links und machst klar, welches Asset zu welcher Plugin-Version gehört.
+
+## Benennung von Binärdatei-Assets
+
+Der Registry-Client lädt das in `downloadUrl` referenzierte Asset direkt herunter. Deshalb muss das Release-Asset die ausführbare Binärdatei selbst sein – **kein** `.zip`- oder `.tar.gz`-Archiv.
+
+Technisch kann der Dateiname zwar jede direkte Binärdatei sein, aber die folgende Konvention macht Releases leichter prüfbar und automatisierbar:
+
+| Plattform | Empfohlener Asset-Name |
+| --- | --- |
+| Linux amd64 | `provider-github_linux_amd64` |
+| Linux arm64 | `provider-github_linux_arm64` |
+| macOS arm64 | `provider-github_darwin_arm64` |
+| Windows amd64 | `provider-github_windows_amd64.exe` |
+
+Ersetze `provider-github` durch den Registry-Namen deines Plugins.
+
+<Aside type="tip">
+  Halte den Plugin-Namen in Repository-Name, Release-Assets und Registry-Metadaten stabil. Konsistente Benennung macht Debugging deutlich einfacher.
+</Aside>
+
+## Prüfsummen erzeugen
+
+Erzeuge für jedes hochgeladene Asset **SHA-256**-Prüfsummen.
+
+### Linux / macOS
+
+```bash
+sha256sum provider-github_linux_amd64
+sha256sum provider-github_darwin_arm64
+```
+
+### PowerShell
+
+```powershell
+Get-FileHash .\provider-github_windows_amd64.exe -Algorithm SHA256
+```
+
+Die Werte kommen in den Registry-Metadaten unter Plattformschlüsseln wie `linux_amd64`, `darwin_arm64` oder `windows_amd64` hinein.
+
+## Schritt-für-Schritt-Release-Prozess
+
+<Steps>
+
+1. **Bereite das Plugin-Release vor**
+
+   - aktualisiere deinen Changelog oder deine Release Notes
+   - baue Binärdateien für jede unterstützte Plattform
+   - prüfe, dass das Plugin Logs nach `stderr` schreibt, nicht nach `stdout`
+
+2. **Erstelle ein Versions-Tag**
+
+   ```bash
+   git tag v1.2.3
+   git push origin v1.2.3
+   ```
+
+3. **Lade Release-Assets hoch**
+
+   Hänge direkte ausführbare Binärdateien an die GitHub-Release an, zum Beispiel:
+
+   ```text
+   provider-github_linux_amd64
+   provider-github_darwin_arm64
+   provider-github_windows_amd64.exe
+   ```
+
+4. **Erzeuge SHA-256-Prüfsummen**
+
+   Notiere eine Prüfsumme pro OS-/Architektur-Paar.
+
+5. **Bereite Registry-Metadaten vor**
+
+   **Option A — Community submission (empfohlen für externe Plugins):**
+   Reiche sie über die Registry-Weboberfläche unter [registry.semrel.io/submit](https://registry.semrel.io/submit) ein. Dein Plugin wird dann zur Prüfung durch Maintainer in die Warteschlange gestellt.
+
+   **Option B — Pull request against the registry:**
+   Öffne einen Pull Request gegen [`SemRels/semrel-registry`](https://github.com/SemRels/semrel-registry) mit den Metadaten für das neue Plugin oder die neue Version.
+
+   ```json
+   {
+     "name": "provider-github",
+     "description": "GitHub provider plugin for semrel",
+     "author": "SemRels",
+     "license": "Apache-2.0",
+     "category": "provider",
+     "repository": "https://github.com/SemRels/semrel-plugins",
+     "versions": [
+       {
+         "version": "1.2.3",
+         "releaseDate": "2026-05-24T12:00:00Z",
+         "downloadUrl": "https://github.com/SemRels/semrel-plugins/releases/download/v1.2.3/provider-github_linux_amd64",
+         "checksums": {
+           "linux_amd64": "<sha256>",
+           "darwin_arm64": "<sha256>",
+           "windows_amd64": "<sha256>"
+         }
+       }
+     ]
+   }
+   ```
+
+6. **Warte auf Registry-Validierung und Merge**
+
+   Nachdem der PR gemergt wurde, prüfe, ob dein Plugin in `plugins.json` vorhanden und über den öffentlichen Registry-Endpunkt erreichbar ist.
+
+</Steps>
+
+## Release-Anleitung und Referenzen
+
+- [Plugin Registry](https://registry.semrel.io) — alle veröffentlichten Plugins durchsuchen
+- [Submit a plugin](https://registry.semrel.io/submit) — Formular für Community-Einreichungen
+- [Registry API](https://registry.semrel.io/api/v1/plugins) — maschinenlesbares JSON
+- [semrel-registry release guide](https://github.com/SemRels/semrel-registry/blob/main/docs/release-guide.md)
+- [Plugin submission overview](https://github.com/SemRels/semrel-registry/blob/main/docs/contribute.md)
+- [Plugin Registry overview](/plugins/registry/)
+
+## Fehlerbehebung
+
+| Problem | Was du prüfen solltest |
+| --- | --- |
+| Release-Asset liefert `404` zurück | Prüfe, ob die GitHub-Release existiert und ob `downloadUrl` exakt zum Asset-Namen passt |
+| Prüfsummenfehler | Berechne den SHA-256-Hash aus der hochgeladenen Datei neu, nicht aus einem lokalen Archiv oder einem anderen Build |
+| Plugin ist in der Registry nicht sichtbar | Warte, bis der Registry-PR gemergt ist, und prüfe dann, ob `plugins.json` neu erzeugt wurde |
+| Falsche Version ausgewählt | Stelle sicher, dass Git-Tag, Release-Titel und das Metadatenfeld `version` identisch sind |
+| Windows-Download startet nicht | Stelle sicher, dass das Windows-Asset auf `.exe` endet und auf die ausführbare Binärdatei zeigt |
+
+<Aside type="caution">
+  semrel validiert heruntergeladene Dateien gegen die in der Registry veröffentlichte Prüfsumme. Wenn sich das hochgeladene Asset nach der Release ändert, schlägt der Download fehl, bis eine korrigierte Release und ein Metadaten-Update veröffentlicht wurden.
+</Aside>

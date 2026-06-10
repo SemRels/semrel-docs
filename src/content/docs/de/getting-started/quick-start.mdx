@@ -1,0 +1,86 @@
+---
+title: Schnellstart
+description: Führe dein erstes automatisiertes Release mit semrel in weniger als 5 Minuten aus.
+---
+
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+<Steps>
+
+1. **Installiere semrel**
+
+   ```bash
+   go install github.com/SemRels/semrel/cmd/semrel@latest
+   ```
+
+2. **Erstelle eine minimale Konfiguration**
+
+   Füge eine `.semrel.yaml` im Root deines Repository hinzu oder starte den interaktiven Assistenten:
+
+   ```bash
+   semrel config init
+   ```
+
+   Oder erstelle sie manuell:
+
+   ```yaml
+   schemaVersion: 1
+
+   branches:
+     - name: main
+
+   rules:
+     - type: feat
+       bump: minor
+     - type: fix
+       bump: patch
+     - type: perf
+       bump: patch
+   ```
+
+3. **Schreibe Commits mit Conventional Commits**
+
+   ```bash
+   git commit -m "feat: add user authentication"
+   git commit -m "fix: correct token expiry calculation"
+   ```
+
+4. **Dry-Run, um das Release vorzuschauen**
+
+   ```bash
+   semrel release --dry-run
+   ```
+
+   semrel zeigt dir die berechnete nächste Version und den erzeugten Changelog an, ohne Änderungen vorzunehmen:
+
+   ```
+   semrel v0.1.0 – release pipeline (dry-run=true, config=.semrel.yaml)
+   Next version: v1.1.0
+   Changelog:
+     ## [1.1.0] – 2026-05-23
+     ### Features
+     - add user authentication
+     ### Bug Fixes
+     - correct token expiry calculation
+   ```
+
+5. **Führe das echte Release aus**
+
+   ```bash
+   semrel release
+   ```
+
+   semrel erstellt den git-Tag, veröffentlicht ein GitHub-/GitLab-Release (über das konfigurierte Provider Plugin) und löst alle Benachrichtigungs-Hooks aus.
+
+</Steps>
+
+<Aside type="tip">
+  Führe zuerst `semrel release --dry-run` aus, damit du vor dem Lauf in CI sehen kannst, welcher Tag und welcher Changelog erstellt würden.
+</Aside>
+
+## Nächste Schritte
+
+- [Vollständige CLI-Referenz](/guide/cli/)
+- [Alle Konfigurationsoptionen](/guide/configuration/)
+- [Monorepo-Unterstützung](/guide/monorepo/)
+- [Ein Plugin schreiben](/plugins/overview/)

@@ -1,0 +1,219 @@
+---
+title: gRPC-API
+description: Vollständige Referenz für die Protobuf-/gRPC-Plugin-API von semrel.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Der Plugin-Vertrag von semrel ist in [`api/proto/v1/semantic_release.proto`](https://github.com/GoSemantics/semrel/blob/main/api/proto/v1/semantic_release.proto) definiert. Alle Plugin-Typen implementieren einen oder mehrere der unten beschriebenen Services.
+
+<Aside type="note">
+  Die Proto-Datei ist die maßgebliche Quelle. Diese Seite dokumentiert den aktuellen Stand der API.
+</Aside>
+
+## Gemeinsame Typen
+
+### `SemanticVersion`
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| `major` | uint32 | Hauptversions-Komponente |
+| `minor` | uint32 | Nebenversion-Komponente |
+| `patch` | uint32 | Patch-Komponente |
+| `pre_release` | string | Pre-Release-Bezeichner, z. B. `alpha.1`, `rc.2` |
+| `build_metadata` | string | Build-Metadaten, z. B. `20240101` |
+
+### `Commit`
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| `sha` | string | Vollständige Commit-SHA |
+| `raw_message` | string | Rohe Commit-Nachricht (Betreff + Text) |
+| `files_changed` | []string | Pfade der in diesem Commit geänderten Dateien |
+| `author_name` | string | Anzeigename des Commit-Autors |
+| `author_email` | string | E-Mail-Adresse des Commit-Autors |
+| `timestamp` | int64 | Unix-Zeitstempel (Sekunden) |
+
+### `ReleaseContext`
+
+Wird an jedes Plugin-RPC übergeben. Enthält alle Informationen, die ein Plugin braucht.
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| `repo_owner` | string | Repository-Eigentümer |
+| `repo_name` | string | Repository-Name |
+| `repo_url` | string | Clone-URL |
+| `branch` | string | Veröffentlichte Branch |
+| `last_version` | SemanticVersion | Zuletzt veröffentlichte Version (leer, wenn keine vorhanden ist) |
+| `next_version` | SemanticVersion | Nächste berechnete Version |
+| `commits` | []Commit | Commits seit der letzten Release |
+| `dry_run` | bool | Wenn `true`, dürfen Plugins keine Seiteneffekte ausführen |
+| `config` | map\<string, string\> | Plugin-`args` aus `.semrel.yaml` |
+
+---
+
+## `ProviderPlugin`
+
+Kapselt Operationen auf VCS-Plattformen (GitHub, GitLab, Gitea, pures Git).
+
+### `GetLastRelease`
+
+Gibt die zuletzt veröffentlichte Version und ihre Tag-SHA zurück.
+
+```protobuf
+rpc GetLastRelease(GetLastReleaseRequest) returns (GetLastReleaseResponse);
+```
+
+| Antwortfeld | Typ | Beschreibung |
+|---|---|---|
+| `version` | SemanticVersion | Letzte Release. Leer, wenn keine frühere Release existiert |
+| `tag_sha` | string | SHA des zugehörigen Git-Tag-Objekts |
+
+### `GetCommitsSince`
+
+Gibt alle Commits zwischen einer gegebenen Ref und HEAD zurück.
+
+```protobuf
+rpc GetCommitsSince(GetCommitsSinceRequest) returns (GetCommitsSinceResponse);
+```
+
+| Anfragefeld | Typ | Beschreibung |
+|---|---|---|
+| `ctx` | ReleaseContext | Release-Kontext |
+| `since_sha` | string | SHA, ab der gelistet wird (exklusiv) |
+
+### `CreateRelease`
+
+Erstellt (oder aktualisiert) die VCS-Release und das Git-Tag für `next_version`.
+
+```protobuf
+rpc CreateRelease(CreateReleaseRequest) returns (CreateReleaseResponse);
+```
+
+| Anfragefeld | Typ | Beschreibung |
+|---|---|---|
+| `ctx` | ReleaseContext | Release-Kontext |
+| `changelog` | string | Gerenderte Release Notes aus `ChangelogGeneratorPlugin` |
+
+### `UploadAsset`
+
+Lädt ein Release-Artefakt in eine bestehende Release hoch.
+
+```protobuf
+rpc UploadAsset(UploadAssetRequest) returns (UploadAssetResponse);
+```
+
+| Anfragefeld | Typ | Beschreibung |
+|---|---|---|
+| `release_id` | string | Plattformabhängige Release-Kennung aus `CreateRelease` |
+| `asset_path` | string | Absoluter Pfad im lokalen Dateisystem |
+| `asset_name` | string | Anzeigename / Dateiname in der Release |
+| `content_type` | string | MIME-Typ des Assets |
+
+---
+
+## `CIConditionPlugin`
+
+Prüft, ob die Release in einer autorisierten CI-Umgebung läuft.
+
+### `VerifyConditions`
+
+```protobuf
+rpc VerifyConditions(VerifyConditionsRequest) returns (VerifyConditionsResponse);
+```
+
+| Antwortfeld | Typ | Beschreibung |
+|---|---|---|
+| `error_message` | string | Nicht leer bedeutet Abbruch. Leer bedeutet OK |
+| `details` | string | Lesbarer Hinweis zur Behebung |
+
+---
+
+## `CommitAnalyzerPlugin`
+
+Analysiert Commits und bestimmt den erforderlichen SemVer-Bump.
+
+### `BumpLevel` enum
+
+| Wert | Beschreibung |
+|---|---|
+| `BUMP_LEVEL_NONE` | Keine Release erforderlich |
+| `BUMP_LEVEL_PATCH` | Patch-Erhöhung (z. B. `1.0.0` → `1.0.1`) |
+| `BUMP_LEVEL_MINOR` | Minor-Erhöhung (z. B. `1.0.0` → `1.1.0`) |
+| `BUMP_LEVEL_MAJOR` | Major-Erhöhung (z. B. `1.0.0` → `2.0.0`) |
+
+### `AnalyzeCommits`
+
+```protobuf
+rpc AnalyzeCommits(AnalyzeCommitsRequest) returns (AnalyzeCommitsResponse);
+```
+
+| Antwortfeld | Typ | Beschreibung |
+|---|---|---|
+| `bump` | BumpLevel | Erforderlicher Versions-Bump |
+| `reason` | string | Lesbare Erklärung |
+
+---
+
+## `ChangelogGeneratorPlugin`
+
+Rendert Release Notes aus der Commit-Liste.
+
+### `GenerateNotes`
+
+```protobuf
+rpc GenerateNotes(GenerateNotesRequest) returns (GenerateNotesResponse);
+```
+
+| Antwortfeld | Typ | Beschreibung |
+|---|---|---|
+| `notes` | string | Gerendertes Changelog-Fragment (Markdown, RST usw.) |
+
+---
+
+## `FilesUpdaterPlugin`
+
+Schreibt die nächste Version in verfolgte Projektdateien, bevor der Release-Commit erstellt wird.
+
+### `UpdateFiles`
+
+```protobuf
+rpc UpdateFiles(UpdateFilesRequest) returns (UpdateFilesResponse);
+```
+
+| Antwortfeld | Typ | Beschreibung |
+|---|---|---|
+| `updated_files` | []string | Pfade der geänderten Dateien |
+| `error_message` | string | Nicht leer zeigt einen Fehler an |
+
+---
+
+## `HooksPlugin`
+
+Lebenszyklus-Callbacks für Benachrichtigungen.
+
+### `OnSuccess`
+
+Wird nach einer erfolgreichen Release aufgerufen.
+
+```protobuf
+rpc OnSuccess(OnSuccessRequest) returns (OnSuccessResponse);
+```
+
+| Anfragefeld | Typ | Beschreibung |
+|---|---|---|
+| `ctx` | ReleaseContext | Release-Kontext |
+| `release_url` | string | URL der neu erstellten Release |
+
+### `OnFail`
+
+Wird aufgerufen, wenn die Pipeline auf einen nicht behebbaren Fehler stößt.
+
+```protobuf
+rpc OnFail(OnFailRequest) returns (OnFailResponse);
+```
+
+| Anfragefeld | Typ | Beschreibung |
+|---|---|---|
+| `ctx` | ReleaseContext | Release-Kontext |
+| `error_message` | string | Fehler, der den Ausfall verursacht hat |

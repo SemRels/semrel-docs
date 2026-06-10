@@ -1,0 +1,110 @@
+---
+title: Plugin-Registry
+description: Entdecke SemRels-Plugins, verstehe die Registry-Metadaten und erfahre, wie die Registry in die Plugin-Bereitstellung passt.
+---
+
+import { Card, CardGrid, Aside, LinkButton } from '@astrojs/starlight/components';
+
+Die **SemRels Plugin Registry** ist der öffentliche Katalog für semrel-Plugins. Sie führt Plugin-Metadaten, veröffentlichte Versionen, Download-URLs und Prüfsummen zusammen, damit semrel Plugins konsistent finden und installieren kann.
+
+<CardGrid>
+  <Card title="Plugins durchsuchen" icon="magnifier">
+    Durchsuche alle verfügbaren Plugins, filtere nach Kategorien und lies die Versionshistorie auf **[registry.semrel.io](https://registry.semrel.io)**.
+  </Card>
+  <Card title="Ein Plugin einreichen" icon="add-document">
+    Community-Plugins können auf **[registry.semrel.io/submit](https://registry.semrel.io/submit)** zur Prüfung eingereicht werden.
+  </Card>
+</CardGrid>
+
+Der maschinenlesbare Registry-Index wird hier bereitgestellt:
+
+- **Web UI:** [https://registry.semrel.io](https://registry.semrel.io)
+- **REST API:** [https://registry.semrel.io/api/v1/plugins](https://registry.semrel.io/api/v1/plugins)
+- **Raw index:** [https://semrels.github.io/semrel-registry/plugins.json](https://semrels.github.io/semrel-registry/plugins.json)
+- **Source:** [SemRels/semrel-registry](https://github.com/SemRels/semrel-registry)
+
+## Was die Registry macht
+
+<CardGrid>
+  <Card title="Erkennung" icon="magnifier">
+    Hilft dir dabei, Plugins nach Name, Kategorie, Autor:in, Repository oder Tags zu finden.
+  </Card>
+  <Card title="Bereitstellung" icon="document">
+    Führt semrel zum richtigen Release-Asset für das aktuelle Betriebssystem und die aktuelle CPU-Architektur.
+  </Card>
+  <Card title="Integrität" icon="approve-check-circle">
+    Veröffentlicht SHA-256-Prüfsummen, damit heruntergeladene Binärdateien vor der Nutzung verifiziert werden können.
+  </Card>
+</CardGrid>
+
+## So nutzt du die Registry
+
+Du kannst direkt aus der CLI mit der Registry interagieren:
+
+```bash
+semrel plugin search github
+semrel plugin install github
+```
+
+semrel nutzt die Registry als strukturierte Metadaten. Wenn ein Plugin lokal noch nicht verfügbar ist, kann semrel den Registry-Index abrufen, eine kompatible Release auflösen, die Binärdatei herunterladen, ihre Prüfsumme verifizieren und sie in `~/.semrel/plugins/` installieren.
+
+## Überblick über das Metadaten-Schema
+
+Die Registry-Nutzlast beginnt mit einem kleinen Wurzeldokument und listet dann Plugins mit einer oder mehreren veröffentlichten Versionen auf.
+
+| Feld | Zweck |
+| --- | --- |
+| `schemaVersion` | Version der Registry-Nutzlast der obersten Ebene |
+| `generatedAt` | Zeitstempel, der beim Erzeugen des Index geschrieben wird |
+| `plugins` | Array aus Plugin-Datensätzen |
+| `plugins[].name` | Stabiler Plugin-Bezeichner, den semrel verwendet |
+| `plugins[].category` | Übergeordneter Plugin-Typ |
+| `plugins[].repository` | URL des Quell-Repositorys |
+| `plugins[].versions[].version` | Veröffentlichte Plugin-Version |
+| `plugins[].versions[].downloadUrl` | Direkte Download-URL der Binärdatei |
+| `plugins[].versions[].checksums` | SHA-256-Prüfsummen, nach Plattform wie `linux_amd64` gruppiert |
+| `plugins[].versions[].compatibility` | Optionale Hinweise zur minimalen semrel-Kompatibilität |
+
+```json
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-05-24T12:00:00Z",
+  "plugins": [
+    {
+      "name": "github",
+      "description": "GitHub provider plugin for semrel",
+      "author": "SemRels",
+      "license": "Apache-2.0",
+      "category": "provider",
+      "repository": "https://github.com/SemRels/provider-github",
+      "tags": ["github", "provider"],
+      "versions": [
+        {
+          "version": "1.2.3",
+          "releaseDate": "2026-05-24T12:00:00Z",
+          "downloadUrl": "https://github.com/SemRels/provider-github/releases/download/v1.2.3/semrel-plugin-github_linux_amd64.tar.gz",
+          "checksums": {
+            "linux_amd64": "<sha256>",
+            "windows_amd64": "<sha256>"
+          },
+          "compatibility": {
+            "minSemrelVersion": "0.2.0"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Ein Plugin veröffentlichen
+
+Wenn du ein Plugin pflegst, lies im [Plugin Publishing Guide](/plugins/publishing/) weiter, um den Release-Ablauf, Empfehlungen zur Benennung und die Schritte für Prüfsummen zu sehen.
+
+Community-Autor:innen können Plugins auch direkt über das [registry submission form](https://registry.semrel.io/submit) einreichen – ein:e Maintainer:in prüft und genehmigt Einreichungen nach unseren Standards.
+
+## Zugehörige Dokumentation
+
+- [Plugin Overview](/plugins/overview/)
+- [Official Plugins](/plugins/)
+- [Plugin Publishing Guide](/plugins/publishing/)

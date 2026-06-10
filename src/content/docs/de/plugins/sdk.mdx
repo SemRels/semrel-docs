@@ -1,0 +1,153 @@
+---
+title: Plugin-SDK
+description: Erstelle mit dem Go-SDK ein semrel-Plugin.
+---
+
+import { Aside, Steps } from '@astrojs/starlight/components';
+
+Das Plugin-SDK (`github.com/GoSemantics/semrel-plugins`) stellt die erzeugten Protobuf-Typen und Hilfsgerüste für das Schreiben von semrel-Plugins in Go bereit. Plugins in anderen Sprachen können die rohe `.proto`-Datei aus dem Haupt-Repository verwenden.
+
+## Voraussetzungen
+
+- Go ≥ 1.24
+- Vertrautheit mit gRPC und Protobuf
+
+## ⚠️ Kritisch: stdout ist reserviert
+
+<Aside type="caution">
+  semrel verwendet [hashicorp/go-plugin](https://github.com/hashicorp/go-plugin) als Plugin-Transport. go-plugin führt beim Start einen Handshake über **stdout** aus – es schreibt eine magische Zeile, die der Host liest, um die gRPC-Socket-Adresse zu ermitteln.
+
+  **Schreibe in einer Plugin-Binärdatei niemals etwas nach stdout.** Jede Ausgabe beschädigt den Handshake und unterbricht die Verbindung stillschweigend. Alle Logs müssen nach **stderr** gehen, mit `hclog` und `Output: os.Stderr`.
+</Aside>
+
+## Ein Go-Plugin erstellen
+
+<Steps>
+
+1. **Erstelle ein neues Modul**
+
+   ```bash
+   mkdir my-semrel-plugin
+   cd my-semrel-plugin
+   go mod init github.com/myorg/my-semrel-plugin
+   go get github.com/GoSemantics/semrel-plugins
+   ```
+
+2. **Implementiere die Plugin-Schnittstelle**
+
+   Jeder Plugin-Typ entspricht einem gRPC-Service, der in [`semantic_release.proto`](https://github.com/GoSemantics/semrel/blob/main/api/proto/v1/semantic_release.proto) definiert ist.
+
+   Das folgende Beispiel implementiert ein `CommitAnalyzerPlugin`, das für jeden `feat:`-Commit auf `minor` erhöht und für alles andere `patch` verwendet:
+
+   ```go
+   package main
+
+   import (
+     "context"
+     "strings"
+
+     semrelv1 "github.com/GoSemantics/semrel-plugins/gen/v1"
+   )
+
+   type myAnalyzer struct {
+     semrelv1.UnimplementedCommitAnalyzerPluginServer
+   }
+
+   func (a *myAnalyzer) AnalyzeCommits(
+     ctx context.Context,
+     req *semrelv1.AnalyzeCommitsRequest,
+   ) (*semrelv1.AnalyzeCommitsResponse, error) {
+     bump := semrelv1.BumpLevel_BUMP_LEVEL_NONE
+     for _, c := range req.Ctx.Commits {
+       msg := c.RawMessage
+       if strings.Contains(msg, "BREAKING CHANGE") {
+         return &semrelv1.AnalyzeCommitsResponse{
+           Bump:   semrelv1.BumpLevel_BUMP_LEVEL_MAJOR,
+           Reason: "breaking change detected",
+         }, nil
+       }
+       if strings.HasPrefix(msg, "feat") {
+         bump = semrelv1.BumpLevel_BUMP_LEVEL_MINOR
+       } else if strings.HasPrefix(msg, "fix") && bump < semrelv1.BumpLevel_BUMP_LEVEL_MINOR {
+         bump = semrelv1.BumpLevel_BUMP_LEVEL_PATCH
+       }
+     }
+     return &semrelv1.AnalyzeCommitsResponse{Bump: bump}, nil
+   }
+   ```
+
+3. **Über go-plugin bereitstellen**
+
+   Verwende `plugin.Serve()` – go-plugin verwaltet das Handshake-Protokoll über stdout automatisch. Nutze `hclog` für alle Logs, damit die Ausgabe nach stderr geht:
+
+   ```go
+   package main
+
+   import (
+     "os"
+
+     hclog "github.com/hashicorp/go-hclog"
+     goplugin "github.com/hashicorp/go-plugin"
+     semrelv1 "github.com/GoSemantics/semrel-plugins/gen/v1"
+   )
+
+   func main() {
+     logger := hclog.New(&hclog.LoggerOptions{
+       Name:   "my-analyzer",
+       Output: os.Stderr, // MUST be stderr — stdout is reserved for go-plugin handshake
+       Level:  hclog.Info,
+     })
+
+     goplugin.Serve(&goplugin.ServeConfig{
+       HandshakeConfig: semrelv1.HandshakeConfig,
+       Plugins: map[string]goplugin.Plugin{
+         "commit-analyzer": &semrelv1.CommitAnalyzerPlugin{Impl: &myAnalyzer{}},
+       },
+       GRPCServer: goplugin.DefaultGRPCServer,
+       Logger:     logger,
+     })
+   }
+   ```
+
+4. **Baue und installiere das Plugin**
+
+   ```bash
+   go build -o .semrel/my-analyzer .
+   ```
+
+5. **Registriere es in `.semrel.yaml`**
+
+   ```yaml
+   plugins:
+     - name: my-analyzer
+       path: ./.semrel/my-analyzer
+   ```
+
+</Steps>
+
+## Mehrere Schnittstellen implementieren
+
+Eine einzelne Plugin-Binärdatei kann mehrere gRPC-Services auf demselben Server registrieren:
+
+```go
+semrelv1.RegisterCommitAnalyzerPluginServer(srv, &myAnalyzer{})
+semrelv1.RegisterChangelogGeneratorPluginServer(srv, &myChangelog{})
+```
+
+## ReleaseContext
+
+Jeder RPC erhält in seiner Anfrage einen `ReleaseContext`. Er enthält:
+
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| `repo_owner` / `repo_name` | string | Repository-Identität |
+| `branch` | string | Die veröffentlichte Branch |
+| `last_version` | SemanticVersion | Vorheriges Release-Tag |
+| `next_version` | SemanticVersion | Berechnete nächste Version |
+| `commits` | []Commit | Commits seit der letzten Release |
+| `dry_run` | bool | Wenn `true`, dürfen keine Seiteneffekte angewendet werden |
+| `config` | map\<string, string\> | Plugin-`args` aus `.semrel.yaml` |
+
+<Aside type="tip">
+  Beachte immer das Flag `dry_run`. Wenn es `true` ist, sollte dein Plugin seine Arbeit simulieren und dieselbe Antwort zurückgeben wie bei einem echten Lauf – aber ohne etwas dauerhaft zu speichern.
+</Aside>

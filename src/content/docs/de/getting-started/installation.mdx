@@ -1,0 +1,247 @@
+---
+title: Installation
+description: So installierst du semrel unter Linux, macOS, Windows – und via Docker in CI/CD.
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+## Voraussetzungen
+
+- **Git** ≥ 2.30
+- Ein Repository, das [Conventional Commits](https://www.conventionalcommits.org/) verwendet
+
+## Installation
+
+<Tabs>
+  <TabItem label="Docker (empfohlen)">
+    Keine Installation nötig. Zieh das offizielle Image und führe dann Folgendes aus:
+
+    ```bash
+    docker pull ghcr.io/semrels/semrel:latest-alpine
+    docker run --rm \
+      -v "$(pwd):/workspace" -w /workspace \
+      -e GITHUB_TOKEN="$GITHUB_TOKEN" \
+      ghcr.io/semrels/semrel:latest-alpine release --dry-run
+    ```
+
+    Die **alpine**-Variante bringt `git` und `ca-certificates` mit — alles, was semrel braucht.
+    Sieh im [Docker-Guide](/guide/docker/) nach, wenn du mehr über Image-Varianten und Versions-Pinning wissen willst.
+  </TabItem>
+  <TabItem label="go install">
+    ```bash
+    go install github.com/SemRels/semrel/cmd/semrel@latest
+    ```
+    Erfordert Go ≥ 1.22. Die Binärdatei wird in `$GOPATH/bin` abgelegt (normalerweise `~/go/bin`).
+  </TabItem>
+  <TabItem label="Binärdownload">
+    Lade die vorgebaute Binärdatei für deine Plattform aus [GitHub Releases](https://github.com/SemRels/semrel/releases/latest) herunter und lege sie an einen Ort in deinem `$PATH`:
+
+    ```bash
+    # Linux / macOS — check the releases page for the current version
+    curl -L https://github.com/SemRels/semrel/releases/latest/download/semrel_linux_amd64.tar.gz \
+      | tar xz semrel
+    mv semrel /usr/local/bin/
+    ```
+  </TabItem>
+  <TabItem label="Aus dem Quellcode">
+    ```bash
+    git clone https://github.com/SemRels/semrel.git
+    cd semrel
+    go build -o semrel ./cmd/semrel
+    mv semrel /usr/local/bin/
+    ```
+  </TabItem>
+</Tabs>
+
+## Überprüfen
+
+```bash
+semrel --version
+```
+
+Erwartete Ausgabe:
+```
+semrel version v0.9.0
+```
+
+## CI / CD
+
+<Tabs>
+  <TabItem label="GitHub Actions (Docker)">
+    Der einfachste Ansatz — verwende semrel als Docker-Container-Action.
+    Keine Go-Toolchain erforderlich, nur ein Checkout und der semrel-Schritt:
+
+    ```yaml
+    # .github/workflows/release.yml
+    name: Release
+
+    on:
+      push:
+        branches: [main]
+
+    permissions:
+      contents: write
+
+    jobs:
+      release:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+            with:
+              fetch-depth: 0
+
+          - name: Run semrel
+            uses: docker://ghcr.io/semrels/semrel:latest-alpine
+            with:
+              args: release
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    ```
+
+    Oder führe semrel in einem **container job** aus (praktisch, wenn spätere Schritte es ebenfalls brauchen):
+
+    ```yaml
+    jobs:
+      release:
+        runs-on: ubuntu-latest
+        container:
+          image: ghcr.io/semrels/semrel:latest-alpine
+        steps:
+          - uses: actions/checkout@v4
+            with:
+              fetch-depth: 0
+
+          - name: Run semrel
+            run: semrel release
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    ```
+  </TabItem>
+  <TabItem label="GitLab CI (Docker)">
+    Setze das semrel-Image in deinem Release-Job — GitLab CI führt es dann als Container aus:
+
+    ```yaml
+    # .gitlab-ci.yml
+    semrel:
+      image: ghcr.io/semrels/semrel:latest-alpine
+      stage: release
+      rules:
+        - if: $CI_COMMIT_BRANCH == "main"
+      script:
+        - semrel release --gitlab-dotenv semrel.env
+      artifacts:
+        reports:
+          dotenv: semrel.env
+    ```
+
+    Das `dotenv`-Artefakt stellt `SEMREL_VERSION`, `SEMREL_TAG` und `SEMREL_CHANGELOG` für Folgejobs automatisch bereit.
+    Mehr Details findest du im [CI-Outputs-Guide](/guide/ci-outputs/).
+  </TabItem>
+  <TabItem label="GitHub Actions (go install)">
+    Installiere semrel über die Go-Toolchain, wenn du ein Setup ohne Docker bevorzugst:
+
+    ```yaml
+    - uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'
+
+    - name: Install semrel
+      run: go install github.com/SemRels/semrel/cmd/semrel@latest
+
+    - name: Run semrel
+      run: semrel release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    ```
+  </TabItem>
+  <TabItem label="CircleCI">
+    Verwende das alpine-Image als Executor:
+
+    ```yaml
+    # .circleci/config.yml
+    version: 2.1
+    jobs:
+      release:
+        docker:
+          - image: ghcr.io/semrels/semrel:latest-alpine
+        steps:
+          - checkout
+          - run:
+              name: Run semrel
+              command: semrel release
+    workflows:
+      release:
+        jobs:
+          - release:
+              filters:
+                branches:
+                  only: main
+    ```
+  </TabItem>
+  <TabItem label="Jenkins">
+    Verwende das alpine-Image in einer deklarativen Pipeline:
+
+    ```groovy
+    // Jenkinsfile
+    pipeline {
+      agent {
+        docker {
+          image 'ghcr.io/semrels/semrel:latest-alpine'
+          args  '-v $HOME/.gitconfig:/root/.gitconfig:ro'
+        }
+      }
+      stages {
+        stage('Release') {
+          when { branch 'main' }
+          steps {
+            sh 'semrel release'
+          }
+        }
+      }
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+<Aside type="tip">
+  **Pinne deine Image-Version in Produktion fest.** Verwende `ghcr.io/semrels/semrel:0.9.0-alpine` statt `latest`, damit deine Releases reproduzierbar bleiben.
+  Im [Docker-Guide](/guide/docker/) findest du alle verfügbaren Tags.
+</Aside>
+
+## Plugins aus der Registry installieren
+
+Wenn ein Plugin per Namen referenziert wird und lokal keine passende Binärdatei verfügbar ist, kann semrel es über die **SemRels Plugin Registry** auflösen.
+
+Der Ablauf sieht so aus:
+
+1. semrel prüft zuerst das lokale Plugin-Verzeichnis.
+2. Wenn die Binärdatei fehlt, holt semrel Registry-Metadaten von `registry.semrel.io`.
+3. Es lädt das plattformspezifische Release-Asset für das aktuelle Betriebssystem und die aktuelle Architektur herunter.
+4. Es verifiziert die heruntergeladene Datei gegen die veröffentlichte SHA-256-Prüfsumme.
+5. Es cached die Registry-Metadaten und die Binärdatei zur Wiederverwendung in späteren Läufen.
+
+Standardmäßig liegt der Cache für Registry-Metadaten unter `.semrel/registry-cache`, während heruntergeladene Binärdateien aus dem lokalen `.semrel/`-Cache-Layout wiederverwendet werden. Lokale Binärdateien haben weiterhin Vorrang. Das hält CI vorhersehbar und erlaubt Offline-Wiederverwendung nach dem ersten erfolgreichen Download.
+
+```bash
+# Optional registry overrides
+export SEMREL_REGISTRY_URL=https://registry.semrel.io
+export SEMREL_CACHE_DIR=.semrel
+export SEMREL_CACHE_TTL=24h
+```
+
+Mehr Details findest du in der [Plugin Registry-Übersicht](/plugins/registry/) und im [Plugin Publishing Guide](/plugins/publishing/).
+
+## Shell-Completion
+
+Auto-Completion-Skripte lassen sich für bash, zsh, fish und PowerShell erzeugen:
+
+```bash
+# bash
+semrel completion bash > /etc/bash_completion.d/semrel
+
+# zsh
+semrel completion zsh > "${fpath[1]}/_semrel"
+
+# fish
+semrel completion fish | source
+```
