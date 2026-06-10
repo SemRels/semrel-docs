@@ -640,3 +640,71 @@ Plugins also receive release context through standard environment variables:
 | `SEMREL_DRY_RUN` | `true` if semrel was invoked with `--dry-run` |
 
 semrel plugins are plain executables launched as subprocesses. They do not use gRPC.
+
+---
+
+## Editor validation with JSON Schema
+
+The semrel registry serves [JSON Schema](https://json-schema.org/) documents for `.semrel.yaml` and every plugin. Adding a `$schema` comment enables **inline validation and autocompletion** in VS Code, JetBrains IDEs, Neovim (with LSP), and any other editor that supports `yaml-language-server`.
+
+### Core config schema
+
+Add the `$schema` comment as the first line of your `.semrel.yaml`:
+
+```yaml
+# yaml-language-server: $schema=https://registry.semrel.io/schemas/core/v1.json
+schemaVersion: 1
+tagPrefix: "v"
+
+plugins:
+  - uses: analyzer-conventional
+  - uses: generator-changelog-md
+  - uses: provider-github
+```
+
+Your editor will now flag unknown keys, warn about missing required fields, and offer autocomplete for all known options.
+
+### Plugin config schemas
+
+Each plugin's `args:` block can be validated independently. Place the schema comment directly above the `args:` key:
+
+```yaml
+# yaml-language-server: $schema=https://registry.semrel.io/schemas/core/v1.json
+plugins:
+  - uses: provider-github
+    # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/provider-github/latest.json
+    args:
+      token: ${{ env.GITHUB_TOKEN }}
+      owner: MyOrg
+      repo: my-repo
+```
+
+### Schema URLs
+
+| Resource | URL |
+|---|---|
+| Core config | `https://registry.semrel.io/schemas/core/v1.json` |
+| Plugin (by name) | `https://registry.semrel.io/schemas/plugins/{name}/v1.json` |
+| Plugin (latest) | `https://registry.semrel.io/schemas/plugins/{name}/latest.json` |
+| Namespaced plugin | `https://registry.semrel.io/schemas/plugins/@semrel/{name}/v1.json` |
+
+`latest.json` always redirects (HTTP 301) to the newest stable schema version.
+
+### Self-hosted registry
+
+If you run a private semrel-registry instance, replace `registry.semrel.io` with your own base URL:
+
+```yaml
+# yaml-language-server: $schema=https://my-registry.example.com/schemas/core/v1.json
+```
+
+### Validating from the CLI
+
+You can also validate your config against the published schema using `semrel config validate`:
+
+```bash
+semrel config validate
+# ✓ Config is valid (schema version 1)
+```
+
+See [semrel config](/guide/cli#semrel-config) for the full command reference.
