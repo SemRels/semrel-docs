@@ -3,7 +3,7 @@ title: semrel
 description: Automatisierte semantische Versionierung und Changelog-Generierung für Go-Projekte.
 template: splash
 hero:
-  tagline: Mit Vertrauen releasen. semrel liest eure Commits, berechnet die nächste Version und veröffentlicht das Release — automatisch.
+  tagline: Release mit Vertrauen. semrel liest deine Commits, berechnet die nächste Version und veröffentlicht das Release — automatisch.
   actions:
     - text: Loslegen
       link: /de/getting-started/introduction/
@@ -21,19 +21,19 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 
 <CardGrid stagger>
   <Card title="Keine manuelle Versionierung" icon="approve-check">
-    semrel analysiert eure [Conventional Commits](https://www.conventionalcommits.org/) und entscheidet automatisch, ob `major`, `minor` oder `patch` erhöht wird — ohne manuelles Eingreifen.
+    semrel analysiert deine [Conventional Commits](https://www.conventionalcommits.org/) und entscheidet automatisch, ob `major`, `minor` oder `patch` erhöht wird — ohne manuelles Eingreifen.
   </Card>
   <Card title="Vollständig plugin-basiert" icon="puzzle">
-    Jeder Schritt der Pipeline ist ein austauschbares Subprocess-Plugin. GitHub-Provider durch GitLab ersetzen, den Changelog-Generator tauschen oder Slack-Benachrichtigungen hinzufügen — alles ohne Änderungen am Core.
+    Jeder Schritt der Pipeline ist ein austauschbares Plugin, das als Subprozess läuft. Ersetze GitHub durch GitLab, tausche den Changelog-Generator aus oder füge Slack-Benachrichtigungen hinzu — alles ohne Änderungen am Core.
   </Card>
-  <Card title="Monorepo-ready" icon="seti:folder">
-    Mehrere unabhängige Module in einem Repository versionieren, jedes mit eigenem Tag-Series und Konfigurationsdatei.
+  <Card title="Monorepo-fähig" icon="seti:folder">
+    Versioniere mehrere unabhängige Module in einem Repository, jeweils mit eigener Tag-Serie und eigener Konfigurationsdatei.
   </Card>
-  <Card title="Supply-Chain-Security" icon="shield">
+  <Card title="Supply-Chain-Sicherheit" icon="shield">
     Signierte Releases mit Sigstore Cosign, CycloneDX/SPDX SBOM, SLSA Level 1 Provenance. DCO Sign-off und REUSE/SPDX-Compliance bei jedem PR.
   </Card>
   <Card title="Sprachunabhängige Plugins" icon="translate">
-    Plugins sind einfache Subprocess-Binaries — sie können in Go, Python, Rust, Node.js oder jeder anderen Sprache geschrieben werden.
+    Plugins sind einfache Binaries, die als Subprozess laufen — du kannst sie in Go, Python, Rust, Node.js oder jeder anderen Sprache schreiben.
   </Card>
   <Card title="Dry-run-Modus" icon="information">
     Vorher genau sehen, was semrel tun würde. `semrel release --dry-run` validiert die Konfiguration sicher, ohne etwas zu verändern.

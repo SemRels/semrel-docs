@@ -84,7 +84,7 @@ Der Container erbt alle Umgebungsvariablen vom Host oder CI-Job. Übergib Geheim
 | `GITLAB_TOKEN` | Für GitLab-Provider | GitLab-API-Token |
 | `SEMREL_DRY_RUN` | Nein | Auf `true` setzen, um zu simulieren |
 
-## Workspace mounten
+## Workspace einbinden
 
 semrel arbeitet im aktuellen Arbeitsverzeichnis. Binde dein Repository nach `/workspace` ein:
 
@@ -96,7 +96,7 @@ docker run --rm \
   ghcr.io/SemRels/semrel:latest-alpine release
 ```
 
-## Versions-Pinning
+## Version pinnen
 
 Pinne auf eine bestimmte Version für reproduzierbare Builds:
 

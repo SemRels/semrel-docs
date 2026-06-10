@@ -27,7 +27,7 @@ Wenn kein Release erstellt wird (`released=false`), sind `version` und `tag` lee
 
 ## GitHub Actions
 
-Verwende `--github-output`, um alle Variablen nach `$GITHUB_OUTPUT` zu schreiben. Sie werden zu Step-Outputs, die du im selben Job oder in nachgelagerten Jobs via `needs` verwenden kannst.
+Verwende `--github-output`, um alle Variablen nach `$GITHUB_OUTPUT` zu schreiben. Sie werden zu Outputs des Steps, die du im selben Job oder in nachgelagerten Jobs via `needs` verwenden kannst.
 
 ```yaml
 jobs:
@@ -132,15 +132,15 @@ semrel release --output-file release.env
 
 ## Flags kombinieren
 
-Alle drei Output-Flags können im selben Lauf zusammen verwendet werden:
+Alle drei Output-Optionen können im selben Lauf zusammen verwendet werden:
 
 ```bash
 semrel release --github-output --output-file release.json
 ```
 
-## Dry-Run-Verhalten
+## Verhalten im Dry-Run
 
-Die Output-Flags funktionieren auch im Dry-Run-Modus. Der exportierte Wert `released` ist dann `false` und `dry_run` ist `true`. So kannst du deine Pipeline-Integration validieren, ohne ein echtes Release auszuführen.
+Die Output-Optionen funktionieren auch im Dry-Run-Modus. Der exportierte Wert `released` ist dann `false` und `dry_run` ist `true`. So kannst du deine Pipeline-Integration validieren, ohne ein echtes Release auszuführen.
 
 ```bash
 semrel release --dry-run --github-output
