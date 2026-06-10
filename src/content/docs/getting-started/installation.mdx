@@ -34,14 +34,13 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
     Requires Go ≥ 1.22. The binary is placed in `$GOPATH/bin` (usually `~/go/bin`).
   </TabItem>
   <TabItem label="Binary download">
-    Download the pre-built binary for your platform from [GitHub Releases](https://github.com/SemRels/semrel/releases) and place it somewhere on your `$PATH`:
+    Download the pre-built binary for your platform from [GitHub Releases](https://github.com/SemRels/semrel/releases/latest) and place it somewhere on your `$PATH`:
 
     ```bash
-    # Linux / macOS (example for v0.2.0, amd64)
-    curl -L https://github.com/SemRels/semrel/releases/download/v0.2.0/semrel_0.2.0_linux_amd64.tar.gz \
+    # Linux / macOS — check the releases page for the current version
+    curl -L https://github.com/SemRels/semrel/releases/latest/download/semrel_linux_amd64.tar.gz \
       | tar xz semrel
     mv semrel /usr/local/bin/
-    chmod +x /usr/local/bin/semrel
     ```
   </TabItem>
   <TabItem label="From source">
@@ -62,7 +61,7 @@ semrel --version
 
 Expected output:
 ```
-semrel version v0.2.0
+semrel version v0.9.0
 ```
 
 ## CI / CD
@@ -205,7 +204,7 @@ semrel version v0.2.0
 </Tabs>
 
 <Aside type="tip">
-  **Pin your image version in production.** Use `ghcr.io/semrels/semrel:0.2.0-alpine` instead of `latest` to ensure reproducible releases.
+  **Pin your image version in production.** Use `ghcr.io/semrels/semrel:0.9.0-alpine` instead of `latest` to ensure reproducible releases.
   See the [Docker guide](/guide/docker/) for all available tags.
 </Aside>
 
@@ -216,7 +215,7 @@ When a plugin is referenced by name and no matching binary is available locally,
 The flow looks like this:
 
 1. semrel checks the local plugin directory first.
-2. If the binary is missing, semrel fetches registry metadata from `registry.semrel.io` (MVP: GitHub Pages-backed `plugins.json`).
+2. If the binary is missing, semrel fetches registry metadata from `registry.semrel.io`.
 3. It downloads the platform-specific release asset for the current OS and architecture.
 4. It verifies the downloaded file against the published SHA-256 checksum.
 5. It caches the registry metadata and binary for reuse on later runs.

@@ -10,27 +10,32 @@ import { Steps, Aside } from '@astrojs/starlight/components';
 1. **Install semrel**
 
    ```bash
-   go install github.com/GoSemantics/semrel/cmd/semrel@latest
+   go install github.com/SemRels/semrel/cmd/semrel@latest
    ```
 
 2. **Create a minimal config**
 
-   Add a `.semrel.yaml` at the root of your repository:
+   Add a `.semrel.yaml` at the root of your repository, or run the interactive wizard:
+
+   ```bash
+   semrel config init
+   ```
+
+   Or create it manually:
 
    ```yaml
-   version: 1
+   schemaVersion: 1
 
    branches:
      - name: main
 
-   release:
-     rules:
-       - type: feat
-         bump: minor
-       - type: fix
-         bump: patch
-       - type: perf
-         bump: patch
+   rules:
+     - type: feat
+       bump: minor
+     - type: fix
+       bump: patch
+     - type: perf
+       bump: patch
    ```
 
 3. **Write commits using Conventional Commits**
