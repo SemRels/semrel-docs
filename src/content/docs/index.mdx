@@ -10,7 +10,7 @@ hero:
       icon: right-arrow
       variant: primary
     - text: View on GitHub
-      link: https://github.com/GoSemantics/semrel
+      link: https://github.com/SemRels/semrel
       icon: github
       variant: minimal
 ---
@@ -24,18 +24,21 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
     semrel analyses your [Conventional Commits](https://www.conventionalcommits.org/) and decides whether to bump `major`, `minor`, or `patch` — no human judgement required.
   </Card>
   <Card title="Fully pluggable" icon="puzzle">
-    Every step of the pipeline is a swappable gRPC plugin. Swap out the GitHub provider for GitLab, replace the changelog renderer, or add a Slack notification — all without changing core semrel.
+    Every step of the pipeline is a swappable subprocess plugin. Swap the GitHub provider for GitLab, replace the changelog generator, or add a Slack notification — without touching core semrel.
   </Card>
   <Card title="Monorepo ready" icon="seti:folder">
     Version multiple independent modules in a single repository, each with its own tag series and config file.
   </Card>
+  <Card title="Supply chain security" icon="shield">
+    Signed releases with Sigstore Cosign, CycloneDX/SPDX SBOM, SLSA Level 1 provenance. DCO sign-off and REUSE/SPDX compliance enforced on every PR.
+  </Card>
   <Card title="Language agnostic plugins" icon="translate">
-    Plugins speak gRPC, so they can be written in Go, Python, Rust, Node.js — or any language with a Protobuf generator.
+    Plugins are plain subprocess binaries — write them in Go, Python, Rust, Node.js, or any language you like.
   </Card>
   <Card title="Dry-run mode" icon="information">
     Preview exactly what semrel would do before touching anything. Run `semrel release --dry-run` in CI to validate your config safely.
   </Card>
   <Card title="Open Source" icon="open-book">
-    Apache 2.0 licensed. Built in the open at [GoSemantics/semrel](https://github.com/GoSemantics/semrel).
+    Apache 2.0 licensed. Built in the open at [SemRels/semrel](https://github.com/SemRels/semrel).
   </Card>
 </CardGrid>
