@@ -1,0 +1,194 @@
+---
+title: JSON Schemas
+description: Use versioned JSON Schemas for editor validation and autocompletion of .semrel.yaml and plugin configuration.
+---
+
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+semrel publishes versioned [JSON Schema](https://json-schema.org/) documents for both the core `.semrel.yaml` configuration and every registered plugin. Any editor that supports `yaml-language-server` can use these schemas for **inline validation and autocompletion** — no extensions to install.
+
+## Quick start
+
+Add a single comment to your `.semrel.yaml`:
+
+```yaml
+# yaml-language-server: $schema=https://registry.semrel.io/schemas/core/v1.json
+schemaVersion: 1
+tagPrefix: "v"
+
+plugins:
+  - uses: analyzer-conventional
+  - uses: provider-github
+    args:
+      token: ${{ env.GITHUB_TOKEN }}
+```
+
+That's it. Your editor will now:
+- Flag unknown top-level keys
+- Warn about required fields that are missing
+- Offer autocomplete for `tagPrefix`, `branch`, `plugins`, etc.
+
+---
+
+## Editor setup
+
+<Tabs>
+  <TabItem label="VS Code">
+    Install the [YAML extension by Red Hat](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml).
+    The `# yaml-language-server: $schema=...` comment is picked up automatically — no additional settings required.
+
+    Alternatively, configure a global association in `settings.json` to apply the schema to every `.semrel.yaml` without a comment:
+
+    ```json
+    {
+      "yaml.schemas": {
+        "https://registry.semrel.io/schemas/core/v1.json": [
+          ".semrel.yaml",
+          ".semrel.yml"
+        ]
+      }
+    }
+    ```
+  </TabItem>
+  <TabItem label="JetBrains IDEs">
+    JetBrains IDEs (IntelliJ, GoLand, WebStorm, etc.) support JSON Schema mapping via **Settings → Languages & Frameworks → Schemas and DTDs → JSON Schema Mappings**.
+
+    Add a new mapping:
+    - **Schema URL**: `https://registry.semrel.io/schemas/core/v1.json`
+    - **File pattern**: `.semrel.yaml`
+
+    The `# yaml-language-server:` comment is also recognised in recent versions.
+  </TabItem>
+  <TabItem label="Neovim (LSP)">
+    With [yaml-language-server](https://github.com/redhat-developer/yaml-language-server) configured via `nvim-lspconfig`, add the schema mapping to your LSP settings:
+
+    ```lua
+    require('lspconfig').yamlls.setup({
+      settings = {
+        yaml = {
+          schemas = {
+            ["https://registry.semrel.io/schemas/core/v1.json"] = ".semrel.yaml",
+          },
+        },
+      },
+    })
+    ```
+  </TabItem>
+</Tabs>
+
+---
+
+## Plugin schemas
+
+Each plugin's `args:` block has its own schema. Validate plugin config by adding a second comment:
+
+```yaml
+# yaml-language-server: $schema=https://registry.semrel.io/schemas/core/v1.json
+plugins:
+  - uses: provider-github
+    # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/provider-github/latest.json
+    args:
+      token: ${{ env.GITHUB_TOKEN }}
+      owner: MyOrg
+      repo: my-repo
+```
+
+<Aside type="tip">
+  Use `latest.json` to always point at the newest schema. The registry redirects it (HTTP 301) to the current version, so cached copies stay up to date.
+</Aside>
+
+---
+
+## Schema URL reference
+
+| Resource | URL |
+|---|---|
+| Core config (`v1`) | `https://registry.semrel.io/schemas/core/v1.json` |
+| Plugin by name (`v1`) | `https://registry.semrel.io/schemas/plugins/{name}/v1.json` |
+| Plugin latest | `https://registry.semrel.io/schemas/plugins/{name}/latest.json` |
+| Namespaced plugin | `https://registry.semrel.io/schemas/plugins/@semrel/{name}/v1.json` |
+| Namespaced latest | `https://registry.semrel.io/schemas/plugins/@semrel/{name}/latest.json` |
+
+All schema endpoints return `Content-Type: application/schema+json` and are served with `Cache-Control: public, max-age=86400`.
+
+---
+
+## Self-hosted registry
+
+If you run a private [semrel-registry](https://github.com/SemRels/semrel-registry) instance, replace the base URL:
+
+```yaml
+# yaml-language-server: $schema=https://my-registry.example.com/schemas/core/v1.json
+```
+
+The registry serves schemas from the `/schemas/` path on the same host as the API.
+
+---
+
+## CLI validation
+
+semrel can validate your config file against the published schema without running a release:
+
+```bash
+semrel config validate
+# ✓ Config is valid (schema version 1)
+
+semrel config validate --config path/to/.semrel.yaml
+```
+
+A non-zero exit code is returned when validation fails, making it suitable for CI pre-checks:
+
+```yaml
+# .github/workflows/ci.yml
+- name: Validate semrel config
+  run: semrel config validate
+```
+
+---
+
+## Schema versioning
+
+Schemas follow the **semver major** of the semrel config format:
+
+| Schema version | semrel version | Notes |
+|---|---|---|
+| `v1` | `>= 1.0.0` | Initial stable schema |
+
+When a breaking config change is introduced, a new `v2.json` is published alongside `v1.json`. The `latest.json` redirect is updated only when the new version is stable.
+
+Use `semrel migrate` to upgrade your config file to the current schema version:
+
+```bash
+semrel migrate --dry-run   # preview changes
+semrel migrate             # apply in-place (creates .semrel.yaml.bak backup)
+```
+
+---
+
+## Plugin authors
+
+If you maintain a semrel plugin, add a `schema/v1.json` file to your repository describing the `SEMREL_PLUGIN_*` environment variables your plugin accepts:
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://registry.semrel.io/schemas/plugins/my-provider/v1.json",
+  "title": "my-provider plugin schema",
+  "type": "object",
+  "properties": {
+    "SEMREL_PLUGIN_TOKEN": {
+      "type": "string",
+      "description": "API token for the target platform."
+    },
+    "SEMREL_PLUGIN_OWNER": {
+      "type": "string",
+      "description": "Repository owner / organisation."
+    }
+  },
+  "required": ["SEMREL_PLUGIN_TOKEN"]
+}
+```
+
+When your plugin is registered in the semrel-registry, the schema is served at `/schemas/plugins/{name}/v1.json` automatically.
+
+See the [plugin development guide](/guide/plugin-development#add-a-json-schema) for a full walkthrough.
