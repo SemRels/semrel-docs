@@ -1,0 +1,239 @@
+---
+title: Ein eigenes Plugin schreiben
+description: Schritt-für-Schritt-Anleitung zum Schreiben, Testen und Veröffentlichen eines eigenen semrel-Plugins.
+---
+
+import { Aside, Steps, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+semrel-Plugins sind **eigenständige Executables** — jede Sprache, die Umgebungsvariablen lesen, JSON nach stdout schreiben und mit einem sinnvollen Code beenden kann, kann den Plugin-Vertrag umsetzen.
+
+Dieser Guide führt dich durch den Bau eines minimalen **Provider Plugins** in Go.
+
+<Aside type="tip">
+  Ein bestehendes Plugin anzuschauen ist der schnellste Einstieg.
+  Der Quellcode von [`provider-github`](https://github.com/SemRels/provider-github) ist eine gute Referenz.
+</Aside>
+
+## Plugin-Vertrag
+
+Jedes semrel-Plugin kommuniziert über zwei Kanäle:
+
+| Channel | Direction | Zweck |
+|---|---|---|
+| Environment variables | → plugin | Release-Kontext + Plugin-Konfiguration |
+| stdout (JSON) | plugin → | Ergebnisse (nur Analyzer) |
+| stderr | plugin → | Logs, Warnungen, `plugin_schema_version=N` |
+| Exit code | plugin → | 0 = Erfolg, ungleich null = Release abbrechen |
+
+### Umgebungsvariablen
+
+semrel setzt vor der Ausführung jedes Plugins die folgenden Variablen:
+
+| Variable | Beschreibung |
+|---|---|
+| `SEMREL_VERSION` | semrel-CLI-Version |
+| `SEMREL_TAG_NAME` | Vollständiger Tag-Name (`v1.2.3`) |
+| `SEMREL_CURRENT_VERSION` | Aktuelle Projektversion |
+| `SEMREL_NEXT_VERSION` | Berechnete nächste Version |
+| `SEMREL_BUMP` | Bump-Stufe: `major`, `minor`, `patch` oder `none` |
+| `SEMREL_BRANCH` | Aktueller git-Branch |
+| `SEMREL_TAG_PREFIX` | Konfiguriertes Tag-Präfix |
+| `SEMREL_CHANGELOG` | Erzeugter Changelog-Inhalt |
+| `SEMREL_DRY_RUN` | `true` bei Ausführung mit `--dry-run` |
+
+Plugin-spezifische `args:` aus `.semrel.yaml` werden als `SEMREL_PLUGIN_<KEY>=<value>` bereitgestellt (Schlüssel in Großbuchstaben).
+
+### Schema-Versionierung
+
+Jedes Plugin sollte beim Start seine Schema-Version ausgeben:
+
+```bash
+echo "plugin_schema_version=1" >&2
+```
+
+So weiß semrel, welche Version des Env-Var-Vertrags das Plugin erwartet, und kann künftig Kompatibilitätsprüfungen durchführen.
+
+---
+
+## Projektstruktur
+
+<Steps>
+1. **Erstelle dein Modul**
+
+   ```bash
+   mkdir semrel-plugin-my-provider
+   cd semrel-plugin-my-provider
+   go mod init github.com/yourorg/semrel-plugin-my-provider
+   ```
+
+2. **Füge Abhängigkeiten hinzu**
+
+   ```bash
+   go get github.com/SemRels/semrel-plugin-sdk  # optional: helpers for env-var reading
+   ```
+
+3. **Implementiere das Plugin**
+
+   Erstelle `cmd/plugin/main.go`:
+
+   ```go
+   package main
+
+   import (
+       "fmt"
+       "os"
+   )
+
+   func main() {
+       if err := run(os.Environ(), os.Stdout, os.Stderr); err != nil {
+           fmt.Fprintln(os.Stderr, "error:", err)
+           os.Exit(1)
+       }
+   }
+
+   func run(env []string, stdout, stderr *os.File) error {
+       // Announce schema version.
+       fmt.Fprintln(stderr, "plugin_schema_version=1")
+
+       // Read context from environment.
+       nextVersion := os.Getenv("SEMREL_NEXT_VERSION")
+       dryRun      := os.Getenv("SEMREL_DRY_RUN") == "true"
+       token       := os.Getenv("SEMREL_PLUGIN_TOKEN") // from args: token: ${{ secrets.MY_TOKEN }}
+
+       if token == "" {
+           return fmt.Errorf("SEMREL_PLUGIN_TOKEN is required")
+       }
+
+       if dryRun {
+           fmt.Fprintf(stderr, "[dry-run] would publish release %s\n", nextVersion)
+           return nil
+       }
+
+       // TODO: call your platform API here.
+       fmt.Fprintf(stderr, "published release %s\n", nextVersion)
+       return nil
+   }
+   ```
+
+4. **Baue die Binärdatei**
+
+   semrel sucht nach einer Binärdatei namens `semrel-plugin-<name>` in `~/.semrel/plugins/` oder in `$PATH`.
+
+   ```bash
+   go build -o semrel-plugin-my-provider ./cmd/plugin
+   mkdir -p ~/.semrel/plugins
+   cp semrel-plugin-my-provider ~/.semrel/plugins/
+   ```
+
+5. **Binde es in `.semrel.yaml` ein**
+
+   ```yaml
+   plugins:
+     - uses: my-provider         # resolves to semrel-plugin-my-provider
+       args:
+         token: ${{ env.MY_TOKEN }}
+   ```
+
+6. **Teste es**
+
+   ```bash
+   semrel release --dry-run
+   ```
+</Steps>
+
+---
+
+## Unit-Tests schreiben
+
+Der einfachste Testansatz ist, `run()` direkt mit Mock-Werten für die Umgebung aufzurufen:
+
+```go
+package main_test
+
+import (
+    "bytes"
+    "testing"
+
+    "github.com/stretchr/testify/require"
+)
+
+func TestRunDryRun(t *testing.T) {
+    env := map[string]string{
+        "SEMREL_NEXT_VERSION":   "1.2.0",
+        "SEMREL_DRY_RUN":        "true",
+        "SEMREL_PLUGIN_TOKEN":   "test-token",
+    }
+
+    var stdout, stderr bytes.Buffer
+    err := run(env, &stdout, &stderr)
+    require.NoError(t, err)
+    require.Contains(t, stderr.String(), "plugin_schema_version=1")
+    require.Contains(t, stderr.String(), "[dry-run] would publish release 1.2.0")
+}
+```
+
+---
+
+## Dein Plugin veröffentlichen
+
+### 1. Ein Release taggen
+
+semrel selbst ist dafür das empfohlene Tool:
+
+```bash
+semrel release
+```
+
+### 2. In die Registry einreichen
+
+Reiche dein Plugin ein, damit es in der offiziellen semrel-Plugin-Registry gelistet wird:
+
+```bash
+gh api POST https://registry.semrel.io/api/v1/plugins/submit \
+  --field name=my-provider \
+  --field description="My custom provider plugin" \
+  --field repository=https://github.com/yourorg/semrel-plugin-my-provider \
+  --field category=provider \
+  --field license=MIT
+```
+
+Oder besuche [registry.semrel.io](https://registry.semrel.io) und klicke auf **Submit Plugin**.
+
+### 3. Ein JSON Schema hinzufügen
+
+Erstelle `schema/v1.json` in deinem Repository, um die `SEMREL_PLUGIN_*`-Variablen zu dokumentieren, die dein Plugin akzeptiert:
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://registry.semrel.io/schemas/plugins/my-provider/v1.json",
+  "title": "my-provider plugin schema",
+  "type": "object",
+  "properties": {
+    "SEMREL_PLUGIN_TOKEN": {
+      "type": "string",
+      "description": "API token for the target platform."
+    }
+  },
+  "required": ["SEMREL_PLUGIN_TOKEN"]
+}
+```
+
+Dieses Schema wird von der Registry unter `/schemas/plugins/my-provider/v1.json` ausgeliefert und aktiviert Editor-Autovervollständigung für die `.semrel.yaml`-Dateien deiner Nutzer.
+
+---
+
+## Referenz der Plugin-Typen
+
+| Type | Output | Exit bei Fehler | Zweck |
+|---|---|---|---|
+| **Analyzer** | JSON nach stdout | Ja | Bestimmt aus Commits die nächste Version |
+| **Generator** | Nichts (Side Effects) | Ja | Erzeugt Release-Artefakte (Changelog usw.) |
+| **Provider** | Nichts (Side Effects) | Ja | Veröffentlicht das Release auf einer Plattform |
+| **Condition** | Nichts | Ja (ungleich null) | Gate — bricht das Release ab, wenn Bedingungen nicht erfüllt sind |
+| **Hook** | Nichts (Side Effects) | Optional | Lifecycle-Callbacks (vor/nach Release) |
+| **Updater** | Nichts (Side Effects) | Ja | Aktualisiert Versions-Strings in Projektdateien |
+
+<Aside type="caution">
+  Plugins laufen mit denselben Berechtigungen wie der semrel-Prozess. Logge niemals Geheimnisse nach stdout — nur nach stderr und nur im Debug-Modus.
+</Aside>
