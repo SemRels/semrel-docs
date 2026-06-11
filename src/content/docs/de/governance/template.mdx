@@ -1,0 +1,104 @@
+---
+title: Governance-Template
+description: Das SemRels-Governance-Template zur Grundlage für Lizenzierung, Compliance und Repository-Hygiene verwenden.
+---
+
+import { Card, CardGrid, Aside, Steps } from '@astrojs/starlight/components';
+
+Das [SemRels-Governance-Template-Repository](https://github.com/SemRels/semrel-template) stellt die Basis-Governance-, Compliance- und Repository-Hygiene-Dateien bereit, die in allen SemRels-Projekten verwendet werden.
+
+Es sollte beim Anlegen eines neuen Repositories oder beim Angleichen eines bestehenden Repositories an die SemRels-Governance-Basis genutzt werden.
+
+## Was das Template enthält
+
+<CardGrid>
+  <Card title="Governance-Dateien" icon="open-book">
+    `GOVERNANCE.md`, `MAINTAINERS.md`, `SECURITY.md`, `CONTRIBUTING.md` und `CODE_OF_CONDUCT.md` legen Projekterwartungen und Verantwortlichkeiten fest.
+  </Card>
+  <Card title="Lizenzierung" icon="document">
+    `LICENSE`, `LICENSES/` und `.reuse/dep5` bilden die Apache-2.0- und REUSE-Compliance-Grundlage.
+  </Card>
+  <Card title="GitHub-Hygiene" icon="github">
+    Workflow-Templates, Issue-Templates, CODEOWNERS und Pull-Request-Templates sorgen dafür, dass neue Repositories überprüfbar und wartbar bleiben.
+  </Card>
+</CardGrid>
+
+## Pflichtdateien
+
+Jedes SemRels-Repository sollte diese Dateien enthalten:
+
+- `LICENSE`
+- `LICENSES/Apache-2.0.txt`
+- `.reuse/dep5`
+- `SECURITY.md`
+- `CODE_OF_CONDUCT.md`
+- `CONTRIBUTING.md`
+
+Für Core- und Multi-Plugin-Repositories gelten zusätzlich folgende Dateien als Pflicht:
+
+- `GOVERNANCE.md`
+- `MAINTAINERS.md`
+- `.github/workflows/scorecard.yml`
+- `.github/workflows/reuse.yml`
+
+## Template in einem neuen Repository verwenden
+
+<Steps>
+
+1. **Basis-Dateien kopieren**
+
+   Mit [`SemRels/semrel-template`](https://github.com/SemRels/semrel-template) beginnen und die Dateien kopieren, die zum jeweiligen Repository-Typ passen.
+
+2. **Platzhalter ersetzen**
+
+   Werte wie `{{PROJECT_NAME}}`, `{{ORG_NAME}}`, `{{REPO_NAME}}`, `{{REPO_URL}}` und `{{DEFAULT_BRANCH}}` anpassen.
+
+3. **Benötigte Workflows aktivieren**
+
+   Die passenden CI-, Scorecard-, CodeQL-, DCO- und REUSE-Workflow-Templates für das Repository auswählen.
+
+4. **Compliance-Prüfungen ausführen**
+
+   Das Repository lokal validieren, soweit möglich, bevor der Bootstrap-Pull-Request geöffnet wird.
+
+5. **`main` schützen**
+
+   Nach dem Merge Branch-Protection und erforderliche Status-Checks für die neuen Governance-Workflows aktivieren.
+
+</Steps>
+
+## REUSE-Compliance
+
+SemRels-Repositories verwenden [REUSE](https://reuse.software/), um Lizenz-Metadaten maschinenlesbar zu halten.
+
+Ein konformes Repository enthält in der Regel:
+
+- ein Top-Level-`LICENSE`
+- den referenzierten Lizenztext in `LICENSES/`
+- `.reuse/dep5`-Mappings für dateibasierte Metadaten, wo nötig
+- SPDX-Header in Quelldateien, wo angemessen
+
+REUSE-Linter lokal ausführen:
+
+```bash
+reuse lint
+```
+
+<Aside type="tip">
+  Wenn das Repository generierte Dateien, eingebundenen Drittcode oder Dokumentations-Assets mit abweichenden Lizenzanforderungen enthält, diese explizit in `.reuse/dep5` dokumentieren.
+</Aside>
+
+## Template-Repository-Links
+
+- [Template-Repository](https://github.com/SemRels/semrel-template)
+- [Template-README](https://github.com/SemRels/semrel-template/blob/main/README.md)
+- [Setup-Checkliste](https://github.com/SemRels/semrel-template/blob/main/SETUP_CHECKLIST.md)
+
+## Repository-Typen
+
+| Typ | Anwendungsfall | Basis |
+| --- | --- | --- |
+| Core | Hauptprojekte wie `semrel` | Vollständige Governance, DCO, REUSE, CI, CodeQL, Scorecard |
+| Plugin-Sammlung | Multi-Plugin-Repositories | Vollständige Governance, REUSE, CI, Scorecard |
+| Einzelnes Plugin | Ein Plugin pro Repository | Minimale Governance, REUSE, leichtes CI |
+| Dokumentation | Docs- oder Spezifikations-Repositories | Governance, REUSE, docs-fokussiertes CI |
