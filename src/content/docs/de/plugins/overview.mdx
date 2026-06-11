@@ -3,7 +3,9 @@ title: Plugin-Überblick
 description: Verstehe, wie das semrel-Plugin-System funktioniert und welche Plugin-Typen es gibt.
 ---
 
-import { Card, CardGrid, Aside } from '@astrojs/starlight/components';
+import { Badge, Card, CardGrid, Aside, LinkButton } from '@astrojs/starlight/components';
+
+![semrel Plugin-Ökosystem: Provider, Conditions, Analyzer, Generatoren, Updater und Hooks, verbunden mit der Kern-Release-Pipeline](/plugin-ecosystem.png)
 
 Die Release-Pipeline von semrel besteht aus eigenständigen Plugin-Binärdateien. Jedes Plugin wird lokal gefunden und als Subprozess ausgeführt – es gibt keine gRPC-Schicht und keinen RPC-Handshake.
 
@@ -100,8 +102,7 @@ sequenceDiagram
 
 ## Nächste Schritte
 
-- [Official Plugins](/plugins/)
-- [Plugin Registry](/plugins/registry/) — oder direkt auf [registry.semrel.io](https://registry.semrel.io) stöbern
-- [Plugins verwalten](/plugins/managing/)
-- [Plugin Publishing Guide](/plugins/publishing/)
-- [Plugin SDK — writing your first plugin](/plugins/sdk/)
+<LinkButton href="/de/plugins/" icon="list-format">Offizielle Plugins</LinkButton>
+<LinkButton href="/de/plugins/managing/" variant="secondary" icon="rocket">Plugins verwalten</LinkButton>
+<LinkButton href="/de/plugins/registry/" variant="secondary" icon="magnifier">Plugin-Registry</LinkButton>
+<LinkButton href="/de/plugins/sdk/" variant="minimal" icon="pencil">Plugin entwickeln</LinkButton>

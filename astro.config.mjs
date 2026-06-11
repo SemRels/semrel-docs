@@ -32,6 +32,9 @@ export default defineConfig({
         alt: 'semrel logo',
       },
       favicon: '/semrel.png',
+      editLink: {
+        baseUrl: 'https://github.com/SemRels/semrel-docs/edit/main/',
+      },
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/GoSemantics/semrel' },
         { icon: 'external', label: 'Registry', href: 'https://registry.semrel.io' },
@@ -51,6 +54,7 @@ export default defineConfig({
           label: 'Plugins',
           items: [
             { label: 'Overview', link: '/plugins/overview/' },
+            { label: 'Managing Plugins', link: '/plugins/managing/', badge: { text: 'New', variant: 'tip' } },
             { label: 'Official Plugins', link: '/plugins/' },
             {
               label: 'Conditions',
