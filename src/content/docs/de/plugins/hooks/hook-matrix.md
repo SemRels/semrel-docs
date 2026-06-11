@@ -8,21 +8,20 @@ Veröffentlicht Release-Benachrichtigungen in einem Matrix-Raum. Das funktionier
 ## Installation
 
 ```bash
-go install github.com/SemRels/hook-matrix@latest
+semrel plugin install @semrel/matrix
 ```
 
-Jedes Plugin ist eine eigenständige Go-Binärdatei. Lass es in deinem `PATH` oder referenziere es mit `path:` in `.semrel.yaml`. Wenn du Geheimnisse in einer `.env`-Datei speicherst, lade sie mit `semrel --env-file .env release`.
+`semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
 
 ## Konfiguration
 
 ```yaml
 version: 1
 plugins:
-  - name: hook-matrix
-    path: hook-matrix
+  - uses: @semrel/matrix
     args:
       homeserver: 'https://matrix.example.com'
-      token: '${{ env.MATRIX_TOKEN }}'
+      # Token wird aus der Umgebungsvariable SEMREL_PLUGIN_TOKEN gelesen
       room_id: '!release:matrix.example.com'
       message_template: 'Released {{ .TagName }} from {{ .Branch }}'
 ```

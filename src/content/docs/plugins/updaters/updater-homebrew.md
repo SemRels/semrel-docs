@@ -8,18 +8,17 @@ Updates a Homebrew formula with the new release URL and checksum. Use it when Se
 ## Installation
 
 ```bash
-go install github.com/SemRels/updater-homebrew@latest
+semrel plugin install @semrel/homebrew
 ```
 
-Each plugin is a standalone Go binary. Keep it on your `PATH` or reference it with `path:` in `.semrel.yaml`. If you keep secrets in a `.env` file, load them with `semrel --env-file .env release`.
+`semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
 ## Configuration
 
 ```yaml
 version: 1
 plugins:
-  - name: updater-homebrew
-    path: updater-homebrew
+  - uses: @semrel/homebrew
     args:
       formula_file: Formula/semrel.rb
       url_template: 'https://github.com/SemRels/semrel/archive/refs/tags/v{{ .NextVersion }}.tar.gz'

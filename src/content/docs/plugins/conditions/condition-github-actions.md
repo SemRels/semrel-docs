@@ -8,18 +8,17 @@ Confirms the current release is running inside GitHub Actions. It is useful when
 ## Installation
 
 ```bash
-go install github.com/SemRels/condition-github-actions@latest
+semrel plugin install @semrel/github-actions
 ```
 
-Each plugin is a standalone Go binary. Keep it on your `PATH` or reference it with `path:` in `.semrel.yaml`. If you keep secrets in a `.env` file, load them with `semrel --env-file .env release`.
+`semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
 ## Configuration
 
 ```yaml
 version: 1
 plugins:
-  - name: condition-github-actions
-    path: condition-github-actions
+  - uses: @semrel/github-actions
 ```
 
 ## Environment Variables

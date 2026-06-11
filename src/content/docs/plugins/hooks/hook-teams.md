@@ -8,10 +8,10 @@ Sends release notifications to Microsoft Teams via Incoming Webhooks. Use it to 
 ## Installation
 
 ```bash
-go install github.com/SemRels/hook-teams@latest
+semrel plugin install @semrel/teams
 ```
 
-Each plugin is a standalone Go binary. Keep it on your `PATH` or reference it with `path:` in `.semrel.yaml`. If you keep secrets in a `.env` file, load them with `semrel --env-file .env release`.
+`semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
 ## Configuration
 

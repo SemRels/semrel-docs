@@ -8,18 +8,17 @@ Updates a version argument inside a Dockerfile. It is useful when your container
 ## Installation
 
 ```bash
-go install github.com/SemRels/updater-docker@latest
+semrel plugin install @semrel/docker
 ```
 
-Each plugin is a standalone Go binary. Keep it on your `PATH` or reference it with `path:` in `.semrel.yaml`. If you keep secrets in a `.env` file, load them with `semrel --env-file .env release`.
+`semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
 ## Configuration
 
 ```yaml
 version: 1
 plugins:
-  - name: updater-docker
-    path: updater-docker
+  - uses: @semrel/docker
     args:
       file: Dockerfile
       arg_name: VERSION

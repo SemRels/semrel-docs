@@ -8,20 +8,19 @@ Publishes releases to GitHub using the generated SemRel tag, version, and change
 ## Installation
 
 ```bash
-go install github.com/SemRels/provider-github@latest
+semrel plugin install @semrel/github
 ```
 
-Each plugin is a standalone Go binary. Keep it on your `PATH` or reference it with `path:` in `.semrel.yaml`. If you keep secrets in a `.env` file, load them with `semrel --env-file .env release`.
+`semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
 ## Configuration
 
 ```yaml
 version: 1
 plugins:
-  - name: provider-github
-    path: provider-github
+  - uses: @semrel/github
     args:
-      token: '${{ env.GITHUB_TOKEN }}'
+      # token is read from SEMREL_PLUGIN_TOKEN env var
       owner: SemRels
       repo: semrel
       draft: false

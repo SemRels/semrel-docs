@@ -8,18 +8,17 @@ Updates Python package version metadata in `pyproject.toml` or a similar backend
 ## Installation
 
 ```bash
-go install github.com/SemRels/updater-python@latest
+semrel plugin install @semrel/python
 ```
 
-Each plugin is a standalone Go binary. Keep it on your `PATH` or reference it with `path:` in `.semrel.yaml`. If you keep secrets in a `.env` file, load them with `semrel --env-file .env release`.
+`semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
 ## Configuration
 
 ```yaml
 version: 1
 plugins:
-  - name: updater-python
-    path: updater-python
+  - uses: @semrel/python
     args:
       file: pyproject.toml
       backend: pyproject

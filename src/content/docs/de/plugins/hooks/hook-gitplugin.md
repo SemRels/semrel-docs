@@ -8,22 +8,21 @@ description: Überträgt Release-bezogene Änderungen in ein anderes Git-Reposit
 ## Installation
 
 ```bash
-go install github.com/SemRels/hook-gitplugin@latest
+semrel plugin install @semrel/gitplugin
 ```
 
-Jedes Plugin ist eine eigenständige Go-Binärdatei. Lass es in deinem `PATH` oder referenziere es mit `path:` in `.semrel.yaml`. Wenn du Geheimnisse in einer `.env`-Datei speicherst, lade sie mit `semrel --env-file .env release`.
+`semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
 
 ## Konfiguration
 
 ```yaml
 version: 1
 plugins:
-  - name: hook-gitplugin
-    path: hook-gitplugin
+  - uses: @semrel/gitplugin
     args:
       repo: 'https://github.com/SemRels/release-mirror.git'
       branch: main
-      token: '${{ env.GITPLUGIN_TOKEN }}'
+      # Token wird aus der Umgebungsvariable SEMREL_PLUGIN_TOKEN gelesen
 ```
 
 ## Umgebungsvariablen

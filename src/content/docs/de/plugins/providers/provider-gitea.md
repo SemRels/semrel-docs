@@ -8,21 +8,20 @@ Veröffentlicht Releases in einer Gitea-Instanz. Das passt gut für selbst gehos
 ## Installation
 
 ```bash
-go install github.com/SemRels/provider-gitea@latest
+semrel plugin install @semrel/gitea
 ```
 
-Jedes Plugin ist eine eigenständige Go-Binärdatei. Lass es in deinem `PATH` oder referenziere es mit `path:` in `.semrel.yaml`. Wenn du Geheimnisse in einer `.env`-Datei speicherst, lade sie mit `semrel --env-file .env release`.
+`semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
 
 ## Konfiguration
 
 ```yaml
 version: 1
 plugins:
-  - name: provider-gitea
-    path: provider-gitea
+  - uses: @semrel/gitea
     args:
       base_url: 'https://gitea.example.com'
-      token: '${{ env.GITEA_TOKEN }}'
+      # Token wird aus der Umgebungsvariable SEMREL_PLUGIN_TOKEN gelesen
       owner: SemRels
       repo: semrel
       draft: false

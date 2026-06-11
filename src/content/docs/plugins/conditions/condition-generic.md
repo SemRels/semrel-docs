@@ -8,18 +8,17 @@ Runs a shell command and only passes when that command exits with status 0. Use 
 ## Installation
 
 ```bash
-go install github.com/SemRels/condition-generic@latest
+semrel plugin install @semrel/generic
 ```
 
-Each plugin is a standalone Go binary. Keep it on your `PATH` or reference it with `path:` in `.semrel.yaml`. If you keep secrets in a `.env` file, load them with `semrel --env-file .env release`.
+`semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
 ## Configuration
 
 ```yaml
 version: 1
 plugins:
-  - name: condition-generic
-    path: condition-generic
+  - uses: @semrel/generic
     args:
       command: 'test "$SEMREL_BRANCH" = "main"'
 ```

@@ -8,18 +8,17 @@ Updates the version field in a Rust Cargo manifest. Use it to keep `Cargo.toml` 
 ## Installation
 
 ```bash
-go install github.com/SemRels/updater-cargo@latest
+semrel plugin install @semrel/cargo
 ```
 
-Each plugin is a standalone Go binary. Keep it on your `PATH` or reference it with `path:` in `.semrel.yaml`. If you keep secrets in a `.env` file, load them with `semrel --env-file .env release`.
+`semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
 ## Configuration
 
 ```yaml
 version: 1
 plugins:
-  - name: updater-cargo
-    path: updater-cargo
+  - uses: @semrel/cargo
     args:
       file: Cargo.toml
 ```

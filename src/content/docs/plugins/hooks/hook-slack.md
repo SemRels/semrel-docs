@@ -8,18 +8,17 @@ Posts release notifications to Slack through an incoming webhook. Use it to shar
 ## Installation
 
 ```bash
-go install github.com/SemRels/hook-slack@latest
+semrel plugin install @semrel/slack
 ```
 
-Each plugin is a standalone Go binary. Keep it on your `PATH` or reference it with `path:` in `.semrel.yaml`. If you keep secrets in a `.env` file, load them with `semrel --env-file .env release`.
+`semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
 ## Configuration
 
 ```yaml
 version: 1
 plugins:
-  - name: hook-slack
-    path: hook-slack
+  - uses: @semrel/slack
     args:
       webhook_url: '${{ env.SLACK_WEBHOOK_URL }}'
       channel: '#releases'

@@ -8,18 +8,17 @@ Updates the version declared in a Maven `pom.xml` file. It is useful for Java pr
 ## Installation
 
 ```bash
-go install github.com/SemRels/updater-maven@latest
+semrel plugin install @semrel/maven
 ```
 
-Each plugin is a standalone Go binary. Keep it on your `PATH` or reference it with `path:` in `.semrel.yaml`. If you keep secrets in a `.env` file, load them with `semrel --env-file .env release`.
+`semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
 ## Configuration
 
 ```yaml
 version: 1
 plugins:
-  - name: updater-maven
-    path: updater-maven
+  - uses: @semrel/maven
     args:
       file: pom.xml
 ```

@@ -54,6 +54,8 @@ semrel release [flags]
 | `--gitlab-dotenv <file>` | Release-Metadaten als dotenv-Artefakt schreiben (GitLab CI) |
 | `--output-file <file>` | Release-Metadaten in eine Datei schreiben (`.json` oder `.env`) |
 
+> Hinweis: Plugin-Fehler im Modus `--dry-run` werden als Warnungen behandelt und lassen den Befehl nicht fehlschlagen. So kannst du eine Release-Version auch ohne vollständig konfigurierte Zugangsdaten vorschauen.
+
 ### Beispiele
 
 ```bash
@@ -188,6 +190,8 @@ Checks:
 - Erforderliche Umgebungsvariablen sind gesetzt (soweit erkennbar)
 - Der aktuelle Branch ist ein konfigurierter Release-Branch
 - Ein git-Repository mit mindestens einem Tag ist vorhanden
+
+Für GitLab akzeptiert `semrel doctor` `SEMREL_PLUGIN_TOKEN`, `GITLAB_TOKEN` oder `CI_JOB_TOKEN` als gültige Token-Quellen.
 
 ```bash
 semrel doctor [flags]

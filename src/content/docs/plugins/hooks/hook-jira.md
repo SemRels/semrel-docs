@@ -8,21 +8,20 @@ Updates Jira release metadata after SemRel publishes a version. It is useful for
 ## Installation
 
 ```bash
-go install github.com/SemRels/hook-jira@latest
+semrel plugin install @semrel/jira
 ```
 
-Each plugin is a standalone Go binary. Keep it on your `PATH` or reference it with `path:` in `.semrel.yaml`. If you keep secrets in a `.env` file, load them with `semrel --env-file .env release`.
+`semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
 ## Configuration
 
 ```yaml
 version: 1
 plugins:
-  - name: hook-jira
-    path: hook-jira
+  - uses: @semrel/jira
     args:
       base_url: 'https://jira.example.com'
-      token: '${{ env.JIRA_TOKEN }}'
+      # token is read from SEMREL_PLUGIN_TOKEN env var
       project: SEMREL
       fix_version_template: '{{ .NextVersion }}'
 ```

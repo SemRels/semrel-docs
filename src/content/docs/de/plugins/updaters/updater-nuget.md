@@ -8,18 +8,17 @@ Aktualisiert die Versionseigenschaft in einer `.csproj`- oder anderen NuGet-Proj
 ## Installation
 
 ```bash
-go install github.com/SemRels/updater-nuget@latest
+semrel plugin install @semrel/nuget
 ```
 
-Jedes Plugin ist eine eigenständige Go-Binärdatei. Lass es in deinem `PATH` oder referenziere es mit `path:` in `.semrel.yaml`. Wenn du Geheimnisse in einer `.env`-Datei speicherst, lade sie mit `semrel --env-file .env release`.
+`semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
 
 ## Konfiguration
 
 ```yaml
 version: 1
 plugins:
-  - name: updater-nuget
-    path: updater-nuget
+  - uses: @semrel/nuget
     args:
       file: src/App/App.csproj
       property: Version

@@ -54,6 +54,8 @@ semrel release [flags]
 | `--gitlab-dotenv <file>` | Write release metadata as a dotenv artifact (GitLab CI) |
 | `--output-file <file>` | Write release metadata to a file (`.json` or `.env`) |
 
+> Note: Plugin failures in `--dry-run` mode are treated as warnings and do not cause the command to fail. This lets you preview a release version without full credentials configured.
+
 ### Examples
 
 ```bash
@@ -188,6 +190,8 @@ Checks:
 - Required environment variables are set (where detectable)
 - The current branch is a configured release branch
 - A git repository is present with at least one tag
+
+For GitLab, `semrel doctor` accepts `SEMREL_PLUGIN_TOKEN`, `GITLAB_TOKEN`, or `CI_JOB_TOKEN` as valid token sources.
 
 ```bash
 semrel doctor [flags]

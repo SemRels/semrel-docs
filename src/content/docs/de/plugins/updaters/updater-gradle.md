@@ -8,18 +8,17 @@ Aktualisiert den Versionsschlüssel in einer Gradle-Properties-Datei. Nutze ihn,
 ## Installation
 
 ```bash
-go install github.com/SemRels/updater-gradle@latest
+semrel plugin install @semrel/gradle
 ```
 
-Jedes Plugin ist eine eigenständige Go-Binärdatei. Lass es in deinem `PATH` oder referenziere es mit `path:` in `.semrel.yaml`. Wenn du Geheimnisse in einer `.env`-Datei speicherst, lade sie mit `semrel --env-file .env release`.
+`semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
 
 ## Konfiguration
 
 ```yaml
 version: 1
 plugins:
-  - name: updater-gradle
-    path: updater-gradle
+  - uses: @semrel/gradle
     args:
       file: gradle.properties
       key: version

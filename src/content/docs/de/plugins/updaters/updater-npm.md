@@ -8,18 +8,17 @@ Aktualisiert das Versionsfeld in einer `package.json`-Datei. Nutze es, um Node.j
 ## Installation
 
 ```bash
-go install github.com/SemRels/updater-npm@latest
+semrel plugin install @semrel/npm
 ```
 
-Jedes Plugin ist eine eigenständige Go-Binärdatei. Lass es in deinem `PATH` oder referenziere es mit `path:` in `.semrel.yaml`. Wenn du Geheimnisse in einer `.env`-Datei speicherst, lade sie mit `semrel --env-file .env release`.
+`semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
 
 ## Konfiguration
 
 ```yaml
 version: 1
 plugins:
-  - name: updater-npm
-    path: updater-npm
+  - uses: @semrel/npm
     args:
       file: package.json
 ```

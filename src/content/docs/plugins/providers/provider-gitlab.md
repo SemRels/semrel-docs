@@ -8,20 +8,19 @@ Publishes releases to GitLab. It supports GitLab.com and self-hosted GitLab inst
 ## Installation
 
 ```bash
-go install github.com/SemRels/provider-gitlab@latest
+semrel plugin install @semrel/gitlab
 ```
 
-Each plugin is a standalone Go binary. Keep it on your `PATH` or reference it with `path:` in `.semrel.yaml`. If you keep secrets in a `.env` file, load them with `semrel --env-file .env release`.
+`semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
 ## Configuration
 
 ```yaml
 version: 1
 plugins:
-  - name: provider-gitlab
-    path: provider-gitlab
+  - uses: @semrel/gitlab
     args:
-      token: '${{ env.GITLAB_TOKEN }}'
+      # token is read from SEMREL_PLUGIN_TOKEN env var
       base_url: 'https://gitlab.com'
       project_id: 12345678
       milestone: v1.4.0

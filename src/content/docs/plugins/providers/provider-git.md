@@ -8,18 +8,17 @@ Creates git tags and optionally pushes branch updates through the local Git remo
 ## Installation
 
 ```bash
-go install github.com/SemRels/provider-git@latest
+semrel plugin install @semrel/git
 ```
 
-Each plugin is a standalone Go binary. Keep it on your `PATH` or reference it with `path:` in `.semrel.yaml`. If you keep secrets in a `.env` file, load them with `semrel --env-file .env release`.
+`semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
 ## Configuration
 
 ```yaml
 version: 1
 plugins:
-  - name: provider-git
-    path: provider-git
+  - uses: @semrel/git
     args:
       remote: origin
       push_branch: true
