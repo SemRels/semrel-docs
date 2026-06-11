@@ -80,21 +80,29 @@ That's it. Your editor will now:
 
 ## Plugin schemas
 
-Each plugin's `args:` block has its own schema. Validate plugin config by adding a second comment:
+Every official plugin has a published JSON Schema describing its `args:` block.
+Add a `yaml-language-server` comment on the `args:` line to get inline validation and autocompletion:
 
 ```yaml
 # yaml-language-server: $schema=https://registry.semrel.io/schemas/core/v1.json
 plugins:
-  - uses: provider-github
-    # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/provider-github/latest.json
+  - uses: github
+    # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/github/latest.json
     args:
       token: ${{ env.GITHUB_TOKEN }}
       owner: MyOrg
       repo: my-repo
+      assets: dist/*.tar.gz
+
+  - uses: slack
+    # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/slack/latest.json
+    args:
+      webhook_url: ${{ env.SLACK_WEBHOOK }}
+      channel: "#releases"
 ```
 
 <Aside type="tip">
-  Use `latest.json` to always point at the newest schema. The registry redirects it (HTTP 301) to the current version, so cached copies stay up to date.
+  `latest.json` always points at the current schema version. Use `v1.json` if you need to pin a specific schema version.
 </Aside>
 
 ---
@@ -103,11 +111,9 @@ plugins:
 
 | Resource | URL |
 |---|---|
-| Core config (`v1`) | `https://registry.semrel.io/schemas/core/v1.json` |
-| Plugin by name (`v1`) | `https://registry.semrel.io/schemas/plugins/{name}/v1.json` |
+| Core config | `https://registry.semrel.io/schemas/core/v1.json` |
+| Plugin (short name) | `https://registry.semrel.io/schemas/plugins/{name}/v1.json` |
 | Plugin latest | `https://registry.semrel.io/schemas/plugins/{name}/latest.json` |
-| Namespaced plugin | `https://registry.semrel.io/schemas/plugins/@semrel/{name}/v1.json` |
-| Namespaced latest | `https://registry.semrel.io/schemas/plugins/@semrel/{name}/latest.json` |
 
 All schema endpoints return `Content-Type: application/schema+json` and are served with `Cache-Control: public, max-age=86400`.
 

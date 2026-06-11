@@ -80,21 +80,29 @@ Das ist alles. Dein Editor wird jetzt:
 
 ## Plugin-Schemas
 
-Jeder `args:`-Block eines Plugins hat sein eigenes Schema. Validiere die Plugin-Konfiguration, indem du einen zweiten Kommentar hinzufügst:
+Jedes offizielle Plugin hat ein veröffentlichtes JSON-Schema, das den `args:`-Block beschreibt.
+Einen `yaml-language-server`-Kommentar an der `args:`-Zeile ergänzen, um Inline-Validierung und Autovervollständigung zu aktivieren:
 
 ```yaml
 # yaml-language-server: $schema=https://registry.semrel.io/schemas/core/v1.json
 plugins:
-  - uses: provider-github
-    # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/provider-github/latest.json
+  - uses: github
+    # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/github/latest.json
     args:
       token: ${{ env.GITHUB_TOKEN }}
       owner: MyOrg
       repo: my-repo
+      assets: dist/*.tar.gz
+
+  - uses: slack
+    # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/slack/latest.json
+    args:
+      webhook_url: ${{ env.SLACK_WEBHOOK }}
+      channel: "#releases"
 ```
 
 <Aside type="tip">
-  Verwende `latest.json`, damit du immer auf das neueste Schema zeigst. Die Registry leitet es (HTTP 301) auf die aktuelle Version weiter, sodass gecachte Kopien aktuell bleiben.
+  `latest.json` zeigt immer auf die aktuelle Schema-Version. `v1.json` verwenden, wenn eine bestimmte Schema-Version gepinnt werden soll.
 </Aside>
 
 ---
@@ -103,13 +111,11 @@ plugins:
 
 | Ressource | URL |
 |---|---|
-| Core-Konfiguration (`v1`) | `https://registry.semrel.io/schemas/core/v1.json` |
-| Plugin nach Name (`v1`) | `https://registry.semrel.io/schemas/plugins/{name}/v1.json` |
+| Core-Konfiguration | `https://registry.semrel.io/schemas/core/v1.json` |
+| Plugin (Kurzname) | `https://registry.semrel.io/schemas/plugins/{name}/v1.json` |
 | Neuestes Plugin-Schema | `https://registry.semrel.io/schemas/plugins/{name}/latest.json` |
-| Plugin mit Namespace | `https://registry.semrel.io/schemas/plugins/@semrel/{name}/v1.json` |
-| Neuestes Schema mit Namespace | `https://registry.semrel.io/schemas/plugins/@semrel/{name}/latest.json` |
 
-Alle Schema-Endpunkte liefern `Content-Type: application/schema+json` zurück und werden mit `Cache-Control: public, max-age=86400` ausgeliefert.
+Alle Schema-Endpunkte werden von GitHub Pages ohne HTTP-Redirect ausgeliefert. `latest.json` ist eine Kopie der aktuellen Version und wird bei neuen Plugin-Releases aktualisiert.
 
 ---
 
