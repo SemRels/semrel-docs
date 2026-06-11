@@ -1,6 +1,6 @@
 ---
 title: Docker
-description: Führe semrel als Docker-Container mit dem offiziellen ghcr.io/SemRels/semrel-Image aus.
+description: semrel als Docker-Container mit dem offiziellen ghcr.io/SemRels/semrel-Image ausführen.
 ---
 
 import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
@@ -9,26 +9,26 @@ semrel ist als offizielles Docker-Image unter `ghcr.io/SemRels/semrel` verfügba
 
 ## Image-Varianten
 
-| Tag | Basis | Hinweise |
-| --- | --- | --- |
-| `ghcr.io/SemRels/semrel:latest` | distroless | Minimal, keine Shell. Erfordert `git` auf dem Host oder im Mount. |
-| `ghcr.io/SemRels/semrel:1.4.0` | distroless | distroless mit fest gepinnter Version |
-| `ghcr.io/SemRels/semrel:latest-alpine` | Alpine 3 | Enthält `git`, `ca-certificates`, Shell |
-| `ghcr.io/SemRels/semrel:1.4.0-alpine` | Alpine 3 | Alpine mit fest gepinnter Version |
+| Tag | Basis | Enthält | Hinweise |
+| --- | --- | --- | --- |
+| `ghcr.io/SemRels/semrel:latest` | distroless (Debian 12) | git, ca-certificates | Keine Shell, kein Paketmanager. Empfohlener Standard. |
+| `ghcr.io/SemRels/semrel:1.0.0` | distroless (Debian 12) | git, ca-certificates | Fest gepinnte Version |
+| `ghcr.io/SemRels/semrel:latest-alpine` | Alpine 3.22 | git, ca-certificates, openssh-client, Shell | Für SSH-Remotes oder Shell-Scripting in CI |
+| `ghcr.io/SemRels/semrel:1.0.0-alpine` | Alpine 3.22 | git, ca-certificates, openssh-client, Shell | Fest gepinnte Alpine-Version |
 
 <Aside type="tip">
-  Verwende in CI-Pipelines die **alpine**-Variante — sie bringt `git` und `ca-certificates` mit, die für Repository-Operationen erforderlich sind.
+  Beide Image-Varianten enthalten `git` und `ca-certificates` — semrel funktioniert in beiden sofort ohne weitere Konfiguration.
+  Verwende **`latest-alpine`**, wenn du `openssh-client` (für SSH-basierte Git-Remotes) oder Shell-Scripting in deinen CI-Schritten benötigst.
 </Aside>
 
 ## Schnellstart
 
 ```bash
-# Dry run in current directory
 docker run --rm \
   -v "$(pwd):/workspace" \
   -w /workspace \
-  -e GITHUB_TOKEN="$GITHUB_TOKEN" \
-  ghcr.io/SemRels/semrel:latest-alpine release --dry-run
+  -e SEMREL_PLUGIN_TOKEN="$GITHUB_TOKEN" \
+  ghcr.io/SemRels/semrel:latest release --dry-run
 ```
 
 ## GitHub Actions
@@ -38,68 +38,98 @@ jobs:
   release:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/SemRels/semrel:latest-alpine
+      image: ghcr.io/SemRels/semrel:latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Run semrel
+      - name: semrel-Plugins wiederherstellen
+        run: semrel plugin restore
+
+      - name: Release ausführen
         run: semrel release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SEMREL_PLUGIN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-Oder verwende es als Docker-Action:
+Oder als Docker-Action-Schritt:
 
 ```yaml
-- name: Run semrel
-  uses: docker://ghcr.io/SemRels/semrel:latest-alpine
+- name: semrel ausführen
+  uses: docker://ghcr.io/SemRels/semrel:latest
   with:
     args: release
   env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    SEMREL_PLUGIN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## GitLab CI
 
 ```yaml
 semrel:
-  image: ghcr.io/SemRels/semrel:latest-alpine
+  image: ghcr.io/SemRels/semrel:latest
   stage: release
   script:
+    - semrel plugin restore
     - semrel release --gitlab-dotenv semrel.env
   artifacts:
     reports:
       dotenv: semrel.env
 ```
 
-## Umgebungsvariablen
+## Gitea Actions
 
-Der Container erbt alle Umgebungsvariablen vom Host oder CI-Job. Übergib Geheimnisse per `-e` oder über das Secret-Management deiner CI:
+```yaml
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/SemRels/semrel:latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: semrel-Plugins wiederherstellen
+        run: semrel plugin restore
+      - name: Release ausführen
+        run: semrel release
+        env:
+          SEMREL_PLUGIN_TOKEN: ${{ secrets.GITEA_TOKEN }}
+```
+
+## Umgebungsvariablen
 
 | Variable | Erforderlich | Beschreibung |
 | --- | --- | --- |
-| `GITHUB_TOKEN` | Für GitHub-Provider | GitHub-API-Token |
-| `GITLAB_TOKEN` | Für GitLab-Provider | GitLab-API-Token |
-| `SEMREL_DRY_RUN` | Nein | Auf `true` setzen, um zu simulieren |
+| `SEMREL_PLUGIN_TOKEN` | Ja (die meisten Provider) | API-Token, der an Provider- und Hook-Plugins weitergegeben wird |
+| `SEMREL_DRY_RUN` | Nein | Auf `true` setzen, um den Ablauf zu simulieren |
+| `SEMREL_REGISTRY_URL` | Nein | Plugin-Registry-URL überschreiben |
 
 ## Workspace einbinden
 
-semrel arbeitet im aktuellen Arbeitsverzeichnis. Binde dein Repository nach `/workspace` ein:
+semrel arbeitet im aktuellen Arbeitsverzeichnis. Beim Einsatz mit `docker run` das Repository nach `/workspace` einbinden:
 
 ```bash
 docker run --rm \
   -v "$(pwd):/workspace" \
   -w /workspace \
-  -e GITHUB_TOKEN="$GITHUB_TOKEN" \
-  ghcr.io/SemRels/semrel:latest-alpine release
+  -e SEMREL_PLUGIN_TOKEN="$GITHUB_TOKEN" \
+  ghcr.io/SemRels/semrel:latest release
 ```
 
-## Version pinnen
+## Versionen pinnen
 
-Pinne auf eine bestimmte Version für reproduzierbare Builds:
+Für reproduzierbare Builds auf eine bestimmte Version pinnen:
 
 ```bash
-ghcr.io/SemRels/semrel:1.0.0-alpine
+ghcr.io/SemRels/semrel:1.0.0         # distroless
+ghcr.io/SemRels/semrel:1.0.0-alpine  # Alpine
 ```
+
+## Sicherheitshinweise
+
+- Beide Images laufen standardmäßig als **nicht-root-Benutzer**.
+- Das `latest`-Image (distroless) hat keine Shell und keinen Paketmanager — minimale Angriffsfläche.
+- Das Alpine-Image ist auf `3.22` gepinnt und wird mit `apk upgrade --no-cache` gebaut, um alle Sicherheits-Patches einzuspielen.
+- Images werden mit [cosign](https://github.com/sigstore/cosign) signiert und enthalten eine SBOM-Attestierung.

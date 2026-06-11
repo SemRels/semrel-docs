@@ -9,26 +9,26 @@ semrel is available as an official Docker image at `ghcr.io/SemRels/semrel`.
 
 ## Image variants
 
-| Tag | Base | Notes |
-| --- | --- | --- |
-| `ghcr.io/SemRels/semrel:latest` | distroless | Minimal, no shell. Requires git in host or mount. |
-| `ghcr.io/SemRels/semrel:1.4.0` | distroless | Version-pinned distroless |
-| `ghcr.io/SemRels/semrel:latest-alpine` | Alpine 3 | Includes `git`, `ca-certificates`, shell |
-| `ghcr.io/SemRels/semrel:1.4.0-alpine` | Alpine 3 | Version-pinned Alpine |
+| Tag | Base | Includes | Notes |
+| --- | --- | --- | --- |
+| `ghcr.io/SemRels/semrel:latest` | distroless (Debian 12) | git, ca-certificates | No shell, no package manager. Recommended default. |
+| `ghcr.io/SemRels/semrel:1.0.0` | distroless (Debian 12) | git, ca-certificates | Version-pinned |
+| `ghcr.io/SemRels/semrel:latest-alpine` | Alpine 3.22 | git, ca-certificates, openssh-client, shell | Use when SSH or shell scripting is needed |
+| `ghcr.io/SemRels/semrel:1.0.0-alpine` | Alpine 3.22 | git, ca-certificates, openssh-client, shell | Version-pinned Alpine |
 
 <Aside type="tip">
-  Use the **alpine** variant in CI pipelines — it bundles `git` and `ca-certificates`, which are required for repository operations.
+  Both image variants include `git` and `ca-certificates` — semrel works out of the box in either.
+  Use **`latest-alpine`** if you need `openssh-client` (for SSH-based git remotes) or shell scripting in your CI steps.
 </Aside>
 
 ## Quickstart
 
 ```bash
-# Dry run in current directory
 docker run --rm \
   -v "$(pwd):/workspace" \
   -w /workspace \
-  -e GITHUB_TOKEN="$GITHUB_TOKEN" \
-  ghcr.io/SemRels/semrel:latest-alpine release --dry-run
+  -e SEMREL_PLUGIN_TOKEN="$GITHUB_TOKEN" \
+  ghcr.io/SemRels/semrel:latest release --dry-run
 ```
 
 ## GitHub Actions
@@ -38,62 +38,84 @@ jobs:
   release:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/SemRels/semrel:latest-alpine
+      image: ghcr.io/SemRels/semrel:latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - name: Restore semrel plugins
+        run: semrel plugin restore
+
       - name: Run semrel
         run: semrel release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SEMREL_PLUGIN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-Or use it as a Docker action:
+Or use it as a Docker action step:
 
 ```yaml
 - name: Run semrel
-  uses: docker://ghcr.io/SemRels/semrel:latest-alpine
+  uses: docker://ghcr.io/SemRels/semrel:latest
   with:
     args: release
   env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    SEMREL_PLUGIN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## GitLab CI
 
 ```yaml
 semrel:
-  image: ghcr.io/SemRels/semrel:latest-alpine
+  image: ghcr.io/SemRels/semrel:latest
   stage: release
   script:
+    - semrel plugin restore
     - semrel release --gitlab-dotenv semrel.env
   artifacts:
     reports:
       dotenv: semrel.env
 ```
 
-## Environment variables
+## Gitea Actions
 
-The container inherits all environment variables from the host or CI job. Pass secrets via `-e` or CI secret management:
+```yaml
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/SemRels/semrel:latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore semrel plugins
+        run: semrel plugin restore
+      - name: Run semrel
+        run: semrel release
+        env:
+          SEMREL_PLUGIN_TOKEN: ${{ secrets.GITEA_TOKEN }}
+```
+
+## Environment variables
 
 | Variable | Required | Description |
 | --- | --- | --- |
-| `GITHUB_TOKEN` | For GitHub provider | GitHub API token |
-| `GITLAB_TOKEN` | For GitLab provider | GitLab API token |
-| `SEMREL_DRY_RUN` | No | Set to `true` to simulate |
+| `SEMREL_PLUGIN_TOKEN` | Yes (most providers) | API token passed to provider/hook plugins |
+| `SEMREL_DRY_RUN` | No | Set to `true` to simulate without making changes |
+| `SEMREL_REGISTRY_URL` | No | Override the plugin registry URL |
 
 ## Workspace mounting
 
-semrel operates on the current working directory. Mount your repository to `/workspace`:
+semrel operates on the current working directory. When using `docker run`, mount your repository to `/workspace`:
 
 ```bash
 docker run --rm \
   -v "$(pwd):/workspace" \
   -w /workspace \
-  -e GITHUB_TOKEN="$GITHUB_TOKEN" \
-  ghcr.io/SemRels/semrel:latest-alpine release
+  -e SEMREL_PLUGIN_TOKEN="$GITHUB_TOKEN" \
+  ghcr.io/SemRels/semrel:latest release
 ```
 
 ## Version pinning
@@ -101,5 +123,13 @@ docker run --rm \
 Pin to a specific version for reproducible builds:
 
 ```bash
-ghcr.io/SemRels/semrel:1.0.0-alpine
+ghcr.io/SemRels/semrel:1.0.0         # distroless
+ghcr.io/SemRels/semrel:1.0.0-alpine  # Alpine
 ```
+
+## Security notes
+
+- Both images run as a **non-root user** by default.
+- The `latest` (distroless) image has no shell or package manager — minimal attack surface.
+- The Alpine image is pinned to `3.22` and built with `apk upgrade --no-cache` to apply all security patches at build time.
+- Images are signed with [cosign](https://github.com/sigstore/cosign) and include an SBOM attestation.
