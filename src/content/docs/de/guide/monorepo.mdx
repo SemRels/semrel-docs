@@ -1,102 +1,203 @@
 ---
 title: Monorepo-Unterstützung
-description: Versioniere mit semrel mehrere unabhängige Module in einem einzelnen Repository.
+description: Mehrere unabhängige Packages in einem Repository mit semrel versionieren — pro Package oder workspace-weit.
 ---
 
-import { Aside, FileTree } from '@astrojs/starlight/components';
+import { Aside, FileTree, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
-semrel unterstützt Repositories, die mehrere unabhängig versionierte Module enthalten. Jedes Modul hat seine eigene Versionshistorie, seine eigene Tag-Serie und seine eigene `.semrel.yaml`.
+semrel unterstützt Repositories mit mehreren unabhängig versionierten Packages.
+Es gibt zwei Ansätze — wähle den, der zu deinem Workflow passt.
 
-## Repository-Struktur
+---
+
+## Option A — pro Package (Matrix)
+
+Jedes Package hat seine eigene `.semrel.yaml` und wird von einem eigenen CI-Job oder Matrix-Step releast.
 
 <FileTree>
 - my-monorepo/
-  - services/
+  - packages/
     - api/
-      - .semrel.yaml
+      - **.semrel.yaml**
       - go.mod
+    - ui/
+      - **.semrel.yaml**
+      - package.json
     - worker/
-      - .semrel.yaml
+      - **.semrel.yaml**
       - go.mod
-  - libs/
-    - core/
-      - .semrel.yaml
-      - go.mod
+  - .semrel.yaml    Root-Konfiguration (optional, gemeinsame Basis)
 </FileTree>
 
-Jede Komponente hat ihre eigene `.semrel.yaml` und wird unabhängig releast.
+### Tagging-Konvention
 
-## Tagging-Konvention
-
-In einem Monorepo stellt semrel jedem Tag den Modulpfad voran:
+semrel präfigiert jeden Tag mit dem Package-Pfad, wenn `tagPrefix` den Pfad enthält:
 
 ```
-services/api/v1.4.0
-services/worker/v0.9.1
-libs/core/v2.0.0
+packages/api@v1.4.0
+packages/ui@v3.2.0
+packages/worker@v0.9.1
 ```
 
-Das bedeutet: `git log --tags` liefert dir eine saubere Historie pro Modul ohne Vermischung.
-
-## Konfiguration pro Modul
-
-Jede `.semrel.yaml` eines Moduls ist vollständig unabhängig. Du kannst pro Modul unterschiedliche Bump-Regeln, unterschiedliche Branches oder unterschiedliche Plugins konfigurieren:
+### Per-Package-Konfiguration
 
 ```yaml
-# services/api/.semrel.yaml
-version: 1
-
+# packages/api/.semrel.yaml
+schemaVersion: 1
+tagPrefix: "packages/api@v"
 branches:
   - name: main
-
-release:
-  rules:
-    - type: feat
-      bump: minor
-    - type: fix
-      bump: patch
-
 plugins:
-  - name: github
-    args:
-      owner: MyOrg
-      repo: my-monorepo
-      # The release is scoped to the services/api subfolder
-      tag_prefix: services/api/
+  - uses: @semrel/github
 ```
 
-## Releases ausführen
-
-Führe semrel aus dem Modulverzeichnis aus oder verwende `--config`, um auf eine Modul-Konfiguration zu zeigen:
-
-```bash
-# From the module root
-cd services/api
-semrel release
-
-# Or from the repo root
-semrel release --config ./services/api/.semrel.yaml
-```
-
-## CI-Beispiel (GitHub Actions)
+### Releases ausführen (CI-Matrix)
 
 ```yaml
 jobs:
-  release-api:
+  release:
+    strategy:
+      matrix:
+        package: [packages/api, packages/ui, packages/worker]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Required: semrel needs full git history
-      - uses: actions/setup-go@v5
-        with:
-          go-version: '1.22'
-      - run: go install github.com/GoSemantics/semrel/cmd/semrel@latest
-      - run: semrel release --config ./services/api/.semrel.yaml
+          fetch-depth: 0
+      - name: Release ${{ matrix.package }}
+        run: semrel release --config ./${{ matrix.package }}/.semrel.yaml
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SEMREL_PLUGIN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+---
+
+## Option B — Workspace (ein einziger Befehl)
+
+Alle Packages in der Root-`.semrel.yaml` konfigurieren und mit **einem Befehl** releasen.
+Packages werden in Abhängigkeitsreihenfolge releast; Packages ohne Neues werden automatisch übersprungen.
+
+### Root-Konfiguration
+
+```yaml
+# .semrel.yaml
+schemaVersion: 1
+branches:
+  - name: main
+plugins:
+  - uses: @semrel/github   # gemeinsames Plugin für alle Packages
+
+workspace:
+  strategy: independent    # jedes Package bekommt sein eigenes Semver
+
+  # Option 1: explizite Liste mit optionaler Abhängigkeitsreihenfolge
+  packages:
+    - path: packages/api
+      tagPrefix: "packages/api@v"
+    - path: packages/ui
+      tagPrefix: "packages/ui@v"
+      dependsOn: [packages/api]     # wird erst nach api releast
+    - path: packages/worker
+      tagPrefix: "packages/worker@v"
+
+  # Option 2: alle Package-Verzeichnisse automatisch entdecken
+  # pattern: "packages/*"
+
+  fail_fast: false   # Fehler sammeln (Standard: bei Fehler weitermachen)
+```
+
+Jedes Package-Verzeichnis kann eine eigene `.semrel.yaml` haben, die die Root-Konfiguration überschreibt (branches, rules, plugins, tagPrefix).
+
+### Workspace-Unterbefehle
+
+```bash
+# Alle konfigurierten Packages auflisten
+semrel workspace list
+
+# Vorschau (dry-run, keine Änderungen)
+semrel workspace release --dry-run
+
+# Alle Packages in Abhängigkeitsreihenfolge releasen
+semrel workspace release
+
+# Unabhängige Packages gleichzeitig releasen
+semrel workspace release --parallel
+
+# Bei erstem Fehler sofort stoppen
+semrel workspace release --fail-fast
+```
+
+### Ausgabe
+
+```
+[packages/api]     releasing…
+Current version: v1.2.0  →  v1.3.0 (minor)
+✓ Committed CHANGELOG.md  ✓ Created tag packages/api@v1.3.0
+[packages/api]     ✓ released
+
+[packages/ui]      releasing…
+No commits since last release — nothing to release.
+[packages/ui]      – skipped (nothing to release)
+
+[packages/worker]  releasing…
+Current version: v0.8.0  →  v0.9.0 (minor)
+[packages/worker]  ✓ released
+```
+
+### CI-Beispiel
+
+<Tabs>
+  <TabItem label="GitHub Actions">
+
+  ```yaml
+  jobs:
+    release:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+        - name: semrel-Plugins wiederherstellen
+          run: semrel plugin restore
+        - name: Workspace releasen
+          run: semrel workspace release
+          env:
+            SEMREL_PLUGIN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  ```
+
+  </TabItem>
+  <TabItem label="GitLab CI">
+
+  ```yaml
+  release:
+    stage: release
+    script:
+      - semrel plugin restore
+      - semrel workspace release
+    variables:
+      SEMREL_PLUGIN_TOKEN: $CI_JOB_TOKEN
+  ```
+
+  </TabItem>
+</Tabs>
+
+---
+
+## Option A vs. Option B
+
+| | Option A (Matrix) | Option B (Workspace) |
+|---|---|---|
+| Config-Ort | Pro-Package `.semrel.yaml` | Root `.semrel.yaml` |
+| CI-Jobs | Ein Job pro Package | Ein Job insgesamt |
+| Abhängigkeitsreihenfolge | Manuell (Stage-Abhängigkeiten) | Automatisch (`dependsOn`) |
+| Parallelisierung | Native CI-Parallelisierung | `--parallel`-Flag |
+| Gemeinsame Plugins | Pro Package duplizieren | Einmalig auf Root-Ebene |
+| Package-Isolation | Vollständig | Packages teilen Git-Repo-Kontext |
+
+<Aside type="tip">
+  Mit **Option A** beginnen für wenige Packages — einfacher und vollständig isoliert. Zu **Option B** (`semrel workspace`) migrieren, wenn viele Packages vorhanden sind und ein einziger CI-Schritt mit automatischer Abhängigkeitsreihenfolge gewünscht wird.
+</Aside>
+
 <Aside type="caution">
-  Checke das Repository immer mit `fetch-depth: 0` aus. Ohne die vollständige Historie kann semrel den vorherigen Release-Tag nicht finden und behandelt jeden Commit wie ein erstes Release.
+  Repository immer mit `fetch-depth: 0` auschecken. Ohne die vollständige Git-Historie kann semrel den vorherigen Release-Tag eines Packages nicht finden.
 </Aside>

@@ -422,3 +422,58 @@ semrel update
 # Check only — no download
 semrel update --check
 ```
+
+---
+
+## `semrel workspace`
+
+Orchestrate releases across all packages in a monorepo workspace with a single command.
+Configure the workspace in the root `.semrel.yaml` — see the [Monorepo guide](/guide/monorepo/) for full details.
+
+```bash
+semrel workspace <subcommand>
+```
+
+### `semrel workspace list`
+
+List all packages configured in the workspace.
+
+```bash
+semrel workspace list
+```
+
+### `semrel workspace release`
+
+Release all workspace packages in dependency order.
+Packages with no releasable commits since their last tag are **skipped** automatically.
+
+```bash
+semrel workspace release [flags]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--dry-run` | Preview all package releases without making any changes |
+| `--parallel` | Release independent packages concurrently (subprocess per package) |
+| `--fail-fast` | Stop on the first package failure instead of collecting all errors |
+
+### Examples
+
+```bash
+# Preview the entire workspace release
+semrel workspace release --dry-run
+
+# Release all packages sequentially
+semrel workspace release
+
+# Release independent packages in parallel
+semrel workspace release --parallel
+```
+
+### Output
+
+```
+[packages/api]     ✓ released
+[packages/ui]      – skipped (nothing to release)
+[packages/worker]  ✗ failed: …
+```
