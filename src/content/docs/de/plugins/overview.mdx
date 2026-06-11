@@ -10,8 +10,8 @@ Die Release-Pipeline von semrel besteht aus eigenständigen Plugin-Binärdateien
 ## So funktionieren Plugins
 
 1. semrel liest jeden Plugin-Eintrag aus `.semrel.yaml`.
-2. Der Wert `uses:` wird normalerweise zu einer Binärdatei namens `semrel-plugin-<uses>` aufgelöst.
-3. semrel sucht diese Binärdatei zuerst an einem expliziten `path:`, dann in `~/.semrel/plugins/`, dann in `$PATH`.
+2. Der Wert `uses:` wird zu einer Binärdatei namens `semrel-plugin-<name>` aufgelöst, nachdem semrel Namespace, Version oder Kategorie-Präfix entfernt hat.
+3. semrel sucht diese Binärdatei zuerst an einem expliziten `path:`, dann in `.semrel/plugins/`, dann in `~/.semrel/plugins/`, dann in `$PATH`.
 4. Plugin-`args:`-Werte werden als Umgebungsvariablen im Format `SEMREL_PLUGIN_<KEY>=<value>` bereitgestellt.
 5. Der Release-Kontext wird ebenfalls über Umgebungsvariablen übergeben, sodass jedes Plugin dieselbe Version, Branch, Tag, denselben Changelog und denselben Dry-Run-Status lesen kann.
 6. semrel führt die Binärdatei aus und verwendet das Prozessergebnis, um die Pipeline fortzusetzen oder zu stoppen.
@@ -59,7 +59,7 @@ Der aktuelle offizielle Plugin-Katalog ist in sechs Kategorien organisiert.
 
 ## Plugin-Erkennung
 
-Entdecke offizielle Plugins im [Plugin Registry](/plugins/registry/) oder installiere sie direkt mit `semrel plugin install <name>`.
+Entdecke offizielle Plugins im [Plugin Registry](/plugins/registry/), installiere sie mit `semrel plugin install <ref>` und nutze die Anleitung [Plugins verwalten](/plugins/managing/) für Lock-Dateien und Restore-Workflows.
 
 semrel löst Plugins aus dem konfigurierten `uses:`-Wert auf:
 
@@ -78,7 +78,7 @@ plugins:
 ```
 
 <Aside type="tip">
-  `semrel plugin install github` lädt die Plugin-Binärdatei nach `~/.semrel/plugins/` herunter, wo zukünftige Läufe sie automatisch finden können.
+  `semrel plugin install @semrel/github` installiert das Plugin nach `.semrel/plugins/` und aktualisiert `.semrel.lock`. Nackte Namen wie `github` funktionieren nur, wenn der Registry-Eintrag keinen Namespace hat.
 </Aside>
 
 ## Plugin-Lebenszyklus
@@ -90,7 +90,7 @@ sequenceDiagram
     participant P as plugin executable
 
     S->>R: resolve uses: github
-    R-->>S: path / ~/.semrel/plugins / $PATH
+    R-->>S: path / .semrel/plugins / ~/.semrel/plugins / $PATH
     S->>P: spawn subprocess
     Note over S,P: SEMREL_PLUGIN_* and SEMREL_* env vars
     P->>P: perform plugin work
@@ -102,5 +102,6 @@ sequenceDiagram
 
 - [Official Plugins](/plugins/)
 - [Plugin Registry](/plugins/registry/) — oder direkt auf [registry.semrel.io](https://registry.semrel.io) stöbern
+- [Plugins verwalten](/plugins/managing/)
 - [Plugin Publishing Guide](/plugins/publishing/)
 - [Plugin SDK — writing your first plugin](/plugins/sdk/)

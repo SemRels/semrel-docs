@@ -1,0 +1,182 @@
+---
+title: Managing Plugins
+description: Install, lock, and restore semrel plugins across your team.
+---
+
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Overview
+
+semrel installs plugins as local binaries and resolves them directly at runtime. The plugin management workflow gives teams a consistent way to install plugins into `.semrel/plugins/`, pin exact versions in `.semrel.lock`, and restore the same binaries on developer machines and CI runners.
+
+## Installing a plugin
+
+<Steps>
+
+1. **Choose the registry reference**
+
+   Use the canonical registry reference when a plugin belongs to a namespace:
+
+   ```bash
+   semrel plugin install @semrel/github
+   ```
+
+   semrel only accepts a bare name such as `github` when the matched registry entry has no namespace.
+
+2. **Pin a specific version when needed**
+
+   ```bash
+   semrel plugin install @semrel/github@1.2.0
+   ```
+
+   semrel installs the binary into `.semrel/plugins/` by default.
+
+3. **Commit the lock file**
+
+   A default install also creates or updates `.semrel.lock` at the repository root so the same plugin version can be restored later.
+
+</Steps>
+
+<Aside type="caution">
+  If you run `semrel plugin install github` for a namespaced plugin, semrel stops with an error such as `plugin "github" belongs to namespace @semrel — use: semrel plugin install @semrel/github`.
+</Aside>
+
+All supported naming variants resolve predictably. `github`, `provider-github`, and `@semrel/github@1.2.0` all normalize to `semrel-plugin-github`, while `condition-github-actions` normalizes to `semrel-plugin-github-actions` before semrel looks for a binary on disk.
+
+## The `.semrel.lock` file
+
+`.semrel.lock` records the exact plugin version and published checksums for every project-local install. semrel updates it automatically when you run `semrel plugin install` without `--plugin-dir`.
+
+```json
+{
+  "semrelLockVersion": 1,
+  "updatedAt": "2026-06-11T09:33:00Z",
+  "plugins": [
+    {
+      "binaryName": "semrel-plugin-github",
+      "ref": "@semrel/github",
+      "version": "1.2.0",
+      "checksums": {
+        "linux_amd64": "abc123...",
+        "linux_arm64": "def456...",
+        "darwin_amd64": "ghi789...",
+        "darwin_arm64": "jkl012...",
+        "windows_amd64": "mno345...",
+        "windows_arm64": "pqr678..."
+      }
+    }
+  ]
+}
+```
+
+Use this workflow in Git:
+
+<Steps>
+
+1. Run `semrel plugin install @semrel/github`.
+2. Review the updated `.semrel.lock` file.
+3. Commit `.semrel.yaml` and `.semrel.lock` together.
+4. Do not commit `.semrel/plugins/`, `.semrel/registry-cache/`, or the platform download caches under `.semrel/`.
+
+</Steps>
+
+Typical `.gitignore` entries look like this:
+
+```txt
+.semrel/plugins/
+.semrel/registry-cache/
+.semrel/linux_*/
+.semrel/darwin_*/
+.semrel/windows_*/
+# keep .semrel.lock committed at the repository root
+```
+
+## `semrel plugin restore`
+
+`semrel plugin restore` reads `.semrel.lock`, downloads every listed plugin into `.semrel/plugins/`, skips binaries that are already present, and verifies the checksum for the current platform before installation.
+
+This is the recommended way to prepare plugins in CI and on a freshly cloned repository.
+
+<Tabs>
+  <TabItem label="GitHub Actions">
+
+  ```yaml
+  jobs:
+    release:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - name: Restore semrel plugins
+          run: semrel plugin restore
+        - name: Run semrel
+          run: semrel release
+  ```
+
+  </TabItem>
+  <TabItem label="GitLab CI">
+
+  ```yaml
+  release:
+    stage: release
+    script:
+      - semrel plugin restore
+      - semrel release
+  ```
+
+  </TabItem>
+  <TabItem label="Gitea Actions">
+
+  ```yaml
+  jobs:
+    release:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - name: Restore semrel plugins
+          run: semrel plugin restore
+        - name: Run semrel
+          run: semrel release
+  ```
+
+  </TabItem>
+</Tabs>
+
+## Plugin resolution order
+
+When semrel resolves a plugin binary, it checks these locations in order:
+
+1. `path:` from `.semrel.yaml` — use this for an explicit local binary.
+2. `.semrel/plugins/<binary>` — project-local installs take priority over every shared location.
+3. `~/.semrel/plugins/<binary>` — user-global installs are available across repositories.
+4. `<binary>` in `$PATH` — useful for system-managed or manually installed binaries.
+
+The binary name is normalized first. `github`, `provider-github`, and `@semrel/github@1.2.0` all resolve to `semrel-plugin-github`, so different config variants still discover the same executable.
+
+## Auto-install
+
+When semrel cannot find a configured plugin locally, it tries to auto-install the plugin from the registry into `.semrel/plugins/`.
+
+Version resolution follows this order:
+
+1. The version pinned directly in `uses:`, such as `uses: github@1.2.0`.
+2. The version recorded for that binary in `.semrel.lock`.
+3. The latest stable version from the registry.
+
+If auto-install fails, semrel prints a warning and skips that plugin instead of failing the whole run. Auto-install is a runtime convenience; for reproducible team workflows, prefer `semrel plugin install` plus a committed `.semrel.lock`.
+
+## Installing to a different directory
+
+Use `--plugin-dir` to install somewhere other than `.semrel/plugins/`:
+
+```bash
+semrel plugin install @semrel/github --plugin-dir ~/.semrel/plugins
+```
+
+This is useful for user-global installs or custom tool directories. When you use `--plugin-dir`, semrel does **not** update `.semrel.lock`.
+
+## Related links
+
+- [Plugin Overview](/plugins/overview/)
+- [Plugin Registry](/plugins/registry/)
+- [CLI Reference](/guide/cli/#semrel-plugin)
+- [Plugin Development Guide](/guide/plugin-development/)

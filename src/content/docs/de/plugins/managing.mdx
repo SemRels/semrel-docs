@@ -1,0 +1,182 @@
+---
+title: Plugins verwalten
+description: Installiere, sperre und stelle semrel-Plugins in deinem Team wieder her.
+---
+
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Überblick
+
+semrel installiert Plugins als lokale Binärdateien und löst sie zur Laufzeit direkt auf. Der Plugin-Management-Workflow gibt Teams einen konsistenten Weg, Plugins nach `.semrel/plugins/` zu installieren, exakte Versionen in `.semrel.lock` festzuhalten und dieselben Binärdateien auf Entwicklerrechnern und in CI wiederherzustellen.
+
+## Ein Plugin installieren
+
+<Steps>
+
+1. **Die Registry-Referenz wählen**
+
+   Verwende die kanonische Registry-Referenz, wenn ein Plugin zu einem Namespace gehört:
+
+   ```bash
+   semrel plugin install @semrel/github
+   ```
+
+   Einen nackten Namen wie `github` akzeptiert semrel nur dann, wenn der gefundene Registry-Eintrag keinen Namespace hat.
+
+2. **Bei Bedarf eine Version pinnen**
+
+   ```bash
+   semrel plugin install @semrel/github@1.2.0
+   ```
+
+   Standardmäßig installiert semrel die Binärdatei nach `.semrel/plugins/`.
+
+3. **Die Lock-Datei committen**
+
+   Eine Standardinstallation erzeugt oder aktualisiert außerdem `.semrel.lock` im Repository-Root, damit dieselbe Plugin-Version später wiederhergestellt werden kann.
+
+</Steps>
+
+<Aside type="caution">
+  Wenn du `semrel plugin install github` für ein Plugin mit Namespace ausführst, bricht semrel mit einer Fehlermeldung ab wie `plugin "github" belongs to namespace @semrel — use: semrel plugin install @semrel/github`.
+</Aside>
+
+Alle unterstützten Schreibweisen werden nachvollziehbar normalisiert. `github`, `provider-github` und `@semrel/github@1.2.0` werden alle zu `semrel-plugin-github`, während `condition-github-actions` zu `semrel-plugin-github-actions` wird, bevor semrel nach einer Binärdatei sucht.
+
+## Die Datei `.semrel.lock`
+
+`.semrel.lock` speichert die exakte Plugin-Version und die veröffentlichten Prüfsummen für jede projektlokale Installation. semrel aktualisiert die Datei automatisch, wenn du `semrel plugin install` ohne `--plugin-dir` ausführst.
+
+```json
+{
+  "semrelLockVersion": 1,
+  "updatedAt": "2026-06-11T09:33:00Z",
+  "plugins": [
+    {
+      "binaryName": "semrel-plugin-github",
+      "ref": "@semrel/github",
+      "version": "1.2.0",
+      "checksums": {
+        "linux_amd64": "abc123...",
+        "linux_arm64": "def456...",
+        "darwin_amd64": "ghi789...",
+        "darwin_arm64": "jkl012...",
+        "windows_amd64": "mno345...",
+        "windows_arm64": "pqr678..."
+      }
+    }
+  ]
+}
+```
+
+Verwende in Git diesen Ablauf:
+
+<Steps>
+
+1. Führe `semrel plugin install @semrel/github` aus.
+2. Prüfe die aktualisierte Datei `.semrel.lock`.
+3. Committe `.semrel.yaml` und `.semrel.lock` gemeinsam.
+4. Committe nicht `.semrel/plugins/`, `.semrel/registry-cache/` oder die plattformspezifischen Download-Caches unter `.semrel/`.
+
+</Steps>
+
+Typische `.gitignore`-Einträge sehen so aus:
+
+```txt
+.semrel/plugins/
+.semrel/registry-cache/
+.semrel/linux_*/
+.semrel/darwin_*/
+.semrel/windows_*/
+# .semrel.lock bleibt im Repository-Root versioniert
+```
+
+## `semrel plugin restore`
+
+`semrel plugin restore` liest `.semrel.lock`, lädt alle aufgeführten Plugins nach `.semrel/plugins/`, überspringt bereits vorhandene Binärdateien und verifiziert vor der Installation die Prüfsumme für die aktuelle Plattform.
+
+Das ist der empfohlene Weg, um Plugins in CI und in einem frisch geklonten Repository bereitzustellen.
+
+<Tabs>
+  <TabItem label="GitHub Actions">
+
+  ```yaml
+  jobs:
+    release:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - name: Restore semrel plugins
+          run: semrel plugin restore
+        - name: Run semrel
+          run: semrel release
+  ```
+
+  </TabItem>
+  <TabItem label="GitLab CI">
+
+  ```yaml
+  release:
+    stage: release
+    script:
+      - semrel plugin restore
+      - semrel release
+  ```
+
+  </TabItem>
+  <TabItem label="Gitea Actions">
+
+  ```yaml
+  jobs:
+    release:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - name: Restore semrel plugins
+          run: semrel plugin restore
+        - name: Run semrel
+          run: semrel release
+  ```
+
+  </TabItem>
+</Tabs>
+
+## Reihenfolge der Plugin-Auflösung
+
+Wenn semrel eine Plugin-Binärdatei auflöst, prüft es diese Orte in dieser Reihenfolge:
+
+1. `path:` aus `.semrel.yaml` — verwende das für eine explizite lokale Binärdatei.
+2. `.semrel/plugins/<binary>` — projektlokale Installationen haben Vorrang vor allen gemeinsamen Orten.
+3. `~/.semrel/plugins/<binary>` — benutzerweite Installationen sind über mehrere Repositories hinweg verfügbar.
+4. `<binary>` in `$PATH` — nützlich für systemverwaltete oder manuell installierte Binärdateien.
+
+Der Binärname wird zuerst normalisiert. `github`, `provider-github` und `@semrel/github@1.2.0` werden alle zu `semrel-plugin-github`, sodass verschiedene Konfigurationsvarianten dieselbe Binärdatei finden.
+
+## Auto-Install
+
+Wenn semrel ein konfiguriertes Plugin lokal nicht findet, versucht es, das Plugin aus der Registry automatisch nach `.semrel/plugins/` zu installieren.
+
+Die Versionsauflösung folgt dieser Reihenfolge:
+
+1. Die direkt in `uses:` gepinnte Version, zum Beispiel `uses: github@1.2.0`.
+2. Die für diese Binärdatei in `.semrel.lock` gespeicherte Version.
+3. Die neueste stabile Version aus der Registry.
+
+Falls Auto-Install fehlschlägt, gibt semrel eine Warnung aus und überspringt das Plugin, statt den gesamten Lauf fehlschlagen zu lassen. Auto-Install ist eine Laufzeit-Bequemlichkeit; für reproduzierbare Team-Workflows solltest du `semrel plugin install` plus eine eingecheckte `.semrel.lock` bevorzugen.
+
+## In ein anderes Verzeichnis installieren
+
+Verwende `--plugin-dir`, um an einen anderen Ort als `.semrel/plugins/` zu installieren:
+
+```bash
+semrel plugin install @semrel/github --plugin-dir ~/.semrel/plugins
+```
+
+Das ist nützlich für benutzerweite Installationen oder benutzerdefinierte Tool-Verzeichnisse. Wenn du `--plugin-dir` verwendest, aktualisiert semrel `.semrel.lock` **nicht**.
+
+## Zugehörige Links
+
+- [Plugin Overview](/plugins/overview/)
+- [Plugin Registry](/plugins/registry/)
+- [CLI-Referenz](/guide/cli/#semrel-plugin)
+- [Plugin Development Guide](/guide/plugin-development/)

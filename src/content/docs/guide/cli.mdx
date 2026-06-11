@@ -333,7 +333,7 @@ semrel plugin search changelog
 
 ### `semrel plugin install`
 
-Download and install a plugin binary into `~/.semrel/plugins/`.
+Download and install a plugin binary into `.semrel/plugins/`.
 
 ```bash
 semrel plugin install <name[@version]> [--plugin-dir <dir>]
@@ -341,14 +341,55 @@ semrel plugin install <name[@version]> [--plugin-dir <dir>]
 
 ```bash
 # Install the latest version
-semrel plugin install github
+semrel plugin install @semrel/github
 
 # Install a specific version
-semrel plugin install npm@1.2.0
+semrel plugin install @semrel/github@1.2.0
 
 # Install into a custom directory
-semrel plugin install github --plugin-dir ./tools/plugins
+semrel plugin install @semrel/github --plugin-dir ~/.semrel/plugins
 ```
+
+Use the full `@namespace/name` reference when the registry entry belongs to a namespace. Bare names such as `github` only work for plugins that have no namespace in the registry.
+
+When you install into the default project-local directory, semrel also creates or updates `.semrel.lock` at the repository root.
+
+### `semrel plugin restore`
+
+Install all plugins listed in `.semrel.lock` into `.semrel/plugins/`.
+
+```bash
+semrel plugin restore
+```
+
+The restore command skips binaries that are already present and verifies the checksum for the current platform before installing a missing plugin.
+
+<Tabs>
+  <TabItem label="GitHub Actions">
+
+  ```yaml
+  - name: Restore semrel plugins
+    run: semrel plugin restore
+  ```
+
+  </TabItem>
+  <TabItem label="GitLab CI">
+
+  ```yaml
+  script:
+    - semrel plugin restore
+  ```
+
+  </TabItem>
+  <TabItem label="Gitea Actions">
+
+  ```yaml
+  - name: Restore semrel plugins
+    run: semrel plugin restore
+  ```
+
+  </TabItem>
+</Tabs>
 
 ---
 

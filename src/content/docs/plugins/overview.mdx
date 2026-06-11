@@ -10,8 +10,8 @@ semrel's release pipeline is composed of standalone plugin executables. Each plu
 ## How plugins work
 
 1. semrel reads each plugin entry from `.semrel.yaml`.
-2. The `uses:` value normally resolves to a binary named `semrel-plugin-<uses>`.
-3. semrel looks for that binary at an explicit `path:`, then in `~/.semrel/plugins/`, then in `$PATH`.
+2. The `uses:` value resolves to a binary named `semrel-plugin-<name>` after semrel strips any namespace, version, or category prefix.
+3. semrel looks for that binary at an explicit `path:`, then in `.semrel/plugins/`, then in `~/.semrel/plugins/`, then in `$PATH`.
 4. Plugin `args:` values are exposed as environment variables in the form `SEMREL_PLUGIN_<KEY>=<value>`.
 5. Release context is also passed through environment variables so every plugin can read the same version, branch, tag, changelog, and dry-run state.
 6. semrel runs the executable and uses the process result to continue or stop the pipeline.
@@ -59,7 +59,7 @@ The current official plugin catalog is organized into six categories.
 
 ## Plugin discovery
 
-Discover official plugins in the [Plugin Registry](/plugins/registry/) or install them directly with `semrel plugin install <name>`.
+Discover official plugins in the [Plugin Registry](/plugins/registry/), install them with `semrel plugin install <ref>`, and use the [Managing Plugins](/plugins/managing/) guide for lock files and restore workflows.
 
 semrel resolves plugins from the configured `uses:` value:
 
@@ -78,7 +78,7 @@ plugins:
 ```
 
 <Aside type="tip">
-  `semrel plugin install github` downloads the plugin binary into `~/.semrel/plugins/`, where future runs can discover it automatically.
+  `semrel plugin install @semrel/github` installs the plugin into `.semrel/plugins/` and updates `.semrel.lock`. Bare names such as `github` only work when the registry entry has no namespace.
 </Aside>
 
 ## Plugin lifecycle
@@ -90,7 +90,7 @@ sequenceDiagram
     participant P as plugin executable
 
     S->>R: resolve uses: github
-    R-->>S: path / ~/.semrel/plugins / $PATH
+    R-->>S: path / .semrel/plugins / ~/.semrel/plugins / $PATH
     S->>P: spawn subprocess
     Note over S,P: SEMREL_PLUGIN_* and SEMREL_* env vars
     P->>P: perform plugin work
@@ -102,5 +102,6 @@ sequenceDiagram
 
 - [Official Plugins](/plugins/)
 - [Plugin Registry](/plugins/registry/) — or browse directly at [registry.semrel.io](https://registry.semrel.io)
+- [Managing Plugins](/plugins/managing/)
 - [Plugin Publishing Guide](/plugins/publishing/)
 - [Plugin SDK — writing your first plugin](/plugins/sdk/)
