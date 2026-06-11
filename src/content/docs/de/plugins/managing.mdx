@@ -203,18 +203,41 @@ Beim Suchen nach einer Plugin-Binary prüft semrel diese Orte in dieser Reihenfo
 
 ---
 
-## Auto-Install während `semrel release`
+---
 
-Wenn semrel ein konfiguriertes Plugin lokal nicht findet, versucht es, die fehlende Binary vor dem Pipelinestart automatisch aus der Registry zu **installieren**:
+## Automatischer Plugin-Restore während `semrel release`
 
-1. **Version aus `uses:`** — wenn der Config-Eintrag eine Version enthält (`uses: github@1.2.0`), wird diese verwendet.
-2. **Version aus `.semrel.lock`** — wenn die Binary bereits gelockt ist, wird die gelockte Version wiederhergestellt.
-3. **Neueste stabile Version** — wenn keine Quelle eine Version liefert, wird die neuste Nicht-Prerelease-Version geladen.
+`semrel release` prüft die Plugin-Verfügbarkeit **vor allem anderen**.
+Das genaue Verhalten hängt davon ab, ob `.semrel.lock` committed ist:
 
-<Aside type="note">
-  Auto-Install ist eine Komfort-Funktion für lokale Entwicklung und CI ohne vorherigen `restore`-Schritt.
-  Für reproduzierbare, auditierbare Pipelines empfiehlt sich das Committen von `.semrel.lock`
-  und das explizite Ausführen von `semrel plugin restore`.
+| Situation | Was semrel macht |
+|---|---|
+| Alle Plugins vorhanden | Sofort weitermachen — kein Download notwendig |
+| Plugins fehlen + `.semrel.lock` vorhanden | **`semrel plugin restore` automatisch ausführen**, dann weitermachen |
+| Plugins fehlen, kein Lock-File | Einzelnen Auto-Install versuchen (Best-Effort, neueste stabile Version) |
+
+### Mit `.semrel.lock` (empfohlen)
+
+```
+$ semrel release
+⬇  plugins missing — running semrel plugin restore from .semrel.lock…
+✓  restored @semrel/github@1.2.0 → .semrel/plugins/semrel-plugin-github
+✓  restored @semrel/github-actions@0.1.0 → .semrel/plugins/semrel-plugin-github-actions
+Running condition checks…
+```
+
+Der Restore aus der Lock-Datei ist eine **harte Operation**: Wenn die Prüfsumme einer Binary nicht übereinstimmt, bricht semrel sofort ab, statt stillschweigend eine andere Binary zu verwenden.
+
+### Ohne `.semrel.lock`
+
+Ohne Lock-Datei versucht semrel, jedes fehlende Plugin einzeln zu installieren. Versions-Auflösung:
+
+1. **Version aus `uses:`** — `uses: github@1.2.0` pinnt die Version explizit.
+2. **Neueste stabile Version** — wenn keine Version angegeben ist, wird die neueste Nicht-Prerelease-Version geladen.
+
+<Aside type="tip">
+  `.semrel.lock` committen für reproduzierbare, auditierbare Plugin-Installationen.
+  Ohne Lock-Datei holt sich `semrel release` auf einem frischen Rechner die gerade aktuelle Version — was sich im Laufe der Zeit ändern kann.
 </Aside>
 
 ---

@@ -203,18 +203,39 @@ When semrel looks up a plugin binary, it checks these locations in priority orde
 
 ---
 
-## Auto-install during `semrel release`
+## Automatic plugin restore during `semrel release`
 
-When semrel cannot find a configured plugin locally, it attempts to **auto-install** the missing binary from the registry before running the pipeline:
+`semrel release` checks plugin availability **before doing anything else**.
+The exact behaviour depends on whether `.semrel.lock` is committed:
 
-1. **Version from `uses:`** — if the config entry includes a version (`uses: github@1.2.0`), that version is used.
-2. **Version from `.semrel.lock`** — if the binary is already locked, the locked version is restored.
-3. **Latest stable** — if neither source provides a version, the newest non-prerelease is downloaded.
+| Situation | What semrel does |
+|---|---|
+| All plugins present | Continue immediately — no download needed |
+| Some plugins missing + `.semrel.lock` exists | **Run `semrel plugin restore` automatically**, then continue |
+| Some plugins missing, no lock file | Attempt per-plugin auto-install (best-effort, uses latest stable) |
 
-<Aside type="note">
-  Auto-install is a convenience for local development and CI without a prior `restore` step.
-  For reproducible, auditable pipelines, prefer committing `.semrel.lock` and running
-  `semrel plugin restore` explicitly.
+### With `.semrel.lock` (recommended)
+
+```
+$ semrel release
+⬇  plugins missing — running semrel plugin restore from .semrel.lock…
+✓  restored @semrel/github@1.2.0 → .semrel/plugins/semrel-plugin-github
+✓  restored @semrel/github-actions@0.1.0 → .semrel/plugins/semrel-plugin-github-actions
+Running condition checks…
+```
+
+Restore from the lock file is a **hard operation**: if a binary's checksum does not match, semrel fails immediately rather than silently using a different binary.
+
+### Without `.semrel.lock`
+
+If `.semrel.lock` is absent, semrel still attempts to auto-install each missing plugin individually. Version resolution:
+
+1. **Version from `uses:`** — `uses: github@1.2.0` pins the version explicitly.
+2. **Latest stable** — if no version is specified, the newest non-prerelease is downloaded.
+
+<Aside type="tip">
+  Commit `.semrel.lock` to get reproducible, auditable plugin installs.
+  Without it, `semrel release` on a fresh machine fetches whatever version happens to be latest.
 </Aside>
 
 ---
