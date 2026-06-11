@@ -1,53 +1,39 @@
 ---
 title: "Plugin: generator-changelog-html"
-description: Erzeugt einen HTML-Changelog für die anstehende Release.
+description: Generates an HTML changelog and passes it as SEMREL_CHANGELOG to provider and hook plugins.
 ---
 
-Erzeugt einen HTML-Changelog für die anstehende Release. Das ist nützlich für Release-Portale, statische Websites und E-Mails, die reich formatierte Ausgaben brauchen.
+Generates an HTML changelog from the release context and commit history.
+Running as a `generator` phase plugin, its stdout **overrides** the default `SEMREL_CHANGELOG` value
+that provider and hook plugins receive — useful for platforms that accept HTML release descriptions.
 
 ## Installation
 
 ```bash
-go install github.com/SemRels/generator-changelog-html@latest
+semrel plugin install @semrel/generator-changelog-html
 ```
 
-Jedes Plugin ist eine eigenständige Go-Binärdatei. Lass es in deinem `PATH` oder referenziere es mit `path:` in `.semrel.yaml`. Wenn du Geheimnisse in einer `.env`-Datei speicherst, lade sie mit `semrel --env-file .env release`.
-
-## Konfiguration
+## Configuration
 
 ```yaml
-version: 1
 plugins:
-  - name: generator-changelog-html
-    path: generator-changelog-html
+  - uses: @semrel/generator-changelog-html
+    phase: generator          # stdout captured by semrel → becomes SEMREL_CHANGELOG
     args:
-      template: templates/changelog.html.tmpl
-      css_file: templates/changelog.css
-      max_commits: 100
+      template: .semrel/templates/changelog.html.tmpl   # optional
+      css_file: .semrel/templates/changelog.css          # optional
+      max_commits: "100"
+  - uses: @semrel/github     # receives the HTML as SEMREL_CHANGELOG
 ```
 
-## Umgebungsvariablen
+## Environment variables
 
-| Name | Erforderlich | Standard | Beschreibung |
-| --- | --- | --- | --- |
-| `SEMREL_PLUGIN_TEMPLATE` | nein | `eingebaute Vorlage` | Pfad zu einer Go-Vorlage, die zum Rendern des Changelogs verwendet wird. |
-| `SEMREL_PLUGIN_CSS_FILE` | nein | `—` | Optionale CSS-Datei, die in die HTML-Ausgabe eingebettet oder referenziert wird. |
-| `SEMREL_PLUGIN_MAX_COMMITS` | nein | `100` | Maximale Anzahl an Commits, die aufgenommen werden. |
+| Name | Required | Default | Description |
+|---|---|---|---|
+| `SEMREL_PLUGIN_TEMPLATE` | no | built-in | Path to a custom Go HTML template. |
+| `SEMREL_PLUGIN_CSS_FILE` | no | — | Optional CSS file to embed or reference in the HTML output. |
+| `SEMREL_PLUGIN_MAX_COMMITS` | no | `100` | Maximum commits to include. |
 
-## Release-Kontextvariablen
-
-- `SEMREL_TAG_NAME`
-- `SEMREL_NEXT_VERSION`
-- `SEMREL_CURRENT_VERSION`
-- `SEMREL_BUMP`
-- `SEMREL_BRANCH`
-- `SEMREL_TAG_PREFIX`
-- `SEMREL_DRY_RUN`
-
-## Beispielausgabe
-
-Ein erzeugter Changelog kann HTML wie `<h2>v1.4.0</h2><ul><li>feat: add search endpoint</li><li>fix: handle empty state</li></ul>` enthalten.
-
-## Quelle
+## Source
 
 - [SemRels/generator-changelog-html](https://github.com/SemRels/generator-changelog-html)

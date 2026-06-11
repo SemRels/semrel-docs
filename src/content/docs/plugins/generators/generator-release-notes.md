@@ -1,52 +1,40 @@
-﻿---
+---
 title: "Plugin: generator-release-notes"
-description: Builds concise release notes from the current release context and commit history.
+description: Generates concise release notes and passes them as SEMREL_CHANGELOG to provider and hook plugins.
 ---
 
-Builds concise release notes from the current release context and commit history. It is a good fit for provider plugins that publish release descriptions to Git forges.
+Generates concise, formatted release notes from the release context and commit history.
+Running as a `generator` phase plugin, its stdout **overrides** the default `SEMREL_CHANGELOG` value
+that provider and hook plugins receive — useful for creating a polished release description
+on GitHub Releases, GitLab Releases, or Slack/Teams notifications.
 
 ## Installation
 
 ```bash
-go install github.com/SemRels/generator-release-notes@latest
+semrel plugin install @semrel/generator-release-notes
 ```
-
-Each plugin is a standalone Go binary. Keep it on your `PATH` or reference it with `path:` in `.semrel.yaml`. If you keep secrets in a `.env` file, load them with `semrel --env-file .env release`.
 
 ## Configuration
 
 ```yaml
-version: 1
 plugins:
-  - name: generator-release-notes
-    path: generator-release-notes
+  - uses: @semrel/generator-release-notes
+    phase: generator          # stdout captured by semrel → becomes SEMREL_CHANGELOG
     args:
-      template: templates/release-notes.tmpl
-      max_commits: 50
-      include_body: false
+      template: .semrel/templates/release-notes.tmpl   # optional
+      max_commits: "50"
+      include_body: "false"
+  - uses: @semrel/gitlab     # receives the formatted notes as SEMREL_CHANGELOG
+  - uses: @semrel/slack      # same
 ```
 
-## Environment Variables
+## Environment variables
 
 | Name | Required | Default | Description |
-| --- | --- | --- | --- |
-| `SEMREL_PLUGIN_TEMPLATE` | no | `built-in template` | Path to a Go template used to render release notes. |
-| `SEMREL_PLUGIN_MAX_COMMITS` | no | `50` | Maximum number of commits to include. |
-| `SEMREL_PLUGIN_INCLUDE_BODY` | no | `false` | Include the full commit body in the generated notes. |
-
-## Release Context Variables
-
-- `SEMREL_TAG_NAME`
-- `SEMREL_NEXT_VERSION`
-- `SEMREL_CURRENT_VERSION`
-- `SEMREL_BUMP`
-- `SEMREL_BRANCH`
-- `SEMREL_TAG_PREFIX`
-- `SEMREL_DRY_RUN`
-
-## Example Output
-
-A generated release note can summarize `v1.4.0`, highlight the bump level, and list the top 50 commits selected for the release.
+|---|---|---|---|
+| `SEMREL_PLUGIN_TEMPLATE` | no | built-in | Path to a custom template. |
+| `SEMREL_PLUGIN_MAX_COMMITS` | no | `50` | Maximum commits to include. |
+| `SEMREL_PLUGIN_INCLUDE_BODY` | no | `false` | Include full commit bodies. |
 
 ## Source
 

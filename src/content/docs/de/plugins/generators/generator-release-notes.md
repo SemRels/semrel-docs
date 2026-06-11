@@ -1,53 +1,41 @@
 ---
 title: "Plugin: generator-release-notes"
-description: Erstellt kompakte Release Notes aus dem aktuellen Release-Kontext und der Commit-Historie.
+description: Generates concise release notes and passes them as SEMREL_CHANGELOG to provider and hook plugins.
 ---
 
-Erstellt kompakte Release Notes aus dem aktuellen Release-Kontext und der Commit-Historie. Das passt gut zu Provider-Plugins, die Release-Beschreibungen in Git-Forges veröffentlichen.
+Generates concise, formatted release notes from the release context and commit history.
+Running as a `generator` phase plugin, its stdout **overrides** the default `SEMREL_CHANGELOG` value
+that provider and hook plugins receive — useful for creating a polished release description
+on GitHub Releases, GitLab Releases, or Slack/Teams notifications.
 
 ## Installation
 
 ```bash
-go install github.com/SemRels/generator-release-notes@latest
+semrel plugin install @semrel/generator-release-notes
 ```
 
-Jedes Plugin ist eine eigenständige Go-Binärdatei. Lass es in deinem `PATH` oder referenziere es mit `path:` in `.semrel.yaml`. Wenn du Geheimnisse in einer `.env`-Datei speicherst, lade sie mit `semrel --env-file .env release`.
-
-## Konfiguration
+## Configuration
 
 ```yaml
-version: 1
 plugins:
-  - name: generator-release-notes
-    path: generator-release-notes
+  - uses: @semrel/generator-release-notes
+    phase: generator          # stdout captured by semrel → becomes SEMREL_CHANGELOG
     args:
-      template: templates/release-notes.tmpl
-      max_commits: 50
-      include_body: false
+      template: .semrel/templates/release-notes.tmpl   # optional
+      max_commits: "50"
+      include_body: "false"
+  - uses: @semrel/gitlab     # receives the formatted notes as SEMREL_CHANGELOG
+  - uses: @semrel/slack      # same
 ```
 
-## Umgebungsvariablen
+## Environment variables
 
-| Name | Erforderlich | Standard | Beschreibung |
-| --- | --- | --- | --- |
-| `SEMREL_PLUGIN_TEMPLATE` | nein | `eingebaute Vorlage` | Pfad zu einer Go-Vorlage, die zum Rendern der Release Notes verwendet wird. |
-| `SEMREL_PLUGIN_MAX_COMMITS` | nein | `50` | Maximale Anzahl an Commits, die aufgenommen werden. |
-| `SEMREL_PLUGIN_INCLUDE_BODY` | nein | `false` | Den vollständigen Commit-Text in die erzeugten Notizen aufnehmen. |
+| Name | Required | Default | Description |
+|---|---|---|---|
+| `SEMREL_PLUGIN_TEMPLATE` | no | built-in | Path to a custom template. |
+| `SEMREL_PLUGIN_MAX_COMMITS` | no | `50` | Maximum commits to include. |
+| `SEMREL_PLUGIN_INCLUDE_BODY` | no | `false` | Include full commit bodies. |
 
-## Release-Kontextvariablen
-
-- `SEMREL_TAG_NAME`
-- `SEMREL_NEXT_VERSION`
-- `SEMREL_CURRENT_VERSION`
-- `SEMREL_BUMP`
-- `SEMREL_BRANCH`
-- `SEMREL_TAG_PREFIX`
-- `SEMREL_DRY_RUN`
-
-## Beispielausgabe
-
-Eine erzeugte Release-Notiz kann `v1.4.0` zusammenfassen, die Bump-Stufe hervorheben und die wichtigsten 50 für die Release ausgewählten Commits auflisten.
-
-## Quelle
+## Source
 
 - [SemRels/generator-release-notes](https://github.com/SemRels/generator-release-notes)
