@@ -1,58 +1,38 @@
 ---
 title: Registry-API
-description: REST-API-Referenz für den Plugin-Registry-Service semrel-registry.
+description: Öffentliche REST-API-Referenz zum Finden und Abrufen von Plugins aus dem semrel-registry.
 ---
 
 import { Aside, Badge } from '@astrojs/starlight/components';
 
-semrel-registry stellt eine JSON-REST-API zum Finden, Verwalten und Herunterladen von semrel-Plugins bereit.
-Die Basis-URL ist konfigurierbar – für die offizielle Registry verwende `https://registry.semrel.io`.
+semrel-registry stellt eine öffentliche JSON-REST-API zum Finden und Herunterladen von semrel-Plugins bereit.
+Die Basis-URL der offiziellen Registry ist `https://registry.semrel.io`.
 
 <Aside type="note">
-  Die Authentifizierung nutzt GitHub OAuth. Die meisten Leseoperationen sind öffentlich; Schreiboperationen erfordern einen gültigen JWT-Token, der über den Ablauf `/auth/github` bezogen wird.
+  Die meisten Leseoperationen sind öffentlich und erfordern keine Authentifizierung.
+  Das Einreichen von Plugins erfordert ein GitHub-Konto (OAuth).
+  Administrative Operationen sind hier nicht dokumentiert.
 </Aside>
-
-## Authentifizierung
-
-### `GET /auth/github`
-
-Startet den GitHub-OAuth-Login. Leitet den Browser zur Autorisierung an GitHub weiter.
-
-### `GET /auth/github/callback`
-
-OAuth-Callback – tauscht den GitHub-Code gegen einen JWT aus und leitet zurück zur konfigurierten Frontend-URL.
-
-### `GET /auth/config`
-
-Gibt die OAuth-Anwendungskonfiguration für das Frontend zurück.
-
-**Antwort**
-
-```json
-{
-  "clientId": "Ov23liXXXXXX",
-  "callbackUrl": "https://registry.semrel.io/auth/github/callback"
-}
-```
-
-### `GET /api/v1/auth/me` <Badge text="Auth nötig" variant="caution" />
-
-Gibt das Profil des authentifizierten Benutzers zurück.
-
-**Antwort**
-
-```json
-{
-  "login": "mwaldheim",
-  "name": "Markus Waldheim",
-  "avatarUrl": "https://avatars.githubusercontent.com/...",
-  "isAdmin": false
-}
-```
 
 ---
 
-## Plugins
+## Plugin-Suche
+
+### `GET /plugins.json`
+
+Gibt den vollständigen Plugin-Katalog als JSON-Dokument zurück — das ist der primäre Endpunkt, den die `semrel`-CLI nutzt.
+
+```bash
+# Offizielle Registry
+curl https://registry.semrel.io/plugins.json
+
+# Eigene Registry (über SEMREL_REGISTRY_URL konfigurierbar)
+curl $SEMREL_REGISTRY_URL/plugins.json
+```
+
+Das Antwortformat ist im [Plugin-Metadaten-Schema](https://registry.semrel.io/schemas/plugin-metadata.json) dokumentiert.
+
+---
 
 ### `GET /api/v1/plugins`
 
@@ -65,9 +45,7 @@ Listet Plugins mit Paginierung und Filtern auf.
 | `page` | integer | `1` | Seitennummer |
 | `limit` | integer | `20` | Ergebnisse pro Seite (max. 100) |
 | `category` | string | — | Nach Kategorie filtern (`analyzer`, `generator`, `provider`, `condition`, `hook`, `updater`) |
-| `author` | string | — | Nach GitHub-Login filtern |
 | `search` | string | — | Volltextsuche über Name, Beschreibung und Tags |
-| `status` | string | `active` | Statusfilter (nur Admins: `pending`, `rejected`) |
 
 **Antwort**
 
@@ -75,53 +53,43 @@ Listet Plugins mit Paginierung und Filtern auf.
 {
   "plugins": [
     {
-      "id": 1,
       "namespace": "@semrel",
-      "name": "provider-github",
+      "name": "github",
       "description": "Publishes GitHub releases and uploads assets.",
-      "author": "mwaldheim",
       "category": "provider",
       "repository": "https://github.com/SemRels/provider-github",
-      "license": "MIT",
-      "status": "active",
+      "license": "Apache-2.0",
       "tags": ["github", "release"],
       "latestVersion": "1.2.0",
-      "views": 1240,
-      "downloads": 4891,
-      "createdAt": "2024-01-15T10:00:00Z",
-      "updatedAt": "2024-03-20T14:30:00Z"
+      "downloads": 4891
     }
   ],
-  "total": 42,
+  "total": 27,
   "page": 1,
   "limit": 20
 }
 ```
 
-### `GET /api/v1/plugins/:id`
-
-Gibt ein einzelnes Plugin anhand seiner numerischen ID zurück.
-
 ### `GET /api/v1/plugins/@:namespace/:name`
 
-Gibt ein Plugin über Namespace und Name zurück (z. B. `GET /api/v1/plugins/@semrel/provider-github`).
+Gibt ein Plugin über Namespace und Name zurück.
+
+```bash
+curl https://registry.semrel.io/api/v1/plugins/@semrel/github
+```
 
 ### `GET /api/v1/plugins/:id/versions`
 
 Listet alle veröffentlichten Versionen eines Plugins auf.
 
-**Antwort**
-
 ```json
 [
   {
-    "id": 7,
-    "pluginId": 1,
     "version": "1.2.0",
     "changelog": "## 1.2.0\n\n- Added asset upload support",
-    "downloadUrl": "https://github.com/SemRels/provider-github/releases/download/v1.2.0/provider-github-linux-amd64",
+    "downloadUrl": "https://github.com/SemRels/provider-github/releases/download/v1.2.0/plugin-linux-amd64",
     "checksums": {
-      "linux/amd64": "sha256:abc123..."
+      "linux_amd64": "3b4cde…"
     },
     "prerelease": false,
     "downloads": 1240,
@@ -130,119 +98,73 @@ Listet alle veröffentlichten Versionen eines Plugins auf.
 ]
 ```
 
-### `GET /api/v1/plugins/:id/versions/:version/download`
+### `GET /api/v1/plugins/:id/versions/:version/downloads` <Badge text="POST" variant="note" />
 
-Protokolliert einen Download und gibt eine Weiterleitung zur Download-URL der Binärdatei zurück.
+Protokolliert ein Download-Ereignis. Wird automatisch von `semrel plugin install` aufgerufen — kein manueller Aufruf erforderlich.
 
 ---
 
-## Plugin-Verwaltung <Badge text="Auth nötig" variant="caution" />
+## Plugin einreichen
 
-### `POST /api/v1/plugins/submit`
+Plugin-Autoren können ein Community-Plugin zur Prüfung einreichen:
 
-Reicht ein Plugin zur Prüfung durch die Community ein. Das Plugin wird mit `status: pending` erstellt, bis ein Admin es genehmigt.
+### `POST /api/v1/plugins/submit` <Badge text="Auth nötig" variant="caution" />
+
+Reicht ein Plugin zur Prüfung ein. Das Plugin erhält zunächst `status: pending` bis es freigegeben wird.
 
 **Request-Body**
 
 ```json
 {
-  "name": "my-custom-analyzer",
+  "name": "my-analyzer",
   "description": "A custom commit analyzer.",
-  "author": "mwaldheim",
   "category": "analyzer",
-  "repository": "https://github.com/mwaldheim/my-custom-analyzer",
-  "license": "MIT",
-  "tags": ["analyzer", "custom"]
+  "repository": "https://github.com/you/my-analyzer",
+  "license": "Apache-2.0",
+  "tags": ["analyzer"]
 }
 ```
 
-### `POST /api/v1/plugins/validate`
-
-Validiert eine Plugin-Spezifikation gegen die offiziellen Plugin-Standards.
-
-### `POST /api/v1/plugins`
-
-Erstellt ein Plugin direkt (Authentifizierung erforderlich). Nutze für Community-Plugins `submit`.
-
-### `PUT /api/v1/plugins/:id`
-
-Aktualisiert Plugin-Metadaten.
-
-### `DELETE /api/v1/plugins/:id`
-
-Löscht ein Plugin.
+Authentifizierung über GitHub OAuth — `https://registry.semrel.io` aufrufen und einloggen.
 
 ---
 
-## Admin-Endpunkte <Badge text="Nur Admins" variant="danger" />
+## Webhook (für Plugin-Release-Workflows)
 
-### `GET /api/v1/stats`
+### `POST /api/v1/webhooks/release`
 
-Gibt Registry-weite Statistiken zurück.
+Release-Workflows von Plugins rufen diesen Endpunkt auf, um die Registry über eine neue Version zu informieren. Diesen Schritt im Release-Workflow des Plugins ergänzen:
 
-**Antwort**
-
-```json
-{
-  "totalPlugins": 42,
-  "totalDownloads": 98234,
-  "totalVersions": 156,
-  "categories": {
-    "analyzer": 8,
-    "generator": 6,
-    "provider": 5,
-    "condition": 10,
-    "hook": 7,
-    "updater": 6
-  }
-}
+```yaml
+- name: semrel-Registry benachrichtigen
+  run: |
+    curl -s -X POST https://registry.semrel.io/api/v1/webhooks/release \
+      -H "Content-Type: application/json" \
+      -H "X-Semrel-Signature: ${{ secrets.SEMREL_WEBHOOK_SECRET }}" \
+      -d '{"repository": "${{ github.repository }}", "tag": "${{ github.ref_name }}"}'
 ```
 
-### `POST /api/v1/admin/sync`
-
-Löst eine Synchronisation aus der konfigurierten Datei `PLUGINS_JSON_PATH` aus.
-
-### `POST /api/v1/admin/sync-github-org`
-
-Synchronisiert alle Plugin-Repositories aus einer GitHub-Organisation.
-
-### `PUT /api/v1/admin/plugins/:id/approve`
-
-Genehmigt eine ausstehende Community-Plugin-Einreichung.
-
-### `PUT /api/v1/admin/plugins/:id/reject`
-
-Lehnt eine ausstehende Community-Plugin-Einreichung ab.
+Das Webhook-Secret wird Plugin-Maintainern separat bereitgestellt. Siehe die [Plugin-Publishing-Anleitung](/de/plugins/publishing/) für den vollständigen Release-Workflow.
 
 ---
 
 ## Schema-Endpunkte
 
-### `GET /schemas/core/v{N}.json`
+### `GET /schemas/core/v1.json`
 
-Gibt das JSON-Schema für die Konfigurationsdatei `.semrel.yaml` zurück. Nutze es mit Editor-Tools für Inline-Validierung.
+Gibt das [JSON-Schema](https://registry.semrel.io/schemas/core/v1.json) für `.semrel.yaml` zurück. In jedem LSP-fähigen Editor für Inline-Validierung nutzbar:
 
 ```yaml
-# .semrel.yaml
 # yaml-language-server: $schema=https://registry.semrel.io/schemas/core/v1.json
-tagPrefix: "v"
 ```
 
-### `GET /schemas/plugins/{name}/v{N}.json`
+### `GET /schemas/plugins/{name}/v1.json`
 
-Gibt das JSON-Schema für die Konfiguration eines bestimmten Plugins zurück.
+Gibt das JSON-Schema für die `args:`-Konfiguration eines bestimmten Plugins zurück.
 
 ### `GET /schemas/plugins/{name}/latest.json`
 
-Leitet (301) auf die neueste Schema-Version des benannten Plugins weiter.
-
----
-
-## Webhook
-
-### `POST /api/v1/webhooks/release`
-
-Empfängt `repository_dispatch`-Ereignisse aus Release-Workflows von Plugins, um neue Plugin-Versionen automatisch zu registrieren. Geschützt durch `WEBHOOK_SECRET`.
+Leitet (HTTP 301) zur aktuellsten Schema-Version des benannten Plugins weiter.
 
 ---
 
@@ -256,23 +178,10 @@ Empfängt `repository_dispatch`-Ereignisse aus Release-Workflows von Plugins, um
 | `/plugins.json` | 10 Anfragen/Min. |
 | OAuth-Endpunkte | 20 Anfragen/Min. |
 
-Antworten oberhalb des Limits liefern `HTTP 429 Too Many Requests` mit dem Header `Retry-After: 60` zurück.
+Antworten oberhalb des Limits liefern `HTTP 429 Too Many Requests` mit dem Header `Retry-After: 60`.
 
 ---
 
-## `GET /plugins.json`
+## Eigene Registry betreiben
 
-Gibt den vollständigen Plugin-Katalog als flaches JSON-Array zurück – diesen Endpunkt nutzt die `semrel`-CLI, wenn `SEMREL_REGISTRY_URL` gesetzt ist.
-
-```json
-[
-  {
-    "name": "provider-github",
-    "namespace": "@semrel",
-    "description": "Publishes GitHub releases and uploads assets.",
-    "repository": "https://github.com/SemRels/provider-github",
-    "category": "provider",
-    "latestVersion": "1.2.0"
-  }
-]
-```
+Die Registry ist Open Source. Zum Betrieb einer eigenen Instanz siehe das [semrel-registry](https://github.com/SemRels/semrel-registry)-Repository. Die CLI per `SEMREL_REGISTRY_URL` auf die eigene Instanz zeigen lassen.
