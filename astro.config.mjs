@@ -1,4 +1,4 @@
-﻿import { defineConfig } from 'astro/config';
+import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import mdx from '@astrojs/mdx';
 import rehypeMermaid from 'rehype-mermaid';
@@ -15,6 +15,10 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'semrel',
+      customCss: ['./src/styles/custom.css'],
+      expressiveCode: {
+        themes: ['github-dark'],
+      },
       description: 'Semantic Versioning for Go',
       defaultLocale: 'root',
       locales: {

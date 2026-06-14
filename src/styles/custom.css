@@ -1,0 +1,342 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+/* ── Starlight CSS Overrides (Default / Dark Mode) ───── */
+:root {
+  /* Fonts */
+  --sl-font: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --sl-font-mono: 'JetBrains Mono', monospace;
+
+  /* Colors - Indigo / Cyan Theme */
+  --sl-color-accent-low: #1e1b4b;
+  --sl-color-accent: #6366f1;
+  --sl-color-accent-high: #c7d2fe;
+  
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #f3f4f6;
+  --sl-color-gray-2: #e5e7eb;
+  --sl-color-gray-3: #94a3b8;
+  --sl-color-gray-4: #374151;
+  --sl-color-gray-5: #1f2937;
+  --sl-color-gray-6: #111827;
+
+  /* Backgrounds & Borders */
+  --sl-color-bg: #030712;
+  --sl-color-bg-nav: rgba(11, 15, 25, 0.7);
+  --sl-color-bg-sidebar: #070a13;
+  --sl-color-border: rgba(255, 255, 255, 0.07);
+  
+  /* Sidebar custom sizing & styles */
+  --sl-sidebar-width: 250px;
+
+  /* Custom overrides for components */
+  --card-bg: rgba(11, 15, 25, 0.5);
+  --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  --card-border-hover: rgba(99, 102, 241, 0.45);
+  --card-icon-bg: rgba(99, 102, 241, 0.1);
+  --card-icon-border: rgba(99, 102, 241, 0.25);
+  --hero-glow: radial-gradient(circle, rgba(99, 102, 241, 0.16) 0%, rgba(6, 182, 212, 0.08) 50%, transparent 70%);
+  --code-frame-bg: #030712;
+  --code-frame-border: rgba(255, 255, 255, 0.06);
+  --code-header-bg: rgba(255, 255, 255, 0.01);
+  --code-header-border: rgba(255, 255, 255, 0.05);
+}
+
+/* ── Light Mode Overrides ────────────────────────────── */
+:root[data-theme='light'] {
+  --sl-color-accent-low: #c7d2fe;
+  --sl-color-accent: #4f46e5;
+  --sl-color-accent-high: #312e81;
+  
+  --sl-color-white: #0f172a;
+  --sl-color-gray-1: #1e293b;
+  --sl-color-gray-2: #334155;
+  --sl-color-gray-3: #64748b;
+  --sl-color-gray-4: #cbd5e1;
+  --sl-color-gray-5: #f1f5f9;
+  --sl-color-gray-6: #f8fafc;
+  
+  --sl-color-bg: #ffffff;
+  --sl-color-bg-nav: rgba(255, 255, 255, 0.75);
+  --sl-color-bg-sidebar: #f8fafc;
+  --sl-color-border: rgba(15, 23, 42, 0.08);
+
+  /* Custom overrides for components in Light Mode */
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-shadow: 0 8px 30px rgba(15, 23, 42, 0.04);
+  --card-border-hover: rgba(79, 70, 229, 0.35);
+  --card-icon-bg: rgba(79, 70, 229, 0.06);
+  --card-icon-border: rgba(79, 70, 229, 0.2);
+  --hero-glow: radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, rgba(6, 182, 212, 0.03) 50%, transparent 70%);
+  --code-frame-bg: #030712; /* code blocks look best remaining dark even in light mode */
+  --code-frame-border: rgba(255, 255, 255, 0.07);
+  --code-header-bg: rgba(255, 255, 255, 0.01);
+  --code-header-border: rgba(255, 255, 255, 0.05);
+  
+  /* Link hover states in light mode */
+  --sl-color-text-link: var(--sl-color-accent);
+}
+
+/* ── Layout & UI Overrides ───────────────────────────── */
+
+/* Header blur effect */
+header.header {
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--sl-color-border) !important;
+  background: var(--sl-color-bg-nav);
+}
+
+/* Sidebar styling */
+.sidebar-pane {
+  background-color: var(--sl-color-bg-sidebar);
+  border-inline-end: 1px solid var(--sl-color-border) !important;
+}
+
+/* Custom scrollbars for docs sidebar and main content */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 120, 0.15);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sl-color-accent);
+}
+
+/* ── Hero Section (Landing Page) ─────────────────────── */
+
+.hero {
+  position: relative;
+  overflow: visible;
+  padding: 4rem 1.5rem !important;
+}
+
+/* Glowing background behind hero text */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  width: 320px;
+  height: 320px;
+  background: var(--hero-glow);
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  pointer-events: none;
+  filter: blur(20px);
+}
+
+/* Title gradient styling */
+.hero h1 {
+  background: linear-gradient(135deg, var(--sl-color-white) 30%, var(--sl-color-accent-high) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  font-size: clamp(2rem, 6vw, 3.5rem) !important;
+  line-height: 1.1;
+  margin-bottom: 1.25rem;
+}
+
+.hero p {
+  font-size: clamp(1rem, 2vw, 1.25rem) !important;
+  max-width: 44rem;
+  margin-inline: auto;
+  line-height: 1.6;
+  color: var(--sl-color-gray-3);
+}
+
+/* Primary buttons with glows and animations */
+.hero .actions a.primary {
+  background: linear-gradient(135deg, var(--sl-color-accent) 0%, #a855f7 100%) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 8px;
+}
+
+.hero .actions a.primary:hover {
+  background: linear-gradient(135deg, var(--sl-color-accent) 0%, #9333ea 100%) !important;
+  box-shadow: 0 6px 22px rgba(99, 102, 241, 0.5);
+  transform: translateY(-2px);
+}
+
+.hero .actions a.minimal {
+  background: rgba(120, 120, 120, 0.05) !important;
+  border: 1px solid var(--sl-color-border) !important;
+  color: var(--sl-color-gray-2) !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  padding: 0.65rem 1.25rem !important;
+  font-size: 0.9rem !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.hero .actions a.minimal:hover {
+  background: rgba(120, 120, 120, 0.1) !important;
+  border-color: rgba(120, 120, 120, 0.25) !important;
+  color: var(--sl-color-white) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Social icons in header */
+.social-icons a {
+  opacity: 0.75;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--sl-color-gray-3) !important;
+}
+.social-icons a:hover {
+  opacity: 1;
+  color: var(--sl-color-white) !important;
+  transform: translateY(-1px);
+  filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.4));
+}
+
+/* ── Content Cards (Landing Page) ────────────────────── */
+
+/* Grid of cards layout */
+.card-grid {
+  gap: 1.5rem !important;
+  margin-top: 2rem;
+}
+
+/* Card components */
+article.card {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--sl-color-border) !important;
+  border-radius: 12px !important;
+  padding: 1.5rem !important;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--card-shadow);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative;
+}
+
+article.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--card-border-hover) !important;
+  box-shadow: var(--card-shadow), 0 0 20px rgba(99, 102, 241, 0.1);
+}
+
+/* Card Titles and Icon glowing boxes */
+article.card p.title {
+  color: var(--sl-color-white) !important;
+  font-weight: 700 !important;
+  font-size: 1.1rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  margin-bottom: 0.5rem;
+}
+
+article.card p.title svg.icon {
+  color: var(--sl-color-accent) !important;
+  background: var(--card-icon-bg) !important;
+  border: 1px solid var(--card-icon-border) !important;
+  border-radius: 8px !important;
+  padding: 6px !important;
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+article.card div.body {
+  color: var(--sl-color-gray-3) !important;
+  font-size: 0.9rem !important;
+  line-height: 1.6;
+}
+
+/* ── Docs Content & Typography ───────────────────────── */
+
+/* Side navigation links active styles */
+.sidebar-content a[aria-current="page"] {
+  color: var(--sl-color-white) !important;
+  background-color: var(--sl-color-accent-low) !important;
+  border-inline-start: 2px solid var(--sl-color-accent) !important;
+  font-weight: 600;
+}
+
+/* Inline code adjustments */
+:not(pre) > code {
+  font-size: 0.85em;
+  background: var(--sl-color-gray-5) !important;
+  color: var(--sl-color-gray-1) !important;
+  border: 1px solid var(--sl-color-border) !important;
+  padding: 0.15em 0.4em !important;
+  border-radius: 5px !important;
+}
+
+/* Fenced code block styling (expressive-code) */
+.expressive-code {
+  margin: 1.25rem 0 !important;
+}
+
+.expressive-code .frame {
+  border: 1px solid var(--code-frame-border) !important;
+  border-radius: 12px !important;
+  background-color: var(--code-frame-bg) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  position: relative;
+}
+
+/* macOS Window Control Dots */
+.expressive-code .frame::before {
+  content: "";
+  display: block;
+  height: 8px;
+  width: 36px;
+  background-image: 
+    radial-gradient(circle, #ef4444 2.25px, transparent 2.75px),
+    radial-gradient(circle, #f59e0b 2.25px, transparent 2.75px),
+    radial-gradient(circle, #10b981 2.25px, transparent 2.75px);
+  background-size: 8px 8px;
+  background-repeat: no-repeat;
+  background-position: 0px center, 12px center, 24px center;
+  position: absolute;
+  top: 13px;
+  left: 14px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Shift frame header text to allow room for the control dots */
+.expressive-code .frame figcaption.header {
+  padding-left: 4rem !important;
+  background-color: var(--code-header-bg) !important;
+  border-bottom: 1px solid var(--code-header-border) !important;
+  font-size: 0.75rem !important;
+  color: var(--sl-color-gray-3) !important;
+  min-height: 34px !important;
+  display: flex;
+  align-items: center;
+}
+
+/* If the block has no header at all, add padding to avoid overlapping the dots */
+.expressive-code .frame:not(:has(figcaption)) pre {
+  padding-top: 2rem !important;
+}
+
+.expressive-code pre {
+  background-color: var(--code-frame-bg) !important;
+  font-size: 0.85rem !important;
+}
+
+/* Right-side table of contents active links */
+.right-sidebar a[aria-current="true"] {
+  color: var(--sl-color-accent) !important;
+  font-weight: 600;
+}
