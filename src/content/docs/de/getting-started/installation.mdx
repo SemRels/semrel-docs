@@ -222,6 +222,8 @@ Der Ablauf sieht so aus:
 
 Standardmäßig liegt der Cache für Registry-Metadaten unter `.semrel/registry-cache`, während heruntergeladene Binärdateien aus dem lokalen `.semrel/`-Cache-Layout wiederverwendet werden. Lokale Binärdateien haben weiterhin Vorrang. Das hält CI vorhersehbar und erlaubt Offline-Wiederverwendung nach dem ersten erfolgreichen Download.
 
+Wenn du `.semrel.lock` committest, führe regelmäßig `semrel plugin update --check` aus und nutze `semrel plugin update`, wenn du gepinnte Plugin-Versionen aktualisieren möchtest.
+
 ```bash
 # Optional registry overrides
 export SEMREL_REGISTRY_URL=https://registry.semrel.io

@@ -358,6 +358,27 @@ Verwende die vollständige Referenz `@namespace/name`, wenn der Registry-Eintrag
 
 Wenn du in das projektlokale Standardverzeichnis installierst, erzeugt oder aktualisiert semrel außerdem `.semrel.lock` im Repository-Root.
 
+### `semrel plugin update`
+
+Prüfe auf neuere Plugin-Releases in der Registry und installiere sie optional.
+
+Ohne Argumente liest semrel `.semrel.lock` und prüft oder aktualisiert alle gepinnten Plugins.
+
+```bash
+semrel plugin update [name[@version]] [--check]
+```
+
+```bash
+# Updates für alle in .semrel.lock gepinnten Plugins prüfen
+semrel plugin update --check
+
+# Alle verfügbaren Updates installieren und .semrel.lock aktualisieren
+semrel plugin update
+
+# Einzelnes Plugin aktualisieren
+semrel plugin update @semrel/github
+```
+
 ### `semrel plugin restore`
 
 Installiere alle in `.semrel.lock` aufgeführten Plugins nach `.semrel/plugins/`.

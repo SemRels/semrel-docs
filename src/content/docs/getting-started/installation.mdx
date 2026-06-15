@@ -222,6 +222,8 @@ The flow looks like this:
 
 By default, the registry metadata cache lives under `.semrel/registry-cache`, while downloaded binaries are reused from the local `.semrel/` cache layout. Local binaries still take precedence, which keeps CI predictable and allows offline reuse after the first successful download.
 
+If you commit `.semrel.lock`, run `semrel plugin update --check` regularly and `semrel plugin update` when you want to refresh pinned plugin versions.
+
 ```bash
 # Optional registry overrides
 export SEMREL_REGISTRY_URL=https://registry.semrel.io
