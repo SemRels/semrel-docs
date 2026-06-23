@@ -1,11 +1,17 @@
 ---
 title: Introduction
-description: What is semrel and why should you use it?
+description: What is semrel? The zero-dependency, Go-native semantic release automation tool — the open-source alternative to semantic-release without Node.js. Single binary, Conventional Commits, air-gap ready, supply-chain secure.
+sidebar:
+  order: 1
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid, Aside, LinkButton } from '@astrojs/starlight/components';
 
-**semrel** automates your release pipeline by reading [Conventional Commits](https://www.conventionalcommits.org/), calculating the correct next [SemVer](https://semver.org/) version, generating a changelog, and running configurable release plugins.
+**semrel** automates your release pipeline by reading [Conventional Commits](https://www.conventionalcommits.org/), calculating the correct next [SemVer](https://semver.org/) version, generating a changelog, and running configurable release plugins — with **zero runtime dependencies**.
+
+<Aside type="tip" title="Coming from semantic-release?">
+  semrel replicates the same Conventional Commits → SemVer automation without requiring Node.js. See the [migration guide and comparison →](/guide/comparison/)
+</Aside>
 
 ## Why semrel?
 
@@ -57,6 +63,19 @@ flowchart TD
 ```
 
 Each stage can be handled by a separate plugin executable. Install official plugins with commands such as `semrel plugin install github`, then configure them in `.semrel.yaml`.
+
+## semrel vs the alternatives
+
+| | semrel | semantic-release | goreleaser |
+|---|---|---|---|
+| Runtime | **None (static binary)** | Node.js + npm | None (static binary) |
+| Semantic versioning from commits | ✅ | ✅ | ❌ (tag-based) |
+| Air-gap / offline CI | **✅ Native** | ❌ | ✅ |
+| Supply-chain security | **Cosign + SBOM + SLSA** | ❌ | Cosign |
+| Plugin language | **Any binary** | JavaScript | Go (built-in) |
+| Monorepo | **✅ Free** | ✅ Free | ✅ Pro ($948+/yr) |
+
+→ [Full comparison: semrel vs semantic-release vs goreleaser vs release-please](/guide/comparison/)
 
 ## Next steps
 

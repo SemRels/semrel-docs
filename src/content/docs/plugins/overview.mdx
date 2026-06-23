@@ -1,11 +1,23 @@
 ---
 title: Plugin Overview
-description: Understand how the semrel plugin system works and which plugin types exist.
+description: How the semrel plugin system works — subprocess-based plugins, lifecycle, environment variables, discovery order, and the six plugin categories (provider, condition, analyzer, generator, updater, hook).
 ---
 
 import { Badge, Card, CardGrid, Aside, LinkButton } from '@astrojs/starlight/components';
 
-![semrel plugin ecosystem showing providers, conditions, analyzers, generators, updaters, and hooks connected to the core release pipeline](/plugin-ecosystem.png)
+
+<picture>
+  <source srcset="/plugin-ecosystem.webp" type="image/webp" />
+  <img
+    src="/plugin-ecosystem.png"
+    alt="semrel plugin ecosystem showing providers, conditions, analyzers, generators, updaters, and hooks connected to the core release pipeline"
+    width="1024"
+    height="1024"
+    fetchpriority="high"
+    style="width: 100%; height: auto; aspect-ratio: 1 / 1;"
+  />
+</picture>
+
 
 semrel's release pipeline is composed of standalone plugin executables. Each plugin is discovered locally and executed as a subprocess — there is no gRPC layer or RPC handshake.
 

@@ -1,0 +1,28 @@
+---
+// Custom Head override: injects per-page Open Graph + Twitter meta from Starlight frontmatter
+import type { Props } from '@astrojs/starlight/props';
+import StarlightHead from '@astrojs/starlight/components/Head.astro';
+
+const { entry } = Astro.props as Props;
+// entry is undefined on generated pages like 404 — guard gracefully
+const frontmatter = entry?.data ?? {};
+const pageTitle = (frontmatter as { title?: string }).title ?? 'semrel';
+const pageDesc  = (frontmatter as { description?: string }).description ??
+  'semrel automates semantic versioning and release management for Go projects using Conventional Commits and a pluggable pipeline.';
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://semrel.io');
+const ogTitle = pageTitle === 'semrel' ? 'semrel — Semantic Release Automation for Go'
+  : `${pageTitle} — semrel`;
+---
+<StarlightHead {...Astro.props}><slot /></StarlightHead>
+
+<!-- Dynamic per-page Open Graph -->
+<meta property="og:title"       content={ogTitle} />
+<meta property="og:description" content={pageDesc} />
+<meta property="og:url"         content={canonicalURL} />
+
+<!-- Dynamic per-page Twitter -->
+<meta name="twitter:title"       content={ogTitle} />
+<meta name="twitter:description" content={pageDesc} />
+
+<!-- Canonical -->
+<link rel="canonical" href={canonicalURL} />

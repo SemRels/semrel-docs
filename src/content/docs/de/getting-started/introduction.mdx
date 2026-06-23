@@ -1,11 +1,17 @@
 ---
 title: Einführung
-description: Was ist semrel und warum solltest du es verwenden?
+description: Was ist semrel? Das zero-dependency, Go-native Tool für semantische Release-Automatisierung — die Open-Source-Alternative zu semantic-release ohne Node.js. Einzelne Binärdatei, Conventional Commits, air-gap-fähig, supply-chain-sicher.
+sidebar:
+  order: 1
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid, Aside, LinkButton } from '@astrojs/starlight/components';
 
-**semrel** automatisiert deine Release Pipeline, indem es [Conventional Commits](https://www.conventionalcommits.org/) auswertet, die korrekte nächste [SemVer](https://semver.org/)-Version berechnet, einen Changelog erzeugt und konfigurierbare Release Plugins ausführt.
+**semrel** automatisiert deine Release-Pipeline, indem es [Conventional Commits](https://www.conventionalcommits.org/) auswertet, die korrekte nächste [SemVer](https://semver.org/)-Version berechnet, einen Changelog erzeugt und konfigurierbare Release-Plugins ausführt — mit **null Laufzeitabhängigkeiten**.
+
+<Aside type="tip" title="Von semantic-release migrieren?">
+  semrel repliziert dieselbe Conventional-Commits → SemVer-Automatisierung ohne Node.js. Siehe den [Migrations-Guide und Vergleich →](/de/guide/comparison/)
+</Aside>
 
 ## Warum semrel?
 
@@ -58,10 +64,23 @@ flowchart TD
 
 Jede Phase kann von einem separaten Plugin-Executable übernommen werden. Installiere offizielle Plugins mit Befehlen wie `semrel plugin install github` und konfiguriere sie anschließend in `.semrel.yaml`.
 
+## semrel vs. die Alternativen
+
+| | semrel | semantic-release | goreleaser |
+|---|---|---|---|
+| Runtime | **Keine (statische Binärdatei)** | Node.js + npm | Keine (statische Binärdatei) |
+| Auto-SemVer aus Commits | ✅ | ✅ | ❌ tag-basiert |
+| Air-gap / Offline-CI | **✅ Nativ** | ❌ | ✅ |
+| Supply-Chain-Sicherheit | **Cosign + SBOM + SLSA** | ❌ | Cosign |
+| Plugin-Sprache | **Beliebige Binärdatei** | Nur JavaScript | Go (eingebaut) |
+| Monorepo | **✅ Kostenlos** | ✅ Kostenlos | ✅ Pro (948 $/Jahr) |
+
+→ [Vollständiger Vergleich: semrel vs semantic-release vs goreleaser vs release-please](/de/guide/comparison/)
+
 ## Nächste Schritte
 
-- [Installiere semrel](/getting-started/installation/)
-- [Starte dein erstes Release in 5 Minuten](/getting-started/quick-start/)
-- [Verstehe die Konfigurationsdatei](/guide/configuration/)
-- [Durchsuche offizielle Plugins](/plugins/)
+- [Installiere semrel](/de/getting-started/installation/)
+- [Starte dein erstes Release in 5 Minuten](/de/getting-started/quick-start/)
+- [Verstehe die Konfigurationsdatei](/de/guide/configuration/)
+- [Durchsuche offizielle Plugins](/de/plugins/)
 - [Entdecke die Plugin Registry](https://registry.semrel.io)

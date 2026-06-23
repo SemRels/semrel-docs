@@ -5,7 +5,19 @@ description: Verstehe, wie das semrel-Plugin-System funktioniert und welche Plug
 
 import { Badge, Card, CardGrid, Aside, LinkButton } from '@astrojs/starlight/components';
 
-![semrel Plugin-Ökosystem: Provider, Conditions, Analyzer, Generatoren, Updater und Hooks, verbunden mit der Kern-Release-Pipeline](/plugin-ecosystem.png)
+
+<picture>
+  <source srcset="/plugin-ecosystem.webp" type="image/webp" />
+  <img
+    src="/plugin-ecosystem.png"
+    alt="semrel Plugin-Ökosystem: Provider, Conditions, Analyzer, Generatoren, Updater und Hooks, verbunden mit der Kern-Release-Pipeline"
+    width="1024"
+    height="1024"
+    fetchpriority="high"
+    style="width: 100%; height: auto; aspect-ratio: 1 / 1;"
+  />
+</picture>
+
 
 Die Release-Pipeline von semrel besteht aus eigenständigen Plugin-Binärdateien. Jedes Plugin wird lokal gefunden und als Subprozess ausgeführt – es gibt keine gRPC-Schicht und keinen RPC-Handshake.
 

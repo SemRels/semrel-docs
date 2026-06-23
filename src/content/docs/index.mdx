@@ -1,9 +1,9 @@
 ---
 title: semrel
-description: Automated semantic versioning and changelog generation for Go projects.
+description: semrel is a zero-dependency, Go-native semantic release automation tool — the open-source alternative to semantic-release without the Node.js overhead. Single binary, Conventional Commits, monorepo-ready, air-gap safe.
 template: splash
 hero:
-  tagline: Ship with confidence. semrel reads your commits, calculates the next version, and publishes the release — automatically.
+  tagline: Zero Node.js. Zero runtime overhead. One binary that reads your commits, bumps SemVer, and ships the release — automatically.
   actions:
     - text: Get Started
       link: /getting-started/introduction/
@@ -13,32 +13,133 @@ hero:
       link: https://github.com/SemRels/semrel
       icon: github
       variant: minimal
+head:
+  - tag: script
+    attrs:
+      type: application/ld+json
+    content: |
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is semrel?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "semrel is an open-source, plugin-based semantic release automation tool for Go. It reads Conventional Commits, determines the correct SemVer bump, generates a changelog, and publishes the release — automatically. It ships as a single static binary with zero runtime dependencies."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does semrel require Node.js?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. semrel is a single static Go binary with zero Node.js dependency. There is no npm install, no node_modules, no V8 startup time. It works in Alpine Linux containers, air-gapped pipelines, and minimal CI runners without any runtime setup."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is semrel a semantic-release alternative?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. semrel is the Go-native, zero-dependency alternative to semantic-release. It implements the same Conventional Commits-driven SemVer automation without requiring Node.js. It is significantly faster in large repositories (semantic-release can take 35+ minutes on repos with 460+ tags), eliminates the npm supply-chain attack surface, and is fully compatible with air-gapped CI environments."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does semrel compare to goreleaser?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "goreleaser is primarily a Go binary packaging and distribution tool — it compiles binaries, creates .deb/.rpm packages, and uploads release assets. semrel is a semantic versioning and changelog automation tool that calculates the next SemVer version from Conventional Commits and orchestrates the full release pipeline. They serve different purposes and can be used together: semrel to determine the version, goreleaser to build and distribute the artifacts."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does semrel work in air-gapped or restricted CI environments?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. semrel is designed for air-gapped use. Install plugins once with semrel plugin install and commit the .semrel/plugins/ directory to your cache. From that point on, CI requires zero outbound network access during release execution. This makes semrel fully compatible with enterprise pipelines under NIS2, DORA, and other compliance mandates."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is semrel supply-chain secure?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Every official semrel release is signed with Sigstore Cosign, includes a CycloneDX and SPDX SBOM, and carries SLSA Level 1 provenance attestation. Unlike semantic-release, which depends on hundreds of transitive npm packages with broad supply-chain exposure, semrel is a single statically compiled binary with zero runtime dependencies."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does semrel support monorepos?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. semrel can version multiple independent modules inside one repository, each with its own .semrel.yaml config and tag series. Use per-package matrix CI jobs or the semrel workspace command for single-step monorepo releases with automatic dependency ordering."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is semrel free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. semrel is open-source under the Apache 2.0 license. There is no Pro tier, no pay-wall for monorepo or enterprise features, and no usage limits. See https://github.com/SemRels/semrel."
+            }
+          }
+        ]
+      }
+  - tag: script
+    attrs:
+      type: application/ld+json
+    content: |
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "semrel",
+        "url": "https://semrel.io",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://semrel.io/search?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid, LinkButton } from '@astrojs/starlight/components';
 
-## Why semrel?
+## Why semrel instead of semantic-release?
 
-<CardGrid stagger>
-  <Card title="Zero manual versioning" icon="approve-check">
-    semrel analyses your [Conventional Commits](https://www.conventionalcommits.org/) and decides whether to bump `major`, `minor`, or `patch` — no human judgement required.
+<CardGrid>
+  <Card title="No Node.js — ever" icon="approve-check">
+    semrel ships as a **single static binary** for Linux, macOS, and Windows. No `npm install`, no `node_modules`, no V8 cold starts. Alpine containers, air-gapped pipelines, and minimal runners just work.
   </Card>
-  <Card title="Fully pluggable" icon="puzzle">
-    Every step of the pipeline is a swappable subprocess plugin. Swap the GitHub provider for GitLab, replace the changelog generator, or add a Slack notification — without touching core semrel.
+  <Card title="Automatic SemVer from Conventional Commits" icon="magnifier">
+    semrel analyses every commit since the last tag and calculates the correct `major`, `minor`, or `patch` bump — no human decision required, no manual changelog editing.
   </Card>
-  <Card title="Monorepo ready" icon="seti:folder">
-    Version multiple independent modules in a single repository, each with its own tag series and config file.
+  <Card title="Supply-chain secure by default" icon="padlock">
+    Every official release is signed with **Sigstore Cosign**, includes **CycloneDX + SPDX SBOMs**, and carries **SLSA Level 1** provenance attestation. Ready for NIS2, DORA, and Cyber Resilience Act mandates.
   </Card>
-  <Card title="Supply chain security" icon="padlock">
-    Signed releases with Sigstore Cosign, CycloneDX/SPDX SBOM, SLSA Level 1 provenance. DCO sign-off and REUSE/SPDX compliance enforced on every PR.
+  <Card title="Air-gap & regulated environments" icon="server">
+    Pre-cache the `.semrel/plugins/` directory once. After that, zero outbound network calls during CI. Fully compatible with restricted, air-gapped enterprise pipelines.
   </Card>
-  <Card title="Language agnostic plugins" icon="translate">
-    Plugins are plain subprocess binaries — write them in Go, Python, Rust, Node.js, or any language you like.
+  <Card title="Fully pluggable pipeline" icon="puzzle">
+    Every step — condition, analyzer, generator, updater, provider, hook — is a swappable subprocess binary. Write plugins in **Go, Python, Rust, Node.js**, or any language. No lock-in.
   </Card>
-  <Card title="Dry-run mode" icon="information">
-    Preview exactly what semrel would do before touching anything. Run `semrel release --dry-run` in CI to validate your config safely.
+  <Card title="Monorepo ready" icon="code-branch">
+    Version multiple independent modules in a single repository, each with its own `.semrel.yaml`, tag series, and release lifecycle.
   </Card>
-  <Card title="Open Source" icon="open-book">
-    Apache 2.0 licensed. Built in the open at [SemRels/semrel](https://github.com/SemRels/semrel).
+  <Card title="Fast in large repositories" icon="rocket">
+    Compiled Go versus a multi-hundred-package Node.js tree. semrel traverses `git log` and calls forge APIs concurrently — no 35-minute CI timeouts.
+  </Card>
+  <Card title="Open Source · Apache 2.0" icon="open-book">
+    Built in the open at [SemRels/semrel](https://github.com/SemRels/semrel). Free forever, no Pro tier, no pay-wall for monorepos or enterprise features.
   </Card>
 </CardGrid>
+
+<div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+  <LinkButton href="/getting-started/quick-start/" icon="rocket" variant="primary">Quick Start — 5 minutes</LinkButton>
+  <LinkButton href="/guide/comparison/" icon="list-format" variant="secondary">semrel vs semantic-release vs goreleaser</LinkButton>
+</div>

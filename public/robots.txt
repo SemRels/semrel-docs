@@ -1,0 +1,9 @@
+# semrel.io – robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://semrel.io/sitemap-index.xml
+
+# Block common bot traps
+Disallow: /cdn-cgi/

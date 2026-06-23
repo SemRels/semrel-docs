@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+/* Fonts loaded via <link> in <head> (astro.config.mjs) to avoid render-blocking @import CLS */
 
 /* ── Starlight CSS Overrides (Default / Dark Mode) ───── */
 :root {
@@ -218,12 +218,16 @@ article.card {
   padding: 1.5rem !important;
   backdrop-filter: blur(12px);
   box-shadow: var(--card-shadow);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.2s ease,
+              box-shadow 0.2s ease !important;
   position: relative;
+  /* Establish stacking context so child hover doesn't bleed */
+  will-change: transform;
 }
 
 article.card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   border-color: var(--card-border-hover) !important;
   box-shadow: var(--card-shadow), 0 0 20px rgba(99, 102, 241, 0.1);
 }
@@ -340,3 +344,58 @@ article.card div.body {
   color: var(--sl-color-accent) !important;
   font-weight: 600;
 }
+
+/* ── CLS Prevention ──────────────────────────────────── */
+
+/* Reserve space for markdown images before they load, preventing layout shift */
+.sl-markdown-content img {
+  display: block;
+  height: auto;
+  /* aspect-ratio comes from width/height attributes on the <img> tag */
+}
+
+/* Prevent long URL strings in tables from causing layout reflow */
+.sl-markdown-content table {
+  table-layout: fixed;
+  width: 100%;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.sl-markdown-content table td:first-child,
+.sl-markdown-content table th:first-child {
+  width: 30%;
+}
+
+/* Comparison tables: auto layout so each column sizes to its content */
+.sl-markdown-content .tablist-wrapper table,
+.sl-markdown-content [role=tabpanel] table {
+  table-layout: auto;
+  font-size: 0.85rem;
+  min-width: 100%;
+}
+
+/* Make tab panels scrollable horizontally on narrow viewports */
+.sl-markdown-content [role=tabpanel] {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sl-markdown-content .tablist-wrapper table td,
+.sl-markdown-content .tablist-wrapper table th,
+.sl-markdown-content [role=tabpanel] table td,
+.sl-markdown-content [role=tabpanel] table th {
+  white-space: nowrap;
+  padding-inline: 0.6rem;
+}
+
+/* First column in tab tables: label, allow wrapping */
+.sl-markdown-content .tablist-wrapper table td:first-child,
+.sl-markdown-content .tablist-wrapper table th:first-child,
+.sl-markdown-content [role=tabpanel] table td:first-child,
+.sl-markdown-content [role=tabpanel] table th:first-child {
+  width: auto;
+  white-space: normal;
+  min-width: 10rem;
+}
+

@@ -2,10 +2,50 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import mdx from '@astrojs/mdx';
 import rehypeMermaid from 'rehype-mermaid';
+import sitemap from '@astrojs/sitemap';
+import compress from 'astro-compress';
+import compressor from 'astro-compressor';
 
 export default defineConfig({
   site: 'https://semrel.io',
+
+  // Instant link prefetching — every visible link is preloaded on hover/intersection
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'viewport',
+  },
+
+  // Inline small CSS directly into HTML to eliminate extra round-trips
+  build: {
+    inlineStylesheets: 'auto',
+  },
+
+  // Explicit HTML compression (default in prod, stated here for clarity)
+  compressHTML: true,
+
+  // Use class-based CSS scoping for smaller, more predictable selectors
+  scopedStyleStrategy: 'class',
+
+  // Consistent trailing-slash URLs (Starlight already enforces this)
+  trailingSlash: 'always',
+
+  // Sharp image service with sensible quality defaults for <Image> components
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+      config: {
+        defaults: {
+          jpeg: { quality: 82 },
+          webp: { quality: 85 },
+          avif: { quality: 80 },
+          png:  { compressionLevel: 9 },
+        },
+      },
+    },
+  },
   markdown: {
+    // Smart typography: curly quotes, em-dashes, ellipses
+    smartypants: true,
     rehypePlugins: [[rehypeMermaid, {
       strategy: 'img-svg',
       mermaidConfig: { theme: 'default' },
@@ -19,7 +59,10 @@ export default defineConfig({
       expressiveCode: {
         themes: ['github-dark'],
       },
-      description: 'Semantic Versioning for Go',
+      components: {
+        Head: './src/components/SeoHead.astro',
+      },
+      description: 'semrel — automated semantic versioning and release management for Go projects. Plugin-based, monorepo-ready, supply-chain secure.',
       defaultLocale: 'root',
       locales: {
         root: {
@@ -31,6 +74,138 @@ export default defineConfig({
           lang: 'de',
         },
       },
+      head: [
+        // Google Fonts — preconnect + non-blocking link (avoids @import CLS)
+        {
+          tag: 'link',
+          attrs: { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        },
+        {
+          tag: 'link',
+          attrs: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        },
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'stylesheet',
+            href: 'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=optional',
+          },
+        },
+        // Open Graph defaults (overridden per-page via frontmatter)
+        {
+          tag: 'meta',
+          attrs: { property: 'og:type', content: 'website' },
+        },
+        {
+          tag: 'meta',
+          attrs: { property: 'og:site_name', content: 'semrel' },
+        },
+        {
+          tag: 'meta',
+          attrs: { property: 'og:image', content: 'https://semrel.io/semrel.jpg' },
+        },
+        {
+          tag: 'meta',
+          attrs: { property: 'og:image:width', content: '1200' },
+        },
+        {
+          tag: 'meta',
+          attrs: { property: 'og:image:height', content: '630' },
+        },
+        // Twitter / X card
+        {
+          tag: 'meta',
+          attrs: { name: 'twitter:card', content: 'summary_large_image' },
+        },
+        {
+          tag: 'meta',
+          attrs: { name: 'twitter:site', content: '@semrel_io' },
+        },
+        {
+          tag: 'meta',
+          attrs: { name: 'twitter:image', content: 'https://semrel.io/semrel.jpg' },
+        },
+        // Global keywords
+        {
+          tag: 'meta',
+          attrs: {
+            name: 'keywords',
+            content:
+              'semantic release alternative, zero dependency semantic release, go semver automation, semantic versioning, semver, release automation, go release automation, conventional commits, changelog generator, monorepo release, ci cd release automation, automated github releases, air gapped release automation, goreleaser alternative, standard-version alternative, supply chain secure release, fastest semantic release tool, git tagging automation, gitlab ci semantic release',
+          },
+        },
+        // Web App Manifest
+        {
+          tag: 'link',
+          attrs: { rel: 'manifest', href: '/site.webmanifest' },
+        },
+        // Canonical is set per-page by Astro; theme colour for mobile browsers
+        {
+          tag: 'meta',
+          attrs: { name: 'theme-color', content: '#7c3aed' },
+        },
+        // JSON-LD: SoftwareApplication schema
+        {
+          tag: 'script',
+          attrs: { type: 'application/ld+json' },
+          content: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'SoftwareApplication',
+            name: 'semrel',
+            url: 'https://semrel.io',
+            applicationCategory: 'DeveloperApplication',
+            operatingSystem: 'Linux, macOS, Windows',
+            license: 'https://www.apache.org/licenses/LICENSE-2.0',
+            description:
+              'semrel automates semantic versioning and release management for Go projects using Conventional Commits, a fully pluggable pipeline, and a global plugin registry.',
+            author: {
+              '@type': 'Organization',
+              name: 'SemRels',
+              url: 'https://github.com/SemRels',
+            },
+            softwareVersion: 'latest',
+            downloadUrl: 'https://github.com/SemRels/semrel/releases',
+            featureList: [
+              'Automated SemVer bumping from Conventional Commits',
+              'Pluggable release pipeline',
+              'Monorepo support',
+              'Global plugin registry',
+              'Supply-chain security (Cosign, SBOM, SLSA)',
+              'Dry-run mode',
+            ],
+            sameAs: [
+              'https://github.com/SemRels/semrel',
+              'https://registry.semrel.io',
+            ],
+          }),
+        },
+        // JSON-LD: Organization
+        {
+          tag: 'script',
+          attrs: { type: 'application/ld+json' },
+          content: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: 'SemRels',
+            url: 'https://semrel.io',
+            logo: 'https://semrel.io/semrel.png',
+            sameAs: [
+              'https://github.com/SemRels',
+              'https://registry.semrel.io',
+            ],
+          }),
+        },
+        // WCAG 2.5.3 fix: mark search button <kbd> shortcuts as aria-hidden
+        // so the accessible name of the button matches its visible text label.
+        {
+          tag: 'script',
+          content: `document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('button[data-open-modal] kbd').forEach(function(el){
+    el.setAttribute('aria-hidden','true');
+  });
+});`,
+        },
+      ],
       logo: {
         src: './public/semrel.svg',
         alt: 'semrel logo',
@@ -51,7 +226,14 @@ export default defineConfig({
         {
           label: 'Guide',
           items: [
-            { autogenerate: { directory: 'guide' } },
+            { label: 'vs semantic-release / goreleaser', link: '/guide/comparison/', badge: { text: 'New', variant: 'tip' } },
+            { label: 'Configuration', link: '/guide/configuration/' },
+            { label: 'CLI Reference', link: '/guide/cli/' },
+            { label: 'Monorepo', link: '/guide/monorepo/' },
+            { label: 'Docker', link: '/guide/docker/' },
+            { label: 'CI Outputs', link: '/guide/ci-outputs/' },
+            { label: 'Schemas', link: '/guide/schemas/' },
+            { label: 'Plugin Development', link: '/guide/plugin-development/' },
           ],
         },
         {
@@ -143,5 +325,54 @@ export default defineConfig({
       ],
     }),
     mdx(),
+    sitemap({
+      i18n: {
+        defaultLocale: 'en',
+        locales: {
+          en: 'en-US',
+          de: 'de-DE',
+        },
+      },
+      filter: (page) =>
+        !page.includes('/admin/') && !page.includes('/404'),
+      changefreq: 'weekly',
+      priority: 0.7,
+      lastmod: new Date(),
+      serialize(item) {
+        // Boost priority for landing + getting-started pages
+        if (item.url === 'https://semrel.io/' || item.url === 'https://semrel.io/de/') {
+          item.priority = 1.0;
+          item.changefreq = 'daily';
+        } else if (
+          item.url.includes('/getting-started/') ||
+          item.url.includes('/guide/') ||
+          item.url.includes('/plugins/')
+        ) {
+          item.priority = 0.9;
+          item.changefreq = 'weekly';
+        }
+        return item;
+      },
+    }),
+    // Minify HTML, CSS, JS, SVG — reduces payload on every page
+    compress({
+      HTML: {
+        'html-minifier-terser': {
+          removeComments: true,
+          collapseWhitespace: true,
+          removeRedundantAttributes: true,
+          removeScriptTypeAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+          minifyCSS: true,
+          minifyJS: true,
+        },
+      },
+      CSS: true,
+      JavaScript: true,
+      SVG: true,
+      Image: false, // We handle images manually (already optimised + WebP)
+    }),
+    // Generate pre-compressed .gz + .br files — CDN / nginx serves them directly
+    compressor({ gzip: true, brotli: true }),
   ],
 });
