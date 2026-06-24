@@ -9,12 +9,30 @@ Generates an enhanced Markdown `CHANGELOG.md` with commit grouping, PR/commit li
 
 ## Installation
 
+### Binary
+
 ```bash
 semrel plugin install @semrel/generator-changelog-md
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
+
+### Docker
+
+Pre-built, signed multi-platform images (linux/amd64, linux/arm64) are published on every release:
+
+```bash
+docker pull ghcr.io/semrels/generator-changelog-md:latest
+```
+
+Verify the image signature with cosign:
+
+```bash
+cosign verify ghcr.io/semrels/generator-changelog-md:latest \
+  --certificate-identity-regexp 'https://github.com/SemRels/generator-changelog-md/.github/workflows/release.yml.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
 ## Configuration
 
 <Aside type="important" title="Required: set commit_changelog and keep_releases">

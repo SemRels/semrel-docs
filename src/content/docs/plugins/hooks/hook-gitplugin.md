@@ -7,12 +7,30 @@ Pushes release-related changes to another Git repository or branch. Use it when 
 
 ## Installation
 
+### Binary
+
 ```bash
 semrel plugin install @semrel/gitplugin
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
+
+### Docker
+
+Pre-built, signed multi-platform images (linux/amd64, linux/arm64) are published on every release:
+
+```bash
+docker pull ghcr.io/semrels/release-mirror:latest
+```
+
+Verify the image signature with cosign:
+
+```bash
+cosign verify ghcr.io/semrels/release-mirror:latest \
+  --certificate-identity-regexp 'https://github.com/SemRels/release-mirror/.github/workflows/release.yml.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
 ## Configuration
 
 ```yaml

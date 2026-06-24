@@ -7,12 +7,30 @@ Determines the next SemVer bump from Conventional Commit messages. It maps commi
 
 ## Installation
 
+### Binary
+
 ```bash
 semrel plugin install @semrel/conventional
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
+
+### Docker
+
+Pre-built, signed multi-platform images (linux/amd64, linux/arm64) are published on every release:
+
+```bash
+docker pull ghcr.io/semrels/analyzer-conventional:latest
+```
+
+Verify the image signature with cosign:
+
+```bash
+cosign verify ghcr.io/semrels/analyzer-conventional:latest \
+  --certificate-identity-regexp 'https://github.com/SemRels/analyzer-conventional/.github/workflows/release.yml.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
 ## Configuration
 
 ```yaml

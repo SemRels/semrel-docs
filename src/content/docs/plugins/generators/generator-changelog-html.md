@@ -9,12 +9,30 @@ that provider and hook plugins receive — useful for platforms that accept HTML
 
 ## Installation
 
+### Binary
+
 ```bash
 semrel plugin install @semrel/generator-changelog-html
 ```
 
 ## Configuration
 
+
+### Docker
+
+Pre-built, signed multi-platform images (linux/amd64, linux/arm64) are published on every release:
+
+```bash
+docker pull ghcr.io/semrels/generator-changelog-html:latest
+```
+
+Verify the image signature with cosign:
+
+```bash
+cosign verify ghcr.io/semrels/generator-changelog-html:latest \
+  --certificate-identity-regexp 'https://github.com/SemRels/generator-changelog-html/.github/workflows/release.yml.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
 ```yaml
 plugins:
   - uses: @semrel/generator-changelog-html

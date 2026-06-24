@@ -7,12 +7,30 @@ Creates git tags and optionally pushes branch updates through the local Git remo
 
 ## Installation
 
+### Binary
+
 ```bash
 semrel plugin install @semrel/git
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
+
+### Docker
+
+Pre-built, signed multi-platform images (linux/amd64, linux/arm64) are published on every release:
+
+```bash
+docker pull ghcr.io/semrels/provider-git:latest
+```
+
+Verify the image signature with cosign:
+
+```bash
+cosign verify ghcr.io/semrels/provider-git:latest \
+  --certificate-identity-regexp 'https://github.com/SemRels/provider-git/.github/workflows/release.yml.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
 ## Configuration
 
 ```yaml
