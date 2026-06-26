@@ -2,6 +2,7 @@
 // Custom Head override: injects per-page Open Graph + Twitter meta from Starlight frontmatter
 import type { Props } from '@astrojs/starlight/props';
 import StarlightHead from '@astrojs/starlight/components/Head.astro';
+import CookieConsent from './CookieConsent.astro';
 
 const { entry } = Astro.props as Props;
 // entry is undefined on generated pages like 404 — guard gracefully
@@ -26,3 +27,5 @@ const ogTitle = pageTitle === 'semrel' ? 'semrel — Semantic Release Automation
 
 <!-- Canonical -->
 <link rel="canonical" href={canonicalURL} />
+
+<CookieConsent />

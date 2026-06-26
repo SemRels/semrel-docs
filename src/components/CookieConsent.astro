@@ -1,0 +1,163 @@
+---
+// Google Analytics + Cookie Consent (vanilla-cookieconsent v3)
+// GA Consent Mode v2: analytics denied by default until user accepts.
+---
+
+<!-- 1. Define gtag + set Consent Mode v2 defaults (MUST precede gtag.js) -->
+<script is:inline>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    wait_for_update: 500,
+  });
+</script>
+
+<!-- 2. Load Google Analytics async -->
+<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-0RD0CMG2RV"></script>
+<script is:inline>
+  gtag('js', new Date());
+  gtag('config', 'G-0RD0CMG2RV');
+</script>
+
+<!-- 3. Cookie Consent init (deferred module — runs after GA defaults are set) -->
+<script>
+  import { run, acceptedCategory } from 'vanilla-cookieconsent';
+
+  run({
+    categories: {
+      necessary: { enabled: true, readOnly: true },
+      analytics: {
+        autoClear: {
+          cookies: [{ name: /^_ga/ }, { name: '_gid' }],
+        },
+      },
+    },
+
+    onConsent: () => {
+      if (acceptedCategory('analytics')) {
+        window.gtag?.('consent', 'update', { analytics_storage: 'granted' });
+      }
+    },
+
+    onChange: ({ changedCategories }: { changedCategories: string[] }) => {
+      if (changedCategories.includes('analytics')) {
+        window.gtag?.('consent', 'update', {
+          analytics_storage: acceptedCategory('analytics') ? 'granted' : 'denied',
+        });
+      }
+    },
+
+    language: {
+      default: 'en',
+      autoDetect: 'document',
+      translations: {
+        en: {
+          consentModal: {
+            title: 'We use cookies',
+            description:
+              'We use analytics cookies to understand how visitors use our documentation and help us improve it. You can opt out at any time.',
+            acceptAllBtn: 'Accept all',
+            acceptNecessaryBtn: 'Reject all',
+            showPreferencesBtn: 'Manage preferences',
+          },
+          preferencesModal: {
+            title: 'Cookie preferences',
+            acceptAllBtn: 'Accept all',
+            acceptNecessaryBtn: 'Reject all',
+            savePreferencesBtn: 'Save preferences',
+            closeIconLabel: 'Close',
+            sections: [
+              {
+                title: 'Cookie usage',
+                description:
+                  'We use cookies to ensure basic functionality and to understand how you use our site. Choose which categories to enable below.',
+              },
+              {
+                title: 'Strictly necessary',
+                description:
+                  'Required for the website to function. Cannot be disabled.',
+                linkedCategory: 'necessary',
+              },
+              {
+                title: 'Analytics',
+                description:
+                  'Help us understand how visitors interact with our docs. All data is anonymised and cannot be used to identify you.',
+                linkedCategory: 'analytics',
+                cookieTable: {
+                  headers: { name: 'Name', domain: 'Domain', desc: 'Description' },
+                  body: [
+                    { name: '_ga',   domain: 'semrel.io', desc: 'Distinguishes users (2 years)' },
+                    { name: '_ga_*', domain: 'semrel.io', desc: 'Session state (1 year)' },
+                    { name: '_gid',  domain: 'semrel.io', desc: 'Session (24 hours)' },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+
+        de: {
+          consentModal: {
+            title: 'Wir verwenden Cookies',
+            description:
+              'Wir verwenden Analytics-Cookies, um zu verstehen, wie Besucher unsere Dokumentation nutzen, und helfen uns, sie zu verbessern. Sie können jederzeit widersprechen.',
+            acceptAllBtn: 'Alle akzeptieren',
+            acceptNecessaryBtn: 'Alle ablehnen',
+            showPreferencesBtn: 'Einstellungen verwalten',
+          },
+          preferencesModal: {
+            title: 'Cookie-Einstellungen',
+            acceptAllBtn: 'Alle akzeptieren',
+            acceptNecessaryBtn: 'Alle ablehnen',
+            savePreferencesBtn: 'Einstellungen speichern',
+            closeIconLabel: 'Schließen',
+            sections: [
+              {
+                title: 'Cookie-Verwendung',
+                description:
+                  'Wir verwenden Cookies, um die Grundfunktionalität sicherzustellen und zu verstehen, wie Sie unsere Website nutzen.',
+              },
+              {
+                title: 'Notwendige Cookies',
+                description:
+                  'Für die Grundfunktionen der Website erforderlich. Kann nicht deaktiviert werden.',
+                linkedCategory: 'necessary',
+              },
+              {
+                title: 'Analytics-Cookies',
+                description:
+                  'Helfen uns zu verstehen, wie Besucher mit unserer Dokumentation interagieren. Alle Daten sind anonymisiert und können nicht zur Identifizierung verwendet werden.',
+                linkedCategory: 'analytics',
+                cookieTable: {
+                  headers: { name: 'Name', domain: 'Domain', desc: 'Beschreibung' },
+                  body: [
+                    { name: '_ga',   domain: 'semrel.io', desc: 'Nutzer unterscheiden (2 Jahre)' },
+                    { name: '_ga_*', domain: 'semrel.io', desc: 'Sitzungsstatus (1 Jahr)' },
+                    { name: '_gid',  domain: 'semrel.io', desc: 'Sitzung (24 Stunden)' },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  });
+</script>
+
+<style is:global>
+  @import 'vanilla-cookieconsent/dist/cookieconsent.css';
+
+  /* Match the site's indigo/violet accent */
+  #cc-main {
+    --cc-font-family: var(--sl-font, 'Outfit', sans-serif);
+    --cc-btn-primary-bg: #6366f1;
+    --cc-btn-primary-border-color: #6366f1;
+    --cc-btn-primary-hover-bg: #4f46e5;
+    --cc-btn-primary-hover-border-color: #4f46e5;
+    --cc-toggle-on-bg: #6366f1;
+    --cc-link-color: #a5b4fc;
+  }
+</style>
