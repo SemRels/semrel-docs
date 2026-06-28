@@ -37,6 +37,9 @@ You can also load plugin secrets from a `.env` file with `semrel --env-file .env
 | [`updater-nuget`](/plugins/updaters/updater-nuget/) | Updater | Updates the version property inside a `.csproj` or other NuGet project file. |
 | [`updater-python`](/plugins/updaters/updater-python/) | Updater | Updates Python package version metadata in `pyproject.toml` or a similar backend file. |
 | [`updater-terraform`](/plugins/updaters/updater-terraform/) | Updater | Updates a Terraform variable that stores the application version. |
+| [`packager-nfpm`](/plugins/packagers/packager-nfpm/) | Packager | Builds Linux packages (`deb`, `rpm`, `apk`) using nFPM. |
+| [`publisher-generic-http`](/plugins/publishers/publisher-generic-http/) | Publisher | Uploads release artifacts to generic HTTP endpoints. |
+| [`publisher-oci`](/plugins/publishers/publisher-oci/) | Publisher | Publishes release artifacts to OCI registries. |
 | [`provider-bitbucket`](/plugins/providers/provider-bitbucket/) | Provider | Publishes release information to Bitbucket from the SemRel release context. |
 | [`provider-git`](/plugins/providers/provider-git/) | Provider | Creates git tags and optionally pushes branch updates through the local Git remote. |
 | [`provider-gitea`](/plugins/providers/provider-gitea/) | Provider | Publishes releases to a Gitea instance. |

@@ -23,6 +23,8 @@ The machine-readable registry index is served at:
 - **Raw index:** [https://semrels.github.io/semrel-registry/plugins.json](https://semrels.github.io/semrel-registry/plugins.json)
 - **Source:** [SemRels/semrel-registry](https://github.com/SemRels/semrel-registry)
 
+The registry currently spans plugin categories for providers, conditions, analyzers, generators, updaters, hooks, packagers, and publishers.
+
 ## What the registry does
 
 <CardGrid>
@@ -63,7 +65,7 @@ The registry payload starts with a small root document and then lists plugins wi
 | `plugins[].versions[].version` | Released plugin version |
 | `plugins[].versions[].downloadUrl` | Direct binary download URL |
 | `plugins[].versions[].checksums` | SHA-256 checksums keyed by platform such as `linux_amd64` |
-| `plugins[].versions[].compatibility` | Optional minimum semrel compatibility hints |
+| `plugins[].versions[].compatibility` | Optional semrel and protocol compatibility hints (`minSemrelVersion`, optional `maxSemrelVersion`, optional `gRPCVersion`) |
 
 ```json
 {

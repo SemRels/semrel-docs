@@ -7,7 +7,7 @@ import { Card, CardGrid, Aside } from '@astrojs/starlight/components';
 
 ## Official plugins
 
-Official plugins live in the [GoSemantics/semrel-plugins](https://github.com/GoSemantics/semrel-plugins) repository (currently being set up).
+Official plugins are published in the [SemRels](https://github.com/SemRels) organization.
 
 <CardGrid>
   <Card title="github" icon="github">
@@ -22,93 +22,74 @@ Official plugins live in the [GoSemantics/semrel-plugins](https://github.com/GoS
   <Card title="go-mod-updater" icon="pencil">
     **FilesUpdaterPlugin** that stamps the next version into Go source files via `ldflags`-compatible version variables.
   </Card>
+  <Card title="packager-nfpm" icon="package">
+    **PackagerPlugin** that builds Linux packages (`deb`, `rpm`, `apk`) through `nfpm`.
+  </Card>
+  <Card title="publisher-oci" icon="upload">
+    **PublisherPlugin** that uploads artifacts to OCI registries with `oras push`.
+  </Card>
+  <Card title="publisher-generic-http" icon="upload">
+    **PublisherPlugin** that uploads artifacts to custom HTTP endpoints.
+  </Card>
 </CardGrid>
 
 <Aside type="note">
   All official plugins are open source and available in the [SemRels](https://github.com/SemRels) organization. Install any plugin with `semrel plugin install <name>`.
 </Aside>
 
-## Minimal CommitAnalyzer (Go)
+## Practical release-chain examples
 
-A bare-bones commit analyser using go-plugin:
+### Go binaries + package artifacts + OCI publishing
 
-```go
-package main
+```yaml
+plugins:
+  - uses: updater-go
+    args:
+      file: internal/version/version.go
+      var_name: Version
 
-import (
-  "context"
-  "os"
-  "strings"
+  - uses: packager-nfpm
+    args:
+      config: packaging/nfpm.yaml
+      target: dist/packages
+      packagers: deb,rpm,apk
 
-  hclog "github.com/hashicorp/go-hclog"
-  goplugin "github.com/hashicorp/go-plugin"
-  semrelv1 "github.com/GoSemantics/semrel-plugins/gen/v1"
-)
-
-type analyzer struct{ semrelv1.UnimplementedCommitAnalyzerPluginServer }
-
-func (a *analyzer) AnalyzeCommits(
-  _ context.Context, req *semrelv1.AnalyzeCommitsRequest,
-) (*semrelv1.AnalyzeCommitsResponse, error) {
-  bump := semrelv1.BumpLevel_BUMP_LEVEL_NONE
-  for _, c := range req.Ctx.Commits {
-    switch {
-    case strings.Contains(c.RawMessage, "BREAKING CHANGE"):
-      return &semrelv1.AnalyzeCommitsResponse{Bump: semrelv1.BumpLevel_BUMP_LEVEL_MAJOR}, nil
-    case strings.HasPrefix(c.RawMessage, "feat"):
-      bump = semrelv1.BumpLevel_BUMP_LEVEL_MINOR
-    case strings.HasPrefix(c.RawMessage, "fix") && bump == semrelv1.BumpLevel_BUMP_LEVEL_NONE:
-      bump = semrelv1.BumpLevel_BUMP_LEVEL_PATCH
-    }
-  }
-  return &semrelv1.AnalyzeCommitsResponse{Bump: bump}, nil
-}
-
-func main() {
-  // All logs MUST go to stderr. stdout is reserved for the go-plugin handshake.
-  logger := hclog.New(&hclog.LoggerOptions{Name: "my-analyzer", Output: os.Stderr})
-
-  goplugin.Serve(&goplugin.ServeConfig{
-    HandshakeConfig: semrelv1.HandshakeConfig,
-    Plugins: map[string]goplugin.Plugin{
-      "commit-analyzer": &semrelv1.CommitAnalyzerPlugin{Impl: &analyzer{}},
-    },
-    GRPCServer: goplugin.DefaultGRPCServer,
-    Logger:     logger,
-  })
-}
+  - uses: publisher-oci
+    args:
+      ref: ghcr.io/semrels/myapp:{version}
+      artifacts: dist/packages/myapp_amd64.deb,dist/packages/myapp_amd64.rpm
 ```
 
-## Minimal HooksPlugin (Python)
+### Docker or Podman image workflow
 
-A Slack notification hook in Python. Note: Python plugins must use `sys.stderr` for all output — `sys.stdout` is reserved for the go-plugin handshake:
+```yaml
+plugins:
+  - uses: updater-docker
+    args:
+      file: Dockerfile
+      arg_name: VERSION
 
-```python
-import sys, concurrent.futures
-import grpc
-from semrel_v1 import semantic_release_pb2, semantic_release_pb2_grpc
+  - uses: publisher-generic-http
+    args:
+      url: https://uploads.example.com/releases/{version}/{artifact}
+      method: PUT
+      token: ${UPLOAD_TOKEN}
+      artifacts: dist/images/myapp-oci.tar
+```
 
-class SlackHook(semantic_release_pb2_grpc.HooksPluginServicer):
-    def OnSuccess(self, request, context):
-        webhook = request.ctx.config.get("webhook_url", "")
-        if webhook:
-            import urllib.request, json
-            data = json.dumps({"text": f"Released {request.ctx.next_version}!"})
-            urllib.request.urlopen(webhook, data.encode())
-        return semantic_release_pb2.OnSuccessResponse()
+### Helm chart workflow
 
-    def OnFail(self, request, context):
-        return semantic_release_pb2.OnFailResponse()
+```yaml
+plugins:
+  - uses: updater-helm
+    args:
+      file: charts/myapp/Chart.yaml
+      update_app_version: "true"
 
-if __name__ == "__main__":
-    # go-plugin writes the handshake line to stdout automatically.
-    # Our code must never write to stdout.
-    print("starting", file=sys.stderr)  # safe: goes to stderr
-    server = grpc.server(concurrent.futures.ThreadPoolExecutor())
-    semantic_release_pb2_grpc.add_HooksPluginServicer_to_server(SlackHook(), server)
-    # go-plugin manages the port/socket and writes the handshake line.
-    # Use the go-plugin Python bridge (semrel-plugins/python) for the serve() call.
-    server.wait_for_termination()
+  - uses: publisher-oci
+    args:
+      ref: ghcr.io/semrels/charts/myapp:{version}
+      artifacts: dist/charts/myapp-{version}.tgz
 ```
 
 ## Community plugins

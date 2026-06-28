@@ -1,6 +1,6 @@
 ---
 title: Plugin Overview
-description: How the semrel plugin system works — subprocess-based plugins, lifecycle, environment variables, discovery order, and the six plugin categories (provider, condition, analyzer, generator, updater, hook).
+description: How the semrel plugin system works — subprocess-based plugins, lifecycle, environment variables, discovery order, and plugin categories including packager and publisher.
 ---
 
 import { Badge, Card, CardGrid, Aside, LinkButton } from '@astrojs/starlight/components';
@@ -10,7 +10,7 @@ import { Badge, Card, CardGrid, Aside, LinkButton } from '@astrojs/starlight/com
   <source srcset="/plugin-ecosystem.webp" type="image/webp" />
   <img
     src="/plugin-ecosystem.png"
-    alt="semrel plugin ecosystem showing providers, conditions, analyzers, generators, updaters, and hooks connected to the core release pipeline"
+    alt="semrel plugin ecosystem showing providers, conditions, analyzers, generators, updaters, packagers, publishers, and hooks connected to the core release pipeline"
     width="1024"
     height="1024"
     fetchpriority="high"
@@ -36,7 +36,7 @@ These environment variables are available to plugin processes during execution.
 
 | Variable | Description |
 | --- | --- |
-| `SEMREL_VERSION` | The semrel CLI version |
+| `SEMREL_VERSION` | Resolved release version for the current run |
 | `SEMREL_TAG_NAME` | Full tag name for the release |
 | `SEMREL_CURRENT_VERSION` | Current project version |
 | `SEMREL_NEXT_VERSION` | Next version selected for the release |
@@ -48,7 +48,7 @@ These environment variables are available to plugin processes during execution.
 
 ## Plugin types
 
-The current official plugin catalog is organized into six categories.
+The current official plugin catalog is organized into eight categories.
 
 <CardGrid>
   <Card title="Provider Plugin" icon="github">
@@ -66,10 +66,32 @@ The current official plugin catalog is organized into six categories.
   <Card title="Updater Plugin" icon="pencil">
     Updates versioned project files before the release is finalized.
   </Card>
+  <Card title="Packager Plugin" icon="package">
+    Builds distributable artifacts such as Linux packages from prepared release inputs.
+  </Card>
+  <Card title="Publisher Plugin" icon="upload">
+    Publishes release artifacts to OCI registries and generic HTTP endpoints.
+  </Card>
   <Card title="Hook Plugin" icon="warning">
     Sends notifications or runs follow-up automation after success or failure.
   </Card>
 </CardGrid>
+
+## What about Go binaries, Docker/Podman images, Helm, and similar targets?
+
+These targets are supported today with a split model: **updaters prepare versioned project metadata**, while packaging and publishing can run through dedicated plugins and CI jobs.
+
+| Target | Current plugins | What they do today | Typical next step |
+| --- | --- | --- | --- |
+| Go binaries | `updater-go` | Updates Go version variables before release tagging. | Build binaries in CI with `go build` and then package/publish artifacts. |
+| Docker/Podman images | `updater-docker` | Updates Dockerfile version arguments. | Build images in CI with Docker or Podman, then publish image artifacts. |
+| Helm charts | `updater-helm` | Updates `Chart.yaml` version and optional `appVersion`. | Package and publish charts in CI or OCI-compatible registries. |
+| Linux packages | `packager-nfpm` | Builds `deb`, `rpm`, and `apk` packages via `nfpm`. | Publish generated packages to your package channels. |
+| Generic/OCI artifacts | `publisher-generic-http`, `publisher-oci` | Uploads release artifacts to HTTP endpoints or OCI registries. | Chain publishers after build/package stages. |
+
+<Aside type="tip">
+  Podman fits this workflow naturally: semrel orchestrates release metadata and plugin execution, while your CI decides whether to use Docker or Podman for container image builds.
+</Aside>
 
 ## Plugin discovery
 
