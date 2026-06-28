@@ -1,6 +1,8 @@
 ---
 title: Installation
-description: How to install semrel on Linux, macOS, Windows — and via Docker in CI/CD.
+description: Install semrel on Linux, macOS, Windows via Go, Homebrew, Docker, or binary download. Works in GitHub Actions, GitLab CI, Gitea Actions, and any CI/CD pipeline.
+sidebar:
+  order: 2
 ---
 
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
@@ -221,6 +223,8 @@ The flow looks like this:
 5. It caches the registry metadata and binary for reuse on later runs.
 
 By default, the registry metadata cache lives under `.semrel/registry-cache`, while downloaded binaries are reused from the local `.semrel/` cache layout. Local binaries still take precedence, which keeps CI predictable and allows offline reuse after the first successful download.
+
+If you commit `.semrel.lock`, run `semrel plugin update --check` regularly and `semrel plugin update` when you want to refresh pinned plugin versions.
 
 ```bash
 # Optional registry overrides

@@ -7,12 +7,30 @@ Publishes releases to a Gitea instance. It is a good fit for self-hosted teams t
 
 ## Installation
 
+### Binary
+
 ```bash
 semrel plugin install @semrel/gitea
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
+
+### Docker
+
+Pre-built, signed multi-platform images (linux/amd64, linux/arm64) are published on every release:
+
+```bash
+docker pull ghcr.io/semrels/provider-gitea:latest
+```
+
+Verify the image signature with cosign:
+
+```bash
+cosign verify ghcr.io/semrels/provider-gitea:latest \
+  --certificate-identity-regexp 'https://github.com/SemRels/provider-gitea/.github/workflows/release.yml.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
 ## Configuration
 
 ```yaml

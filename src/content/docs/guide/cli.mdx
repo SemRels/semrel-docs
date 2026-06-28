@@ -358,6 +358,27 @@ Use the full `@namespace/name` reference when the registry entry belongs to a na
 
 When you install into the default project-local directory, semrel also creates or updates `.semrel.lock` at the repository root.
 
+### `semrel plugin update`
+
+Check for newer plugin releases from the registry and optionally install them.
+
+Without arguments, semrel reads `.semrel.lock` and checks or updates all pinned plugins.
+
+```bash
+semrel plugin update [name[@version]] [--check]
+```
+
+```bash
+# Check updates for all plugins pinned in .semrel.lock
+semrel plugin update --check
+
+# Install all available updates and refresh .semrel.lock
+semrel plugin update
+
+# Update a single plugin
+semrel plugin update @semrel/github
+```
+
 ### `semrel plugin restore`
 
 Install all plugins listed in `.semrel.lock` into `.semrel/plugins/`.

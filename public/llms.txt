@@ -1,0 +1,84 @@
+# semrel
+
+> semrel is an open-source, plugin-based semantic release automation tool written in Go.
+> It is the **zero-dependency alternative to semantic-release** — no Node.js, no npm, no node_modules.
+> semrel reads Conventional Commits, calculates the correct SemVer bump (major/minor/patch),
+> generates a changelog, updates project files, creates a git tag, and publishes releases on
+> GitHub, GitLab, Gitea, Bitbucket, or plain Git — automatically and reproducibly.
+> It is air-gap ready, supply-chain secure (Cosign + SBOM + SLSA), and works as a single static binary.
+
+## Documentation
+
+- [Introduction & Comparison with alternatives](https://semrel.io/getting-started/introduction/): What semrel is, why no Node.js, how it compares to semantic-release and goreleaser.
+- [semrel vs semantic-release vs goreleaser](https://semrel.io/guide/comparison/): Full feature matrix, migration guide from semantic-release, decision guide.
+- [Installation](https://semrel.io/getting-started/installation/): Installing via Go, Docker, Homebrew, or binary download.
+- [Quick Start](https://semrel.io/getting-started/quick-start/): Run your first automated release in 5 minutes.
+- [Configuration Reference](https://semrel.io/guide/configuration/): Full `.semrel.yaml` schema reference.
+- [CLI Reference](https://semrel.io/guide/cli/): All `semrel` CLI commands and flags.
+- [Monorepo Guide](https://semrel.io/guide/monorepo/): Versioning multiple modules in one repository.
+- [Docker Usage](https://semrel.io/guide/docker/): Running semrel inside Docker or CI containers.
+- [CI Outputs](https://semrel.io/guide/ci-outputs/): Reading semrel outputs in GitHub Actions / GitLab CI.
+
+## Plugins
+
+- [Plugin Overview](https://semrel.io/plugins/overview/): How the plugin system works, env vars, lifecycle.
+- [Managing Plugins](https://semrel.io/plugins/managing/): Installing, locking, and restoring plugins.
+- [Official Plugins](https://semrel.io/plugins/): The full catalog of officially maintained plugins.
+- [Plugin Registry](https://semrel.io/plugins/registry/): Browsing and publishing plugins to registry.semrel.io.
+- [Plugin SDK / Development](https://semrel.io/plugins/sdk/): Writing your own semrel plugin in any language.
+- [Publishing a Plugin](https://semrel.io/plugins/publishing/): How to submit a plugin to the registry.
+
+### Conditions
+- [condition-generic](https://semrel.io/plugins/conditions/condition-generic/)
+- [condition-github-actions](https://semrel.io/plugins/conditions/condition-github-actions/)
+- [condition-gitea-actions](https://semrel.io/plugins/conditions/condition-gitea-actions/)
+- [condition-gitlab-ci](https://semrel.io/plugins/conditions/condition-gitlab-ci/)
+
+### Providers
+- [provider-github](https://semrel.io/plugins/providers/provider-github/)
+- [provider-gitlab](https://semrel.io/plugins/providers/provider-gitlab/)
+- [provider-gitea](https://semrel.io/plugins/providers/provider-gitea/)
+- [provider-bitbucket](https://semrel.io/plugins/providers/provider-bitbucket/)
+- [provider-git](https://semrel.io/plugins/providers/provider-git/)
+
+### Analyzers
+- [analyzer-conventional](https://semrel.io/plugins/analyzers/analyzer-conventional/)
+- [analyzer-default](https://semrel.io/plugins/analyzers/analyzer-default/)
+
+### Generators
+- [generator-changelog-md](https://semrel.io/plugins/generators/generator-changelog-md/)
+- [generator-changelog-html](https://semrel.io/plugins/generators/generator-changelog-html/)
+- [generator-release-notes](https://semrel.io/plugins/generators/generator-release-notes/)
+
+### Updaters
+- [updater-go](https://semrel.io/plugins/updaters/updater-go/)
+- [updater-npm](https://semrel.io/plugins/updaters/updater-npm/)
+- [updater-docker](https://semrel.io/plugins/updaters/updater-docker/)
+- [updater-cargo](https://semrel.io/plugins/updaters/updater-cargo/)
+- [updater-helm](https://semrel.io/plugins/updaters/updater-helm/)
+- [updater-maven](https://semrel.io/plugins/updaters/updater-maven/)
+- [updater-gradle](https://semrel.io/plugins/updaters/updater-gradle/)
+- [updater-python](https://semrel.io/plugins/updaters/updater-python/)
+- [updater-nuget](https://semrel.io/plugins/updaters/updater-nuget/)
+- [updater-terraform](https://semrel.io/plugins/updaters/updater-terraform/)
+- [updater-homebrew](https://semrel.io/plugins/updaters/updater-homebrew/)
+
+### Hooks
+- [hook-slack](https://semrel.io/plugins/hooks/hook-slack/)
+- [hook-teams](https://semrel.io/plugins/hooks/hook-teams/)
+- [hook-email](https://semrel.io/plugins/hooks/hook-email/)
+- [hook-jira](https://semrel.io/plugins/hooks/hook-jira/)
+- [hook-matrix](https://semrel.io/plugins/hooks/hook-matrix/)
+- [hook-gitplugin](https://semrel.io/plugins/hooks/hook-gitplugin/)
+
+## API & Infrastructure
+
+- [Registry API Reference](https://semrel.io/api/registry/): REST API for the plugin registry.
+- [gRPC API](https://semrel.io/api/grpc/): gRPC interface documentation.
+- [Web Service](https://semrel.io/infrastructure/web-service/): How the hosted semrel infrastructure is run.
+
+## External Resources
+
+- [GitHub Organisation](https://github.com/SemRels): All open-source repos.
+- [Plugin Registry UI](https://registry.semrel.io): Browse and install community plugins.
+- [Registry API](https://registry.semrel.io/api/v1/plugins): Machine-readable plugin list (JSON).

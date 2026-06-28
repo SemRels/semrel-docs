@@ -7,12 +7,30 @@ Updates the version property inside a `.csproj` or other NuGet project file. It 
 
 ## Installation
 
+### Binary
+
 ```bash
 semrel plugin install @semrel/nuget
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
+
+### Docker
+
+Pre-built, signed multi-platform images (linux/amd64, linux/arm64) are published on every release:
+
+```bash
+docker pull ghcr.io/semrels/updater-nuget:latest
+```
+
+Verify the image signature with cosign:
+
+```bash
+cosign verify ghcr.io/semrels/updater-nuget:latest \
+  --certificate-identity-regexp 'https://github.com/SemRels/updater-nuget/.github/workflows/release.yml.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
 ## Configuration
 
 ```yaml

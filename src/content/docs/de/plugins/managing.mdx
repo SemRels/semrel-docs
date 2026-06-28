@@ -181,6 +181,29 @@ Dieses Kommando auf CI und nach dem Klonen eines Repositories ausführen:
 
 ---
 
+## `semrel plugin update`
+
+Mit `semrel plugin update` hältst du gepinnte Plugin-Versionen aktuell.
+
+```bash
+# Nur prüfen (keine Installation)
+semrel plugin update --check
+
+# Alle gepinnten Plugins aus .semrel.lock aktualisieren
+semrel plugin update
+
+# Nur ein Plugin aktualisieren
+semrel plugin update @semrel/github
+```
+
+Verhalten:
+
+- Ohne Argumente liest semrel `.semrel.lock` und prüft jedes gepinnte Plugin gegen die neueste stabile Registry-Version.
+- Mit `--check` zeigt semrel verfügbare Updates nur an.
+- Ohne `--check` installiert semrel neuere Versionen und aktualisiert `.semrel.lock` automatisch.
+
+---
+
 ## Plugin-Auflösungsreihenfolge
 
 Beim Suchen nach einer Plugin-Binary prüft semrel diese Orte in dieser Reihenfolge:

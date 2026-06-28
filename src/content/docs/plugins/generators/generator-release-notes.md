@@ -10,12 +10,30 @@ on GitHub Releases, GitLab Releases, or Slack/Teams notifications.
 
 ## Installation
 
+### Binary
+
 ```bash
 semrel plugin install @semrel/generator-release-notes
 ```
 
 ## Configuration
 
+
+### Docker
+
+Pre-built, signed multi-platform images (linux/amd64, linux/arm64) are published on every release:
+
+```bash
+docker pull ghcr.io/semrels/generator-release-notes:latest
+```
+
+Verify the image signature with cosign:
+
+```bash
+cosign verify ghcr.io/semrels/generator-release-notes:latest \
+  --certificate-identity-regexp 'https://github.com/SemRels/generator-release-notes/.github/workflows/release.yml.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
 ```yaml
 plugins:
   - uses: @semrel/generator-release-notes

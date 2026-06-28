@@ -1,0 +1,273 @@
+# semrel — Full Documentation for LLMs
+
+> This file follows the llms-full.txt convention (see https://llmstxt.org).
+> It is intended for AI assistants and LLMs that need comprehensive context about semrel.
+
+---
+
+## What is semrel?
+
+**semrel** is an open-source, plugin-based semantic release automation tool written in Go.
+It reads [Conventional Commits](https://www.conventionalcommits.org/), determines the correct
+[Semantic Versioning (SemVer)](https://semver.org/) bump (major/minor/patch), generates a
+changelog, updates project files, creates a git tag, publishes a release on the configured
+forge (GitHub, GitLab, Gitea, Bitbucket, plain Git), and notifies configured hooks — all
+automatically and reproducibly.
+
+semrel is the **Go-native, language-agnostic alternative** to the Node.js `semantic-release`
+package. It has no Node.js dependency and is distributed as a single static binary.
+
+### Core design principles
+
+- **Plugin-based pipeline** — every stage is a separate subprocess binary. Core semrel has no
+  built-in knowledge of GitHub, Slack, or Rust. Each capability is added by installing a plugin.
+- **Language-agnostic plugins** — plugins communicate through environment variables and process
+  exit codes. They can be written in Go, Python, Rust, Node.js, Bash, or any language.
+- **Supply-chain security** — all official releases are signed with Sigstore Cosign, include
+  CycloneDX and SPDX SBOMs, and carry SLSA Level 1 provenance attestations.
+- **Monorepo support** — version multiple independent modules inside a single repository, each
+  with its own `.semrel.yaml` config and tag series (e.g. `services/api/v1.2.3`).
+- **Dry-run mode** — `semrel release --dry-run` shows exactly what would happen without
+  touching any remote resources.
+
+---
+
+## How the release pipeline works
+
+```
+git log → Condition Plugin → Analyzer Plugin → SemVer Bump Decision
+       → Generator Plugin → Updater Plugins → git tag
+       → Provider Plugin → Hook Plugins → done
+```
+
+1. **Condition Plugin** — decides whether the current CI environment is allowed to release
+   (e.g. only on the `main` branch in GitHub Actions).
+2. **Analyzer Plugin** — reads commits since the last tag, maps them to SemVer bump levels.
+   - `feat:` → minor bump
+   - `fix:` → patch bump
+   - `BREAKING CHANGE:` in footer → major bump
+3. **Generator Plugin** — produces a changelog and/or release notes.
+4. **Updater Plugins** — update version strings in files before tagging (e.g. `go.mod`,
+   `package.json`, `Cargo.toml`, `Chart.yaml`).
+5. **Provider Plugin** — creates the git tag, publishes the GitHub/GitLab/Gitea release,
+   uploads assets.
+6. **Hook Plugins** — send notifications (Slack, Teams, Email) or run follow-up automation
+   (Jira ticket update, matrix message).
+
+---
+
+## Configuration (.semrel.yaml)
+
+```yaml
+tag_prefix: "v"
+
+plugins:
+  - uses: github           # provider
+    name: github-release
+    args:
+      owner: MyOrg
+      repo:  my-repo
+
+  - uses: condition-github-actions  # condition
+
+  - uses: analyzer-conventional     # analyzer
+
+  - uses: generator-changelog-md    # generator
+
+  - uses: updater-go                # updater
+
+  - uses: hook-slack                # hook
+    args:
+      webhook_url: ${{ env.SLACK_WEBHOOK }}
+```
+
+Every `uses:` value resolves to a binary named `semrel-plugin-<name>`.
+semrel looks for it in: explicit `path:`, then `.semrel/plugins/`, `~/.semrel/plugins/`, `$PATH`.
+
+---
+
+## Plugin environment variables
+
+All plugins receive these environment variables during execution:
+
+| Variable               | Description                                  |
+|------------------------|----------------------------------------------|
+| `SEMREL_VERSION`       | semrel CLI version                           |
+| `SEMREL_TAG_NAME`      | Full tag name (e.g. `v1.3.0`)                |
+| `SEMREL_CURRENT_VERSION` | Current project version                    |
+| `SEMREL_NEXT_VERSION`  | Next version determined by the analyzer      |
+| `SEMREL_BUMP`          | Bump level: `major`, `minor`, or `patch`     |
+| `SEMREL_BRANCH`        | Current git branch                           |
+| `SEMREL_TAG_PREFIX`    | Configured tag prefix                        |
+| `SEMREL_CHANGELOG`     | Generated changelog content                  |
+| `SEMREL_DRY_RUN`       | `true` if running in dry-run mode            |
+| `SEMREL_PLUGIN_<KEY>`  | Plugin-specific args from `args:` block      |
+
+---
+
+## Plugin categories
+
+| Category  | Purpose                                                                 |
+|-----------|-------------------------------------------------------------------------|
+| Provider  | Forge integration: create tag, publish release, upload assets           |
+| Condition | Guard: allow or block release based on CI environment                   |
+| Analyzer  | Commit analysis: determine SemVer bump level                            |
+| Generator | Produce changelog, release notes                                        |
+| Updater   | Update version files before tagging                                     |
+| Hook      | Post-release notifications and automation                               |
+
+---
+
+## Official plugins
+
+### Providers
+- **provider-github** — GitHub Releases via the GitHub API
+- **provider-gitlab** — GitLab Releases via the GitLab API
+- **provider-gitea** — Gitea Releases via the Gitea API
+- **provider-bitbucket** — Bitbucket Cloud (tags + pipeline integration)
+- **provider-git** — Plain git: tag only, no hosted release API
+
+### Conditions
+- **condition-github-actions** — Allow release only on GitHub Actions (main/master)
+- **condition-gitea-actions** — Gitea Actions equivalent
+- **condition-gitlab-ci** — GitLab CI/CD pipeline equivalent
+- **condition-generic** — Configurable condition via environment variable matching
+
+### Analyzers
+- **analyzer-conventional** — Full Conventional Commits spec, supports scopes and footers
+- **analyzer-default** — Simplified prefix-based analysis (`feat:`, `fix:`, `break:`)
+
+### Generators
+- **generator-changelog-md** — Markdown CHANGELOG.md, grouped by type
+- **generator-changelog-html** — HTML changelog for GitHub Releases body
+- **generator-release-notes** — Standalone release notes document
+
+### Updaters
+- **updater-go** — Updates `go.mod` module version
+- **updater-npm** — Updates `package.json` version
+- **updater-cargo** — Updates `Cargo.toml` version
+- **updater-docker** — Updates Dockerfile label / ARG VERSION
+- **updater-helm** — Updates `Chart.yaml` appVersion
+- **updater-maven** — Updates `pom.xml` version
+- **updater-gradle** — Updates `build.gradle` / `gradle.properties` version
+- **updater-python** — Updates `pyproject.toml` / `setup.py` version
+- **updater-nuget** — Updates `.csproj` version
+- **updater-terraform** — Updates `version.tf` / `main.tf` module version
+- **updater-homebrew** — Updates Homebrew formula version and SHA256
+
+### Hooks
+- **hook-slack** — Slack incoming webhook notification
+- **hook-teams** — Microsoft Teams incoming webhook
+- **hook-email** — SMTP email notification
+- **hook-jira** — Jira issue transition / comment
+- **hook-matrix** — Matrix chat room message
+- **hook-gitplugin** — Git-based post-release automation
+
+---
+
+## Installing semrel
+
+### Go install
+```bash
+go install github.com/SemRels/semrel@latest
+```
+
+### Homebrew (macOS / Linux)
+```bash
+brew install semrels/tap/semrel
+```
+
+### Docker
+```bash
+docker run --rm -v "$PWD":/workspace ghcr.io/semrels/semrel:latest release
+```
+
+### Binary download
+Download from https://github.com/SemRels/semrel/releases — available for linux/amd64,
+linux/arm64, darwin/amd64, darwin/arm64, windows/amd64.
+
+---
+
+## Installing plugins
+
+```bash
+semrel plugin install github          # installs provider-github
+semrel plugin install @semrel/slack   # installs hook-slack from the registry
+semrel plugin list                    # shows installed plugins
+semrel plugin restore                 # restores from .semrel.lock
+```
+
+Plugins are downloaded to `.semrel/plugins/` and pinned in `.semrel.lock`.
+
+---
+
+## Monorepo usage
+
+Create a `.semrel.yaml` in each module directory:
+
+```
+my-repo/
+  services/
+    api/
+      .semrel.yaml   # tag prefix: services/api/v
+    worker/
+      .semrel.yaml   # tag prefix: services/worker/v
+```
+
+Run from each module directory or use:
+```bash
+semrel release --config services/api/.semrel.yaml
+```
+
+---
+
+## Plugin Registry
+
+The semrel Plugin Registry at https://registry.semrel.io is a hosted index of official and
+community plugins. It exposes a JSON REST API:
+
+- `GET /api/v1/plugins` — list all active plugins (paginated, filterable by category/search)
+- `GET /api/v1/plugins/:id` — single plugin metadata
+- `GET /api/v1/plugins/:id/versions` — plugin version history
+- `GET /api/v1/plugins/@namespace/name` — namespaced lookup
+
+---
+
+## Frequently Asked Questions
+
+**Q: Is semrel production-ready?**
+A: Yes. It is used in production across multiple organizations. Official plugins are versioned,
+signed, and have documented SBOM provenance.
+
+**Q: Does semrel require Node.js?**
+A: No. semrel is a single static Go binary with zero Node.js dependency. Plugins are also
+standalone binaries.
+
+**Q: Can I write a plugin in Python?**
+A: Yes. Any executable that reads environment variables and returns the correct exit code is
+a valid semrel plugin.
+
+**Q: How does semrel differ from semantic-release?**
+A: semantic-release is Node.js-based and uses a JavaScript plugin ecosystem. semrel is a
+Go binary, uses subprocess-based plugins in any language, and has stronger supply-chain
+security defaults. semrel is designed for Go projects but supports all ecosystems.
+
+**Q: Does semrel support private repositories?**
+A: Yes. All provider plugins accept tokens via environment variables and work with private
+repositories on GitHub, GitLab, Gitea, and Bitbucket.
+
+**Q: What is the license?**
+A: Apache 2.0. See https://github.com/SemRels/semrel/blob/main/LICENSE.
+
+---
+
+## Links
+
+- Documentation: https://semrel.io
+- Plugin Registry: https://registry.semrel.io
+- Registry API: https://registry.semrel.io/api/v1/plugins
+- GitHub Organisation: https://github.com/SemRels
+- Main repository: https://github.com/SemRels/semrel
+- Releases: https://github.com/SemRels/semrel/releases
+- Issue tracker: https://github.com/SemRels/semrel/issues
+- License: Apache 2.0

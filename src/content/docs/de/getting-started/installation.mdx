@@ -1,6 +1,8 @@
 ---
 title: Installation
 description: So installierst du semrel unter Linux, macOS, Windows – und via Docker in CI/CD.
+sidebar:
+  order: 2
 ---
 
 import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
@@ -221,6 +223,8 @@ Der Ablauf sieht so aus:
 5. Es cached die Registry-Metadaten und die Binärdatei zur Wiederverwendung in späteren Läufen.
 
 Standardmäßig liegt der Cache für Registry-Metadaten unter `.semrel/registry-cache`, während heruntergeladene Binärdateien aus dem lokalen `.semrel/`-Cache-Layout wiederverwendet werden. Lokale Binärdateien haben weiterhin Vorrang. Das hält CI vorhersehbar und erlaubt Offline-Wiederverwendung nach dem ersten erfolgreichen Download.
+
+Wenn du `.semrel.lock` committest, führe regelmäßig `semrel plugin update --check` aus und nutze `semrel plugin update`, wenn du gepinnte Plugin-Versionen aktualisieren möchtest.
 
 ```bash
 # Optional registry overrides

@@ -181,6 +181,29 @@ Use this command on CI and after cloning a repository:
 
 ---
 
+## `semrel plugin update`
+
+Use `semrel plugin update` to keep pinned plugin versions current.
+
+```bash
+# Check only (no install)
+semrel plugin update --check
+
+# Update all pinned plugins from .semrel.lock
+semrel plugin update
+
+# Update one plugin only
+semrel plugin update @semrel/github
+```
+
+Behavior:
+
+- Without arguments, semrel reads `.semrel.lock` and checks every pinned plugin against the newest stable registry release.
+- With `--check`, semrel reports available updates but does not install.
+- Without `--check`, semrel installs newer versions and updates `.semrel.lock` automatically.
+
+---
+
 ## Plugin resolution order
 
 When semrel looks up a plugin binary, it checks these locations in priority order:

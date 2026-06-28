@@ -7,12 +7,30 @@ Publishes release information to Bitbucket from the SemRel release context. It c
 
 ## Installation
 
+### Binary
+
 ```bash
 semrel plugin install @semrel/bitbucket
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
 
+
+### Docker
+
+Pre-built, signed multi-platform images (linux/amd64, linux/arm64) are published on every release:
+
+```bash
+docker pull ghcr.io/semrels/provider-bitbucket:latest
+```
+
+Verify the image signature with cosign:
+
+```bash
+cosign verify ghcr.io/semrels/provider-bitbucket:latest \
+  --certificate-identity-regexp 'https://github.com/SemRels/provider-bitbucket/.github/workflows/release.yml.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
 ## Configuration
 
 ```yaml

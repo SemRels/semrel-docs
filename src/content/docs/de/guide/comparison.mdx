@@ -1,0 +1,228 @@
+---
+title: semrel vs semantic-release vs goreleaser — Vergleich
+description: Detaillierter Vergleich von semrel vs semantic-release, goreleaser, release-please und changesets. Zero Node.js, air-gap-fähig, supply-chain-sicher — warum Teams zu semrel wechseln.
+head:
+  - tag: script
+    attrs:
+      type: application/ld+json
+    content: |
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Was ist die beste semantic-release Alternative für Go-Projekte?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "semrel ist die führende Go-native Alternative zu semantic-release. Es ist eine einzelne statische Binärdatei ohne Node.js-Abhängigkeit, implementiert Conventional Commits-basierte SemVer-Automatisierung und ist in großen Repositories deutlich schneller. Im Gegensatz zu semantic-release hat semrel keine npm-Supply-Chain-Exposition und funktioniert out-of-the-box in air-gapped CI-Umgebungen."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Was ist der Unterschied zwischen semrel und goreleaser?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "semrel bestimmt WELCHE Version released wird (durch Commit-Analyse) und orchestriert die Release-Pipeline. goreleaser bestimmt WIE Go-Binärdateien gepackt und verteilt werden (Cross-Kompilierung, .deb/.rpm, Homebrew). Sie ergänzen sich: semrel berechnet die nächste SemVer-Version, goreleaser baut die Artefakte."
+            }
+          }
+        ]
+      }
+---
+
+import { Aside, Badge, Card, CardGrid, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Der Markt für Release-Automatisierung bietet mehrere etablierte Tools. Diese Seite gibt dir die Informationen, um das richtige zu wählen — oder von deinem bisherigen Tool zu migrieren.
+
+<Aside type="tip">
+  **Kurz zusammengefasst** — Wenn du bereits **semantic-release** nutzt und die Node.js-Abhängigkeit eliminieren, die Pipeline-Laufzeit reduzieren oder die Supply-Chain-Sicherheit verbessern möchtest, ist semrel ein verhaltensgleicher Ersatz mit ~15 Minuten Migrationsaufwand.
+</Aside>
+
+## Auf einen Blick
+
+<Tabs>
+  <TabItem label="Runtime & Größe">
+
+| | semrel | semantic-release | goreleaser | release-please |
+|---|---|---|---|---|
+| Runtime | **Keine** | Node.js + npm | Keine | Node.js + npm |
+| Installationsgröße | **~12 MB** | ~350 MB | ~45 MB | ~300 MB |
+| Air-gap-fähig | **✅ Nativ** | ❌ | ✅ | ❌ |
+| Kaltstart-Overhead | **~0 ms** | 30–60 s (Node-Setup) | ~0 ms | 30–60 s (Node-Setup) |
+
+  </TabItem>
+  <TabItem label="Versionierung">
+
+| | semrel | semantic-release | goreleaser | release-please | changesets |
+|---|---|---|---|---|---|
+| Auto-SemVer aus Commits | ✅ | ✅ | ❌ tag-basiert | ✅ | ❌ manuell |
+| Conventional Commits | ✅ | ✅ | ❌ | ✅ | ❌ |
+| Monorepo-Unterstützung | **✅ Kostenlos** | ✅ | ✅ Pro (948 $/Jahr) | ✅ | ✅ |
+| Plugin-Sprache | **Beliebige Binärdatei** | Nur JS | Go (eingebaut) | Fest vorgegeben | Nur JS |
+
+  </TabItem>
+  <TabItem label="Sicherheit">
+
+| | semrel | semantic-release | goreleaser | release-please |
+|---|---|---|---|---|
+| Signierte Releases (Cosign) | **✅** | ❌ | ✅ | ❌ |
+| SBOM (CycloneDX/SPDX) | **✅** | ❌ | ✅ | ❌ |
+| SLSA-Provenienz | **✅ Level 1** | ❌ | ✅ | ❌ |
+| npm-Supply-Chain-Risiko | **Keines** | Hoch (400+ Deps) | Keines | Mittel |
+| Air-gapped Pipelines | **✅** | ❌ | ✅ | ❌ |
+
+  </TabItem>
+  <TabItem label="Kosten">
+
+| | semrel | semantic-release | goreleaser | release-please | changesets |
+|---|---|---|---|---|---|
+| Lizenz | Apache 2.0 | MIT | MIT / **Pro kostenpflichtig** | Apache 2.0 | MIT |
+| Kostenloser Monorepo | **✅** | ✅ | ❌ 948 $/Jahr | ✅ | ✅ |
+| Enterprise-Features | **Kostenlos** | Kostenlos | 3.300 $/Jahr | Kostenlos | Kostenlos |
+| GitHub Stars | — | ~23,7k | ~15,6k | ~7,1k | ~3,3M dl/Woche |
+
+  </TabItem>
+</Tabs>
+
+---
+
+## semrel vs semantic-release
+
+**semantic-release** ist der Pionier der commit-getriebenen semantischen Versionierung und wird in tausenden Enterprise-Pipelines weltweit eingesetzt. semrel wurde entwickelt, um dieses Verhalten ohne den Runtime-Overhead zu replizieren.
+
+### Die Node.js-Steuer
+
+Die Integration von semantic-release in eine Go-, Rust- oder C++-Pipeline erfordert:
+
+```bash
+# Jeder Pipeline-Job braucht das:
+actions/setup-node@v4           # 30–60 Sekunden auf kalten Runnern
+npm install -g semantic-release  # 28+ direkte Deps, 400+ transitive
+```
+
+In einer minimalen Alpine-Linux- oder Docker-in-Docker-Umgebung bedeutet das **eine vollständige Node.js-Runtime** in einen Container zu ziehen, der sonst nur ein Go-Toolchain enthält.
+
+semrel ersetzt den gesamten Block durch:
+
+```bash
+curl -L https://github.com/SemRels/semrel/releases/latest/download/semrel_linux_amd64.tar.gz | tar -xz
+./semrel release
+```
+
+### Performance in großen Repositories
+
+semantic-release ist bekannt dafür, in Repositories mit vielen Tags und Branches zu zeitüberschreiten. Bei 460 Tags und 65 Branches wurden Ausführungszeiten von über **35 Minuten** gemeldet — wegen sequenzieller Git-History-Traversierung und API-Aufrufe.
+
+semrel ist kompiliertes Go — es traversiert `git log` und fragt Forge-APIs nebenläufig ab. Typische Ausführungszeit bei demselben Repository-Profil: unter **90 Sekunden**.
+
+### Supply-Chain-Angriffsfläche
+
+semantic-release installiert bei jedem Pipeline-Lauf 28 direkte npm-Abhängigkeiten und hunderte transitiver Pakete. Das npm-Ökosystem war wiederholt Ziel von Supply-Chain-Angriffen.
+
+semrel ist eine einzelne, statisch kompilierte Binärdatei. Es gibt keine `node_modules`, keine Laufzeit-Paketauflösung und keine transitive Abhängigkeits-Angriffsfläche.
+
+### Migration von semantic-release
+
+<Card title="Migration in ~15 Minuten" icon="rocket">
+
+1. `semantic-release`-Konfiguration aus `package.json` entfernen
+2. [semrel installieren](/de/getting-started/installation/)
+3. `semrel release --dry-run` ausführen — die Ausgabe sollte deinen bisherigen Releases entsprechen
+
+</Card>
+
+**Äquivalente Konfigurationszuordnung:**
+
+| semantic-release | semrel-Äquivalent |
+|---|---|
+| `@semantic-release/github` | `provider-github` Plugin |
+| `@semantic-release/changelog` | `generator-changelog-md` Plugin |
+| `@semantic-release/git` | eingebauter git-commit-Schritt |
+| `@semantic-release/npm` | `updater-npm` Plugin |
+| `@semantic-release/exec` | beliebiges Shell-Skript via `hook-*` |
+
+---
+
+## semrel vs goreleaser
+
+goreleaser und semrel lösen **unterschiedliche Probleme** und werden häufig zusammen eingesetzt.
+
+| Frage | semrel | goreleaser |
+|---|---|---|
+| **Welche Version wird released?** | ✅ Berechnet aus Commits | ❌ Tag muss manuell angegeben werden |
+| **Für linux/arm64, darwin/amd64 etc. kompilieren** | ❌ Nicht sein Aufgabenbereich | ✅ Kernfunktion |
+| **GitHub/GitLab Release mit Assets erstellen** | ✅ Via Provider-Plugins | ✅ Kernfunktion |
+| **Changelog generieren** | ✅ Via Generator-Plugins | Teilweise (via Templates) |
+| **Auf Docker, Homebrew, npm, PyPI publizieren** | ✅ Via Updater/Hook-Plugins | ✅ Kernfunktion |
+| **Monorepo-Versionierung** | ✅ Kostenlos | ✅ Nur Pro (948 $/Jahr) |
+
+**Empfohlener kombinierter Workflow:**
+
+```yaml
+# GitHub Actions
+- name: Nächste Version berechnen
+  run: semrel release --dry-run --output json > semrel-output.json
+
+- name: Bauen & verteilen
+  uses: goreleaser/goreleaser-action@v6
+  with:
+    args: release
+  env:
+    GORELEASER_CURRENT_TAG: ${{ fromJson(steps.prev.outputs.json).nextVersion }}
+```
+
+<Aside type="note">
+  Wenn du nur automatische Versionierung und ein Standard-GitHub-Release mit Changelog benötigst — ohne plattformübergreifende Binärkompilierung — ist semrel allein ausreichend. goreleaser bietet Mehrwert, wenn du Artefakte für viele Zielplattformen bauen und in Paket-Registries pushen musst.
+</Aside>
+
+---
+
+## semrel vs release-please
+
+**release-please** (von Google) verwendet ein **Pull-Request-first**-Modell. Statt bei jedem Push zu releasen:
+
+1. Sammelt es Commits in einem "Release-PR" an
+2. Ein Mensch merged den PR, um den Release auszulösen
+
+Dieses Modell eignet sich für Teams, die vor jedem Release eine menschliche Freigabe möchten. semrel ist vollständig automatisiert — es released bei jedem qualifizierenden Push auf den konfigurierten Branch, ohne PR-Gate. Wähle semrel, wenn du vollständig hands-free CI-Releases willst.
+
+---
+
+## semrel vs changesets
+
+**changesets** ist JavaScript/TypeScript-zentriert und erfordert, dass Entwickler manuell Changeset-Dateien erstellen, die ihre Änderungen beschreiben. Es liest keine Conventional Commits automatisch aus. Wähle semrel, wenn du keinen Developer-Overhead möchtest — schreib einfach Conventional Commits und CI erledigt den Rest.
+
+---
+
+## Entscheidungshilfe
+
+```
+Brauchst du zero Node.js in deiner Pipeline?
+  → Ja   → semrel ✅
+  → Nein → jedes Tool funktioniert
+
+Brauchst du air-gap / vollständig offline CI?
+  → Ja   → semrel ✅
+  → Nein → jedes Tool funktioniert
+
+Brauchst du automatische Versionierung aus Commit-Nachrichten?
+  → Ja   → semrel oder semantic-release
+  → Nein → goreleaser (tag-basiert)
+
+Brauchst du plattformübergreifende Go-Binärkompilierung?
+  → Ja   → goreleaser (kann mit semrel kombiniert werden)
+  → Nein → semrel ist ausreichend
+
+Möchtest du eine menschliche PR-Freigabe vor dem Release?
+  → Ja   → release-please
+  → Nein → semrel ✅
+```
+
+---
+
+## Weiterführende Links
+
+- [Quick Start — dein erster automatisierter Release in 5 Minuten](/de/getting-started/quick-start/)
+- [Konfigurationsreferenz](/de/guide/configuration/)
+- [Plugin-Überblick](/de/plugins/overview/)
+- [Einleitung & Positionierung](/de/getting-started/introduction/)

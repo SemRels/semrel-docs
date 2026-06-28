@@ -7,11 +7,29 @@ Updates a Go source file that exposes the project version. It is typically used 
 
 ## Installation
 
+### Binary
+
 ```bash
 semrel plugin install @semrel/go
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
+
+### Docker
+
+Pre-built, signed multi-platform images (linux/amd64, linux/arm64) are published on every release:
+
+```bash
+docker pull ghcr.io/semrels/updater-go:latest
+```
+
+Verify the image signature with cosign:
+
+```bash
+cosign verify ghcr.io/semrels/updater-go:latest \
+  --certificate-identity-regexp 'https://github.com/SemRels/updater-go/.github/workflows/release.yml.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
 
 ## Configuration
 
