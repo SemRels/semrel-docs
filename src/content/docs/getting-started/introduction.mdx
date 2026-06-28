@@ -51,13 +51,15 @@ flowchart TD
     F --> G[next version\n+ changelog]
     G --> H[pre-tag Plugins\ne.g. updater-go]
     H --> I[🏷️ git tag]
-    I --> J[Provider Plugin\ntag · release · assets]
-    J --> K[Hook Plugins\nnotify · follow-up]
-    K --> L([✅ Release done])
+    I --> J[Packager Plugins\nbuild release artifacts]
+    J --> K[Publisher Plugins\nupload artifacts]
+    K --> L[Provider Plugin\ntag · release metadata]
+    L --> M[Hook Plugins\nnotify · follow-up]
+    M --> N([✅ Release done])
 
     style A fill:#4c8ef7,color:#fff,stroke:none
     style E fill:#999,color:#fff,stroke:none
-    style L fill:#2dba4e,color:#fff,stroke:none
+    style N fill:#2dba4e,color:#fff,stroke:none
     style D fill:#f0a500,color:#fff,stroke:none
     style I fill:#6e40c9,color:#fff,stroke:none
 ```

@@ -233,6 +233,8 @@ Dieses Schema wird von der Registry unter `/schemas/plugins/my-provider/v1.json`
 | **Condition** | Nichts | Ja (ungleich null) | Gate — bricht das Release ab, wenn Bedingungen nicht erfüllt sind |
 | **Hook** | Nichts (Side Effects) | Optional | Lifecycle-Callbacks (vor/nach Release) |
 | **Updater** | Nichts (Side Effects) | Ja | Aktualisiert Versions-Strings in Projektdateien |
+| **Packager** | Nichts (Side Effects) | Ja | Baut verteilbare Release-Artefakte |
+| **Publisher** | Nichts (Side Effects) | Ja | Lädt Artefakte in Registries oder HTTP-Endpunkte hoch |
 
 <Aside type="caution">
   Plugins laufen mit denselben Berechtigungen wie der semrel-Prozess. Logge niemals Geheimnisse nach stdout — nur nach stderr und nur im Debug-Modus.

@@ -153,7 +153,7 @@ goreleaser and semrel solve **different problems** and are commonly used togethe
 | **Compile for linux/arm64, darwin/amd64, etc.** | ❌ Not its job | ✅ Core feature |
 | **Create GitHub/GitLab release with assets** | ✅ Via provider plugins | ✅ Core feature |
 | **Generate changelog** | ✅ Via generator plugins | Partial (via templates) |
-| **Publish to Docker, Homebrew, npm, PyPI** | ✅ Via updater/hook plugins | ✅ Core feature |
+| **Publish to Docker, Homebrew, npm, PyPI** | ✅ Via updater + packager + publisher plugins (and optional hooks) | ✅ Core feature |
 | **Monorepo versioning** | ✅ Free | ✅ Pro only ($948+/yr) |
 
 **Recommended combined workflow:**

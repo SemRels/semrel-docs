@@ -233,6 +233,8 @@ This schema will be served by the registry at `/schemas/plugins/my-provider/v1.j
 | **Condition** | Nothing | Yes (non-zero) | Gate — aborts release if conditions not met |
 | **Hook** | Nothing (side-effects) | Optional | Lifecycle callbacks (pre/post release) |
 | **Updater** | Nothing (side-effects) | Yes | Updates version strings in project files |
+| **Packager** | Nothing (side-effects) | Yes | Builds distributable release artifacts |
+| **Publisher** | Nothing (side-effects) | Yes | Uploads artifacts to registries or HTTP endpoints |
 
 <Aside type="caution">
   Plugins run with the same permissions as the semrel process. Never log secrets to stdout — only to stderr, and only in debug mode.
