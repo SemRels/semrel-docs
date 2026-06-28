@@ -37,6 +37,9 @@ plugins:
 | `SEMREL_PLUGIN_MAX_COMMITS` | no | `50` | Maximum commits to include. |
 | `SEMREL_PLUGIN_INCLUDE_BODY` | no | `false` | Include full commit bodies. |
 | `SEMREL_PLUGIN_SIGNATURE` | no | `false` | Append an opt-in footer linking to `https://semrel.io` after the generated notes. |
+| `SEMREL_PLUGIN_AI_DISCLOSURE` | no | `false` | Detect AI co-author trailers and append a badge to each AI-assisted line. |
+| `SEMREL_PLUGIN_AI_DISCLOSURE_BADGE` | no | `🤖` | Badge appended to AI-assisted lines. |
+| `SEMREL_PLUGIN_AI_DISCLOSURE_SECTION` | no | `false` | Append a collapsible **🤖 AI-Assisted Contributions** section (requires `SEMREL_PLUGIN_AI_DISCLOSURE=true`). |
 
 When `SEMREL_PLUGIN_SIGNATURE=true`, the generated notes end with:
 

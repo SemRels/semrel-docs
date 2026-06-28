@@ -61,6 +61,9 @@ plugins:
 | `SEMREL_PLUGIN_LINK_PRS` | nein | `true` | `(#123)` PR-Referenzen verlinken. |
 | `SEMREL_PLUGIN_LINK_COMMITS` | nein | `true` | 40-Zeichen-Commit-SHAs verlinken. |
 | `SEMREL_PLUGIN_SIGNATURE` | nein | `false` | Hängt optional einen Footer mit Link auf `https://semrel.io` an den generierten Release-Eintrag an. |
+| `SEMREL_PLUGIN_AI_DISCLOSURE` | nein | `false` | Erkennt KI-Co-Autoren-Trailer (z.B. `Co-authored-by: Copilot`) und hängt ein Badge an jede KI-unterstützte Commit-Zeile. |
+| `SEMREL_PLUGIN_AI_DISCLOSURE_BADGE` | nein | `🤖` | Badge, der an KI-unterstützte Zeilen angehängt wird. Für Plaintext-Umgebungen `[AI]` verwenden. |
+| `SEMREL_PLUGIN_AI_DISCLOSURE_SECTION` | nein | `false` | Hängt einen aufklappbaren **🤖 KI-unterstützte Beiträge**-Abschnitt an (erfordert `SEMREL_PLUGIN_AI_DISCLOSURE=true`). |
 | `SEMREL_PLUGIN_CHANGELOG_FILE` | nein | `CHANGELOG.md` | Ausgabedateipfad. |
 
 Wenn `SEMREL_PLUGIN_SIGNATURE=true`, endet der generierte Markdown-Eintrag mit:

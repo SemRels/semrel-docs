@@ -35,6 +35,9 @@ plugins:
 | `SEMREL_PLUGIN_CSS_FILE` | no | — | Optional CSS file to embed or reference in the HTML output. |
 | `SEMREL_PLUGIN_MAX_COMMITS` | no | `100` | Maximum commits to include. |
 | `SEMREL_PLUGIN_SIGNATURE` | no | `false` | Append an opt-in footer element linking to `https://semrel.io` at the end of the generated HTML entry. |
+| `SEMREL_PLUGIN_AI_DISCLOSURE` | no | `false` | Detect AI co-author trailers and append a badge to each AI-assisted commit entry. |
+| `SEMREL_PLUGIN_AI_DISCLOSURE_BADGE` | no | `🤖` | Badge appended to AI-assisted entries. |
+| `SEMREL_PLUGIN_AI_DISCLOSURE_SECTION` | no | `false` | Append a collapsible `<details>` block listing all AI-co-authored commits (requires `SEMREL_PLUGIN_AI_DISCLOSURE=true`). |
 
 When `SEMREL_PLUGIN_SIGNATURE=true`, the generated HTML ends with:
 

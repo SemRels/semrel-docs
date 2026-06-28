@@ -61,6 +61,9 @@ plugins:
 | `SEMREL_PLUGIN_LINK_PRS` | no | `true` | Linkify `(#123)` PR references. |
 | `SEMREL_PLUGIN_LINK_COMMITS` | no | `true` | Linkify 40-char commit SHAs. |
 | `SEMREL_PLUGIN_SIGNATURE` | no | `false` | Append an opt-in footer linking to `https://semrel.io` after the generated release entry. |
+| `SEMREL_PLUGIN_AI_DISCLOSURE` | no | `false` | Detect AI co-author trailers (e.g. `Co-authored-by: Copilot`) and append a badge to each AI-assisted commit line. |
+| `SEMREL_PLUGIN_AI_DISCLOSURE_BADGE` | no | `🤖` | Badge appended to AI-assisted lines. Set to `[AI]` for plain-text environments. |
+| `SEMREL_PLUGIN_AI_DISCLOSURE_SECTION` | no | `false` | Append a collapsible **🤖 AI-Assisted Contributions** section listing all AI-co-authored commits (requires `SEMREL_PLUGIN_AI_DISCLOSURE=true`). |
 | `SEMREL_PLUGIN_CHANGELOG_FILE` | no | `CHANGELOG.md` | Output file path. |
 
 When `SEMREL_PLUGIN_SIGNATURE=true`, the generated Markdown entry ends with:
