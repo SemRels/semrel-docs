@@ -243,6 +243,15 @@ export default defineConfig({
             { label: 'Managing Plugins', link: '/plugins/managing/', badge: { text: 'New', variant: 'tip' } },
             { label: 'Official Plugins', link: '/plugins/' },
             {
+              label: 'Migrations',
+              items: [
+                { label: 'Migration Hub', link: '/plugins/migration/' },
+                { label: 'from semantic-release', link: '/plugins/migrations/semantic-release/' },
+                { label: 'from GoReleaser', link: '/plugins/migrations/goreleaser/' },
+                { label: 'from release-please', link: '/plugins/migrations/release-please/' },
+              ],
+            },
+            {
               label: 'Conditions',
               items: [
                 { label: 'condition-generic', link: '/plugins/conditions/condition-generic/' },
