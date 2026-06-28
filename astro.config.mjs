@@ -240,12 +240,12 @@ export default defineConfig({
           label: 'Plugins',
           items: [
             { label: 'Overview', link: '/plugins/overview/' },
-            { label: 'Managing Plugins', link: '/plugins/managing/', badge: { text: 'New', variant: 'tip' } },
+            { label: 'Managing Plugins', link: '/plugins/managing/' },
             { label: 'Official Plugins', link: '/plugins/' },
             {
               label: 'Migrations',
               items: [
-                { label: 'Migration Hub', link: '/plugins/migration/' },
+                { label: 'Migration Hub', link: '/plugins/migration/', badge: { text: 'New', variant: 'tip' } },
                 { label: 'from semantic-release', link: '/plugins/migrations/semantic-release/' },
                 { label: 'from GoReleaser', link: '/plugins/migrations/goreleaser/' },
                 { label: 'from release-please', link: '/plugins/migrations/release-please/' },
