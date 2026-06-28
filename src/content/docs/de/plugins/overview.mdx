@@ -95,6 +95,10 @@ Diese Ziele sind heute über ein geteiltes Modell abgedeckt: **Updater bereiten 
   Podman passt natürlich in dieses Modell: semrel orchestriert Release-Metadaten und Plugin-Ausführung, während eure CI frei entscheidet, ob Docker oder Podman für den Image-Build genutzt wird.
 </Aside>
 
+<Aside type="note">
+  Du willst bestehende Updater-only-Pipelines migrieren? Nutze die [Plugin-Migrationsanleitung](/de/plugins/migration/) mit konkreten Schritt-für-Schritt-Pfaden.
+</Aside>
+
 ## Plugin-Erkennung
 
 Entdecke offizielle Plugins im [Plugin Registry](/plugins/registry/), installiere sie mit `semrel plugin install <ref>` und nutze die Anleitung [Plugins verwalten](/plugins/managing/) für Lock-Dateien und Restore-Workflows.
@@ -141,4 +145,5 @@ sequenceDiagram
 <LinkButton href="/de/plugins/" icon="list-format">Offizielle Plugins</LinkButton>
 <LinkButton href="/de/plugins/managing/" variant="secondary" icon="rocket">Plugins verwalten</LinkButton>
 <LinkButton href="/de/plugins/registry/" variant="secondary" icon="magnifier">Plugin-Registry</LinkButton>
+<LinkButton href="/de/plugins/migration/" variant="secondary" icon="steps">Migrationsanleitung</LinkButton>
 <LinkButton href="/de/plugins/sdk/" variant="minimal" icon="pencil">Plugin entwickeln</LinkButton>
