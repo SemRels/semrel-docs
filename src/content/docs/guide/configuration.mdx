@@ -268,7 +268,7 @@ A list of branches from which releases can be made. Commits on unlisted branches
 
 ## `rules`
 
-Maps conventional commit types to semver bump levels. If omitted, semrel uses the built-in defaults.
+Maps conventional commit types (and optionally scopes) to semver bump levels. If omitted, semrel uses the built-in defaults.
 
 <Tabs>
   <TabItem label="YAML">
@@ -321,12 +321,86 @@ Maps conventional commit types to semver bump levels. If omitted, semrel uses th
 
 | Field | Type | Required | Description |
 | --- | --- | --- | --- |
-| `type` | string | yes | Conventional commit type (e.g. `feat`, `fix`, `perf`) |
+| `type` | string | yes | Conventional commit type (e.g. `feat`, `fix`, `deps`) |
+| `scope` | string \| `false` | no | Scope filter. A string matches commits with that exact scope. `false` matches commits with **no** scope. Omit to match any scope. |
 | `bump` | string | yes | One of `major`, `minor`, `patch` |
 
 <Aside type="note">
   Breaking changes (`BREAKING CHANGE` footer or `!` suffix like `feat!:`) always result in a `major` bump regardless of rules.
 </Aside>
+
+### Scope-based rules
+
+The optional `scope` field lets you route commits by their scope to a specific bump level. This is useful when tools like [Renovate](https://docs.renovatebot.com/) or custom workflows encode the intended bump in the scope.
+
+**Example:** treat `deps(major): …`, `deps(minor): …`, and `deps(patch): …` as different release levels:
+
+<Tabs>
+  <TabItem label="YAML">
+    ```yaml
+    rules:
+      - type: deps
+        scope: major
+        bump: major
+      - type: deps
+        scope: minor
+        bump: minor
+      - type: deps
+        scope: patch
+        bump: patch
+      - type: feat
+        bump: minor
+      - type: fix
+        bump: patch
+    ```
+  </TabItem>
+  <TabItem label="TOML">
+    ```toml
+    [[rules]]
+    type  = "deps"
+    scope = "major"
+    bump  = "major"
+
+    [[rules]]
+    type  = "deps"
+    scope = "minor"
+    bump  = "minor"
+
+    [[rules]]
+    type  = "deps"
+    scope = "patch"
+    bump  = "patch"
+
+    [[rules]]
+    type = "feat"
+    bump = "minor"
+
+    [[rules]]
+    type = "fix"
+    bump = "patch"
+    ```
+  </TabItem>
+  <TabItem label="JSON">
+    ```json
+    {
+      "rules": [
+        { "type": "deps", "scope": "major", "bump": "major" },
+        { "type": "deps", "scope": "minor", "bump": "minor" },
+        { "type": "deps", "scope": "patch", "bump": "patch" },
+        { "type": "feat", "bump": "minor" },
+        { "type": "fix",  "bump": "patch" }
+      ]
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+**Matching behavior:**
+- A rule **with a string scope** matches only commits whose type *and* scope both match exactly.
+- A rule **with `scope: false`** matches only commits of that type that carry **no scope** at all.
+- A rule **without `scope`** matches commits of that type regardless of their scope.
+- The highest bump level across all matching rules wins.
+- `(type, scope)` pairs must be unique — two rules for the same combination are a configuration error.
 
 ### Default rules
 
