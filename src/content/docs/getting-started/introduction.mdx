@@ -68,16 +68,17 @@ Each stage can be handled by a separate plugin executable. Install official plug
 
 ## semrel vs the alternatives
 
-| | semrel | semantic-release | goreleaser |
-|---|---|---|---|
-| Runtime | **None (static binary)** | Node.js + npm | None (static binary) |
-| Semantic versioning from commits | ✅ | ✅ | ❌ (tag-based) |
-| Air-gap / offline CI | **✅ Native** | ❌ | ✅ |
-| Supply-chain security | **Cosign + SBOM + SLSA** | ❌ | Cosign |
-| Plugin language | **Any binary** | JavaScript | Go (built-in) |
-| Monorepo | **✅ Free** | ✅ Free | ✅ Pro ($948+/yr) |
+| | semrel | semantic-release | goreleaser | release-please | release-it | changesets |
+|---|---|---|---|---|---|---|
+| Runtime | **None (static binary)** | Node.js + npm | None (static binary) | Node.js + npm | Node.js + npm | Node.js + npm |
+| Semantic versioning from commits | ✅ | ✅ | ❌ (tag-based) | ✅ | ✅ | ❌ (manual) |
+| Scope-based bump rules | **✅** | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Air-gap / offline CI | **✅ Native** | ❌ | ✅ | ❌ | ❌ | ❌ |
+| Supply-chain security | **Cosign + SBOM + SLSA** | ❌ | Cosign | ❌ | ❌ | ❌ |
+| Plugin language | **Any binary** | JavaScript | Go (built-in) | Hardcoded | JavaScript | JavaScript |
+| Monorepo | **✅ Free** | ✅ Free | ✅ Free (OSS) | ✅ | ✅ | ✅ |
 
-→ [Full comparison: semrel vs semantic-release vs goreleaser vs release-please](/guide/comparison/)
+→ [Full comparison: semrel vs semantic-release vs goreleaser vs release-please vs release-it vs changesets](/guide/comparison/)
 
 ## Next steps
 

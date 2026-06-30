@@ -1,6 +1,6 @@
 ---
 title: semrel vs semantic-release vs goreleaser — Comparison
-description: Detailed comparison of semrel vs semantic-release, goreleaser, release-please, and changesets. Zero Node.js dependency, air-gap ready, supply-chain secure — why teams switch to semrel.
+description: Detailed comparison of semrel vs semantic-release, goreleaser, release-please, release-it, and changesets. Zero Node.js dependency, air-gap ready, supply-chain secure — why teams switch to semrel.
 head:
   - tag: script
     attrs:
@@ -43,43 +43,44 @@ The release automation market has several established tools. This page gives you
 <Tabs>
   <TabItem label="Runtime & Size">
 
-| | semrel | semantic-release | goreleaser | release-please |
-|---|---|---|---|---|
-| Runtime | **None** | Node.js + npm | None | Node.js + npm |
-| Install size | **~12 MB** | ~350 MB | ~45 MB | ~300 MB |
-| Air-gap ready | **✅ Native** | ❌ | ✅ | ❌ |
-| Cold-start overhead | **~0 ms** | 30–60 s (Node setup) | ~0 ms | 30–60 s (Node setup) |
+| | semrel | semantic-release | goreleaser | release-please | release-it | changesets |
+|---|---|---|---|---|---|---|
+| Runtime | **None** | Node.js + npm | None | Node.js + npm | Node.js + npm | Node.js + npm |
+| Install size | **~12 MB** | ~350 MB | ~45 MB | ~300 MB | ~200 MB | ~150 MB |
+| Air-gap ready | **✅ Native** | ❌ | ✅ | ❌ | ❌ | ❌ |
+| Cold-start overhead | **~0 ms** | 30–60 s (Node setup) | ~0 ms | 30–60 s | 30–60 s | 30–60 s |
 
   </TabItem>
   <TabItem label="Versioning">
 
-| | semrel | semantic-release | goreleaser | release-please | changesets |
-|---|---|---|---|---|---|
-| Auto SemVer from commits | ✅ | ✅ | ❌ tag-based | ✅ | ❌ manual |
-| Conventional Commits | ✅ | ✅ | ❌ | ✅ | ❌ |
-| Monorepo support | **✅ Free** | ✅ | ✅ Pro ($948+/yr) | ✅ | ✅ |
-| Plugin language | **Any binary** | JS only | Go (built-in) | Hardcoded | JS only |
+| | semrel | semantic-release | goreleaser | release-please | release-it | changesets |
+|---|---|---|---|---|---|---|
+| Auto SemVer from commits | ✅ | ✅ | ❌ tag-based | ✅ | ✅ | ❌ manual |
+| Conventional Commits | ✅ | ✅ | ❌ | ✅ | ✅ | ❌ |
+| Scope-based bump rules | **✅** | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Monorepo support | **✅ Free** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Plugin language | **Any binary** | JS only | Go (built-in) | Hardcoded | JS only | JS only |
 
   </TabItem>
   <TabItem label="Security">
 
-| | semrel | semantic-release | goreleaser | release-please |
-|---|---|---|---|---|
-| Signed releases (Cosign) | **✅** | ❌ | ✅ | ❌ |
-| SBOM (CycloneDX/SPDX) | **✅** | ❌ | ✅ | ❌ |
-| SLSA provenance | **✅ Level 1** | ❌ | ✅ | ❌ |
-| npm supply-chain exposure | **None** | High (400+ deps) | None | Medium |
-| Air-gapped pipelines | **✅** | ❌ | ✅ | ❌ |
+| | semrel | semantic-release | goreleaser | release-please | release-it | changesets |
+|---|---|---|---|---|---|---|
+| Signed releases (Cosign) | **✅** | ❌ | ✅ | ❌ | ❌ | ❌ |
+| SBOM (CycloneDX/SPDX) | **✅** | ❌ | ✅ | ❌ | ❌ | ❌ |
+| SLSA provenance | **✅ Level 1** | ❌ | ✅ | ❌ | ❌ | ❌ |
+| npm supply-chain exposure | **None** | High (400+ deps) | None | Medium | Medium | Medium |
+| Air-gapped pipelines | **✅** | ❌ | ✅ | ❌ | ❌ | ❌ |
 
   </TabItem>
   <TabItem label="Pricing">
 
-| | semrel | semantic-release | goreleaser | release-please | changesets |
-|---|---|---|---|---|---|
-| License | Apache 2.0 | MIT | MIT / **Pro paid** | Apache 2.0 | MIT |
-| Free monorepo | **✅** | ✅ | ❌ $948+/yr | ✅ | ✅ |
-| Enterprise features | **Free** | Free | $3,300/yr | Free | Free |
-| GitHub Stars | — | ~23.7k | ~15.6k | ~7.1k | ~3.3M dl/wk |
+| | semrel | semantic-release | goreleaser | release-please | release-it | changesets |
+|---|---|---|---|---|---|---|
+| License | Apache 2.0 | MIT | MIT / **Pro paid** | Apache 2.0 | MIT | MIT |
+| Free monorepo | **✅** | ✅ | ✅ OSS | ✅ | ✅ | ✅ |
+| Enterprise features | **Free** | Free | $3,300/yr | Free | Free | Free |
+| GitHub Stars | — | ~23.7k | ~15.6k | ~7.1k | ~12.2k | ~8.4k |
 
   </TabItem>
 </Tabs>
@@ -121,6 +122,36 @@ semantic-release installs 28 direct npm dependencies and hundreds of transitive 
 
 semrel is a single statically compiled binary. There are no `node_modules`, no runtime package resolution, and no transitive dependency attack surface.
 
+### Scope-based release rules
+
+Both semrel and semantic-release support routing commits to bump levels by scope. semrel's `rules` array accepts an optional `scope` field — including `scope: false` to match only commits with no scope at all:
+
+```yaml
+# semrel (.semrel.yaml)
+rules:
+  - type: deps
+    scope: major
+    bump: major
+  - type: deps
+    scope: minor
+    bump: minor
+  - type: deps
+    scope: patch
+    bump: patch
+  - type: feat
+    bump: minor
+```
+
+```json
+// semantic-release (package.json)
+{
+  "releaseRules": [
+    { "type": "deps", "scope": "major", "release": "major" },
+    { "type": "deps", "scope": "minor", "release": "minor" }
+  ]
+}
+```
+
 ### Migration from semantic-release
 
 <Card title="Migrate in ~15 minutes" icon="rocket">
@@ -136,10 +167,14 @@ semrel is a single statically compiled binary. There are no `node_modules`, no r
 | semantic-release | semrel equivalent |
 |---|---|
 | `@semantic-release/github` | `provider-github` plugin |
+| `@semantic-release/gitlab` | `provider-gitlab` plugin |
 | `@semantic-release/changelog` | `generator-changelog-md` plugin |
 | `@semantic-release/git` | built-in git commit step |
 | `@semantic-release/npm` | `updater-npm` plugin |
 | `@semantic-release/exec` | any shell script via `hook-*` |
+| `releaseRules[].scope` | `rules[].scope` (string or `false`) |
+
+For a detailed step-by-step migration guide, see [From semantic-release to semrel](/plugins/migrations/semantic-release/).
 
 ---
 
@@ -153,8 +188,8 @@ goreleaser and semrel solve **different problems** and are commonly used togethe
 | **Compile for linux/arm64, darwin/amd64, etc.** | ❌ Not its job | ✅ Core feature |
 | **Create GitHub/GitLab release with assets** | ✅ Via provider plugins | ✅ Core feature |
 | **Generate changelog** | ✅ Via generator plugins | Partial (via templates) |
-| **Publish to Docker, Homebrew, npm, PyPI** | ✅ Via updater + packager + publisher plugins (and optional hooks) | ✅ Core feature |
-| **Monorepo versioning** | ✅ Free | ✅ Pro only ($948+/yr) |
+| **Publish to Docker, Homebrew, npm, PyPI** | ✅ Via updater + packager + publisher plugins | ✅ Core feature |
+| **Monorepo versioning** | ✅ Free | ✅ Free (OSS plan) |
 
 **Recommended combined workflow:**
 
@@ -175,6 +210,8 @@ goreleaser and semrel solve **different problems** and are commonly used togethe
   If you only need automated versioning and a standard GitHub Release with a changelog — not multi-platform binary compilation — semrel alone is sufficient. goreleaser adds value when you need to build artifacts for many target platforms and push them to package registries.
 </Aside>
 
+For a step-by-step migration guide, see [From goreleaser to semrel](/plugins/migrations/goreleaser/).
+
 ---
 
 ## semrel vs release-please
@@ -184,13 +221,53 @@ goreleaser and semrel solve **different problems** and are commonly used togethe
 1. Accumulates commits into a "release PR"
 2. A human merges the PR to trigger the release
 
-This model suits teams that want human sign-off before every release. semrel is fully automated — it releases on every qualifying push to the configured branch, without any PR gate. Choose semrel if you want fully hands-off CI releases.
+| Concern | semrel | release-please |
+|---|---|---|
+| **Fully automated (no PR gate)** | ✅ | ❌ PR required |
+| **Conventional Commits** | ✅ | ✅ |
+| **Supports GitLab / Gitea** | ✅ | ❌ GitHub only |
+| **Plugin extensibility** | ✅ Any binary | ❌ Hardcoded updaters |
+| **Node.js dependency** | ❌ None | ✅ Required |
+
+Choose release-please if your team requires human sign-off before every release. Choose semrel for fully hands-off CI releases or non-GitHub forges.
+
+For a step-by-step migration guide, see [From release-please to semrel](/plugins/migrations/release-please/).
+
+---
+
+## semrel vs release-it
+
+**release-it** is a popular JavaScript-based release tool with an interactive CLI mode. It supports Conventional Commits, changelogs, npm publishing, and GitHub releases.
+
+| Concern | semrel | release-it |
+|---|---|---|
+| **Runtime** | None | Node.js + npm |
+| **Conventional Commits auto-bump** | ✅ | ✅ |
+| **Scope-based bump rules** | ✅ | ❌ |
+| **Interactive release wizard** | ❌ | ✅ |
+| **Air-gap / offline pipelines** | ✅ | ❌ |
+| **Supply-chain exposure** | **None** | Medium (npm deps) |
+| **GitLab / Gitea / Bitbucket** | ✅ | Partial (GitLab plugin) |
+| **Plugin language** | **Any binary** | JS only |
+
+release-it is a good fit for JavaScript/TypeScript projects that already use Node.js in CI and want an interactive experience. Choose semrel for any non-JS tech stack, air-gapped environments, or when supply-chain hardening matters.
 
 ---
 
 ## semrel vs changesets
 
-**changesets** is JavaScript/TypeScript-centric and requires developers to manually create changeset files describing their changes. It does not read Conventional Commits automatically. Choose semrel if you want zero developer overhead — just write Conventional Commits and CI handles the rest.
+**changesets** is JavaScript/TypeScript-centric and requires developers to manually create changeset files describing their changes. It does not read Conventional Commits automatically.
+
+| Concern | semrel | changesets |
+|---|---|---|
+| **Auto-bump from commits** | ✅ | ❌ Manual changeset files |
+| **Conventional Commits** | ✅ | ❌ |
+| **Developer overhead** | **None** | High (per-PR changeeset) |
+| **Monorepo support** | ✅ | ✅ |
+| **Non-JS projects** | ✅ | ❌ Designed for JS/TS |
+| **Runtime** | None | Node.js + npm |
+
+Choose semrel if you want zero developer overhead — just write Conventional Commits and CI handles the rest. changesets suits large JS monorepos where fine-grained human control over each package's version bump is preferred over automation.
 
 ---
 
@@ -206,8 +283,12 @@ Do you need air-gap / fully offline CI?
   → No   → any tool works
 
 Do you need automated versioning from commit messages?
-  → Yes  → semrel or semantic-release
+  → Yes  → semrel, semantic-release, or release-it
   → No   → goreleaser (tag-based)
+
+Do you need scope-based bump rules (e.g. deps(major))?
+  → Yes  → semrel or semantic-release ✅
+  → No   → any tool works
 
 Do you need cross-platform Go binary compilation?
   → Yes  → goreleaser (can combine with semrel)
@@ -216,6 +297,15 @@ Do you need cross-platform Go binary compilation?
 Do you want human PR approval before release?
   → Yes  → release-please
   → No   → semrel ✅
+
+Is your project exclusively JavaScript/TypeScript?
+  → Yes, and you want interactive releases → release-it
+  → Yes, and you want manual version control → changesets
+  → No   → semrel ✅
+
+Do you need GitLab, Gitea, or Bitbucket support?
+  → Yes  → semrel ✅
+  → No   → any tool works
 ```
 
 ---
@@ -226,3 +316,4 @@ Do you want human PR approval before release?
 - [Configuration Reference](/guide/configuration/)
 - [Plugin Overview](/plugins/overview/)
 - [Security & Supply-Chain](/getting-started/introduction/#supply-chain-security)
+

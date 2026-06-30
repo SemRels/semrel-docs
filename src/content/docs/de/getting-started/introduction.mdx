@@ -68,16 +68,17 @@ Jede Phase kann von einem separaten Plugin-Executable übernommen werden. Instal
 
 ## semrel vs. die Alternativen
 
-| | semrel | semantic-release | goreleaser |
-|---|---|---|---|
-| Runtime | **Keine (statische Binärdatei)** | Node.js + npm | Keine (statische Binärdatei) |
-| Auto-SemVer aus Commits | ✅ | ✅ | ❌ tag-basiert |
-| Air-gap / Offline-CI | **✅ Nativ** | ❌ | ✅ |
-| Supply-Chain-Sicherheit | **Cosign + SBOM + SLSA** | ❌ | Cosign |
-| Plugin-Sprache | **Beliebige Binärdatei** | Nur JavaScript | Go (eingebaut) |
-| Monorepo | **✅ Kostenlos** | ✅ Kostenlos | ✅ Pro (948 $/Jahr) |
+| | semrel | semantic-release | goreleaser | release-please | release-it | changesets |
+|---|---|---|---|---|---|---|
+| Runtime | **Keine (statische Binärdatei)** | Node.js + npm | Keine (statische Binärdatei) | Node.js + npm | Node.js + npm | Node.js + npm |
+| Auto-SemVer aus Commits | ✅ | ✅ | ❌ tag-basiert | ✅ | ✅ | ❌ manuell |
+| Scope-basierte Bump-Regeln | **✅** | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Air-gap / Offline-CI | **✅ Nativ** | ❌ | ✅ | ❌ | ❌ | ❌ |
+| Supply-Chain-Sicherheit | **Cosign + SBOM + SLSA** | ❌ | Cosign | ❌ | ❌ | ❌ |
+| Plugin-Sprache | **Beliebige Binärdatei** | Nur JavaScript | Go (eingebaut) | Fest vorgegeben | Nur JavaScript | Nur JavaScript |
+| Monorepo | **✅ Kostenlos** | ✅ Kostenlos | ✅ Kostenlos (OSS) | ✅ | ✅ | ✅ |
 
-→ [Vollständiger Vergleich: semrel vs semantic-release vs goreleaser vs release-please](/de/guide/comparison/)
+→ [Vollständiger Vergleich: semrel vs semantic-release vs goreleaser vs release-please vs release-it vs changesets](/de/guide/comparison/)
 
 ## Nächste Schritte
 
