@@ -345,6 +345,10 @@ export default defineConfig({
           label: 'API',
           items: [{ autogenerate: { directory: 'api' } }],
         },
+        {
+          label: 'Legal',
+          items: [{ autogenerate: { directory: 'legal' } }],
+        },
       ],
     }),
     mdx(),
