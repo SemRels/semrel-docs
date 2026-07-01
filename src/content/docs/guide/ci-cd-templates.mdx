@@ -1,0 +1,159 @@
+---
+title: CI/CD Templates
+description: Ready-to-use, copy-paste semrel pipeline templates for GitHub Actions, GitLab CI, Bitbucket Pipelines, CircleCI, and Travis CI.
+---
+
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Copy one of the templates below into your project to get a working semrel release
+pipeline in under a minute. Every snippet triggers on pushes to your default branch
+and runs `semrel release` with sane defaults.
+
+<Aside type="tip">
+  All templates assume `.semrel.yaml` at the repository root. Adjust `working-directory`
+  / `path` settings for monorepos — see the [Monorepo guide](/guide/monorepo/).
+</Aside>
+
+<Tabs>
+<TabItem label="GitHub Actions">
+
+Uses the [official composite action](https://github.com/SemRels/semrel) — no
+Node.js wrapper, just downloads and builds the Go binary for the runner.
+
+```yaml
+# .github/workflows/release.yml
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: SemRels/semrel@v0
+        id: semrel
+        with:
+          dry-run: 'false'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Use outputs
+        if: steps.semrel.outputs.released == 'true'
+        run: echo "Released ${{ steps.semrel.outputs.version }}"
+```
+
+</TabItem>
+<TabItem label="GitLab CI">
+
+Uses the [GitLab CI release component](https://github.com/SemRels/condition-gitlab-ci/blob/main/templates/release.yml).
+
+```yaml
+# .gitlab-ci.yml
+include:
+  - remote: 'https://raw.githubusercontent.com/SemRels/condition-gitlab-ci/main/templates/release.yml'
+    inputs:
+      dry_run: "false"
+```
+
+Set a masked, protected `SEMREL_TOKEN` CI/CD variable (Settings → CI/CD → Variables)
+with permission to push tags and create releases.
+
+</TabItem>
+<TabItem label="Bitbucket Pipelines">
+
+```yaml
+# bitbucket-pipelines.yml
+image: golang:1.25
+
+pipelines:
+  branches:
+    main:
+      - step:
+          name: Release
+          script:
+            - go install github.com/SemRels/semrel/cmd/semrel@latest
+            - export PATH="$(go env GOPATH)/bin:$PATH"
+            - semrel release
+```
+
+Add `SEMREL_TOKEN` (and any provider-specific secrets) as a **secured** repository
+variable under Repository settings → Pipelines → Repository variables.
+
+</TabItem>
+<TabItem label="CircleCI">
+
+```yaml
+# .circleci/config.yml
+version: 2.1
+
+jobs:
+  release:
+    docker:
+      - image: golang:1.25
+    steps:
+      - checkout
+      - run:
+          name: Install semrel
+          command: go install github.com/SemRels/semrel/cmd/semrel@latest
+      - run:
+          name: Run semrel release
+          command: semrel release
+
+workflows:
+  release:
+    jobs:
+      - release:
+          filters:
+            branches:
+              only: main
+```
+
+</TabItem>
+<TabItem label="Travis CI">
+
+```yaml
+# .travis.yml
+language: go
+go:
+  - "1.25"
+
+branches:
+  only:
+    - main
+
+install:
+  - go install github.com/SemRels/semrel/cmd/semrel@latest
+
+script:
+  - semrel release
+```
+
+</TabItem>
+</Tabs>
+
+## Common environment variables
+
+All templates read the same [configuration file](/guide/configuration/) and honor
+these environment variables regardless of the CI platform:
+
+| Variable | Description |
+| --- | --- |
+| `SEMREL_TOKEN` | Token used by provider/publisher plugins (create tags, releases, comments) |
+| `SEMREL_DRY_RUN` | Set to `true` to simulate a release without side effects |
+| `SEMREL_CONFIG` | Override the path to `.semrel.yaml` |
+
+See [CI Outputs](/guide/ci-outputs/) for how to consume the computed version, tag,
+and changelog in downstream steps across GitHub Actions and GitLab CI.

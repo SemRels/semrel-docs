@@ -252,6 +252,7 @@ export default defineConfig({
             { label: 'Monorepo', link: '/guide/monorepo/' },
             { label: 'Docker', link: '/guide/docker/' },
             { label: 'CI Outputs', link: '/guide/ci-outputs/' },
+            { label: 'CI/CD Templates', link: '/guide/ci-cd-templates/', ...newBadge('2026-07-01') },
             { label: 'Schemas', link: '/guide/schemas/' },
             { label: 'Plugin Development', link: '/guide/plugin-development/' },
           ],
