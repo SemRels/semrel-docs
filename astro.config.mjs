@@ -241,35 +241,38 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Getting Started',
+          translations: { de: 'Erste Schritte' },
           items: [{ autogenerate: { directory: 'getting-started' } }],
         },
         {
           label: 'Guide',
+          translations: { de: 'Anleitung' },
           items: [
             { label: 'vs semantic-release / goreleaser', link: '/guide/comparison/', ...newBadge('2026-01-15') },
-            { label: 'Configuration', link: '/guide/configuration/' },
-            { label: 'CLI Reference', link: '/guide/cli/' },
+            { label: 'Configuration', translations: { de: 'Konfiguration' }, link: '/guide/configuration/' },
+            { label: 'CLI Reference', translations: { de: 'CLI-Referenz' }, link: '/guide/cli/' },
             { label: 'Monorepo', link: '/guide/monorepo/' },
             { label: 'Docker', link: '/guide/docker/' },
-            { label: 'CI Outputs', link: '/guide/ci-outputs/' },
+            { label: 'CI Outputs', translations: { de: 'CI-Outputs' }, link: '/guide/ci-outputs/' },
             { label: 'CI/CD Templates', link: '/guide/ci-cd-templates/', ...newBadge('2026-07-01') },
             { label: 'Schemas', link: '/guide/schemas/' },
-            { label: 'Plugin Development', link: '/guide/plugin-development/' },
+            { label: 'Plugin Development', translations: { de: 'Plugin-Entwicklung' }, link: '/guide/plugin-development/' },
           ],
         },
         {
           label: 'Plugins',
           items: [
-            { label: 'Overview', link: '/plugins/overview/' },
-            { label: 'Managing Plugins', link: '/plugins/managing/' },
-            { label: 'Official Plugins', link: '/plugins/' },
+            { label: 'Overview', translations: { de: 'Überblick' }, link: '/plugins/overview/' },
+            { label: 'Managing Plugins', translations: { de: 'Plugins verwalten' }, link: '/plugins/managing/' },
+            { label: 'Official Plugins', translations: { de: 'Offizielle Plugins' }, link: '/plugins/' },
             {
               label: 'Migrations',
+              translations: { de: 'Migrationen' },
               items: [
-                { label: 'Migration Hub', link: '/plugins/migration/', ...newBadge('2026-01-15') },
-                { label: 'from semantic-release', link: '/plugins/migrations/semantic-release/' },
-                { label: 'from GoReleaser', link: '/plugins/migrations/goreleaser/' },
-                { label: 'from release-please', link: '/plugins/migrations/release-please/' },
+                { label: 'Migration Hub', translations: { de: 'Migrations-Hub' }, link: '/plugins/migration/', ...newBadge('2026-01-15') },
+                { label: 'from semantic-release', translations: { de: 'von semantic-release' }, link: '/plugins/migrations/semantic-release/' },
+                { label: 'from GoReleaser', translations: { de: 'von GoReleaser' }, link: '/plugins/migrations/goreleaser/' },
+                { label: 'from release-please', translations: { de: 'von release-please' }, link: '/plugins/migrations/release-please/' },
               ],
             },
             {
@@ -348,9 +351,9 @@ export default defineConfig({
             },
             { label: 'Registry', link: '/plugins/registry/' },
             { label: 'Registry UI ↗', link: 'https://registry.semrel.io', attrs: { target: '_blank', rel: 'noopener' } },
-            { label: 'Publishing', link: '/plugins/publishing/' },
-            { label: 'Development', link: '/plugins/sdk/' },
-            { label: 'Examples', link: '/plugins/examples/' },
+            { label: 'Publishing', translations: { de: 'Veröffentlichen' }, link: '/plugins/publishing/' },
+            { label: 'Development', translations: { de: 'Entwicklung' }, link: '/plugins/sdk/' },
+            { label: 'Examples', translations: { de: 'Beispiele' }, link: '/plugins/examples/' },
           ],
         },
         {
@@ -359,6 +362,7 @@ export default defineConfig({
         },
         {
           label: 'Infrastructure',
+          translations: { de: 'Infrastruktur' },
           items: [{ autogenerate: { directory: 'infrastructure' } }],
         },
         {

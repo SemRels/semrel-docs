@@ -62,7 +62,7 @@ All naming variants resolve to the same binary on disk — semrel strips the nam
 
 ---
 
-## The `.semrel.lock` file <Badge text="new" variant="success" />
+## The `.semrel.lock` file
 
 `.semrel.lock` records the exact version and published checksums of every project-local plugin install.
 It is updated automatically whenever you run `semrel plugin install` **without** `--plugin-dir`.
@@ -119,7 +119,7 @@ Add these entries to your `.gitignore`:
 
 ---
 
-## `semrel plugin restore` <Badge text="new" variant="success" />
+## `semrel plugin restore`
 
 `semrel plugin restore` reads `.semrel.lock`, downloads every listed plugin into `.semrel/plugins/`,
 skips binaries that are already present, and **verifies the checksum** for the current platform.
