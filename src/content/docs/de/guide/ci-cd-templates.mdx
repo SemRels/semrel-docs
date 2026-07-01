@@ -1,0 +1,160 @@
+---
+title: CI/CD-Vorlagen
+description: Fertige Copy-paste-Vorlagen für semrel-Release-Pipelines für GitHub Actions, GitLab CI, Bitbucket Pipelines, CircleCI und Travis CI.
+---
+
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Kopiere eine der folgenden Vorlagen in dein Projekt, um in unter einer Minute eine
+funktionierende semrel-Release-Pipeline zu erhalten. Jedes Snippet läuft bei Pushes
+auf deinen Standard-Branch und führt `semrel release` mit sinnvollen Standardwerten aus.
+
+<Aside type="tip">
+  Alle Vorlagen setzen `.semrel.yaml` im Repository-Root voraus. Passe `working-directory`
+  / `path` für Monorepos an — siehe den [Monorepo-Guide](/de/guide/monorepo/).
+</Aside>
+
+<Tabs>
+<TabItem label="GitHub Actions">
+
+Verwendet die [offizielle Composite Action](https://github.com/SemRels/semrel) — kein
+Node.js-Wrapper, lädt und baut einfach die Go-Binary für den Runner.
+
+```yaml
+# .github/workflows/release.yml
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: SemRels/semrel@v0
+        id: semrel
+        with:
+          dry-run: 'false'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Use outputs
+        if: steps.semrel.outputs.released == 'true'
+        run: echo "Released ${{ steps.semrel.outputs.version }}"
+```
+
+</TabItem>
+<TabItem label="GitLab CI">
+
+Verwendet die [GitLab-CI-Release-Komponente](https://github.com/SemRels/condition-gitlab-ci/blob/main/templates/release.yml).
+
+```yaml
+# .gitlab-ci.yml
+include:
+  - remote: 'https://raw.githubusercontent.com/SemRels/condition-gitlab-ci/main/templates/release.yml'
+    inputs:
+      dry_run: "false"
+```
+
+Lege eine maskierte, geschützte `SEMREL_TOKEN`-CI/CD-Variable an (Settings → CI/CD → Variables)
+mit der Berechtigung, Tags zu pushen und Releases zu erstellen.
+
+</TabItem>
+<TabItem label="Bitbucket Pipelines">
+
+```yaml
+# bitbucket-pipelines.yml
+image: golang:1.25
+
+pipelines:
+  branches:
+    main:
+      - step:
+          name: Release
+          script:
+            - go install github.com/SemRels/semrel/cmd/semrel@latest
+            - export PATH="$(go env GOPATH)/bin:$PATH"
+            - semrel release
+```
+
+Füge `SEMREL_TOKEN` (sowie eventuelle providerspezifische Secrets) als **gesicherte**
+Repository-Variable unter Repository settings → Pipelines → Repository variables hinzu.
+
+</TabItem>
+<TabItem label="CircleCI">
+
+```yaml
+# .circleci/config.yml
+version: 2.1
+
+jobs:
+  release:
+    docker:
+      - image: golang:1.25
+    steps:
+      - checkout
+      - run:
+          name: Install semrel
+          command: go install github.com/SemRels/semrel/cmd/semrel@latest
+      - run:
+          name: Run semrel release
+          command: semrel release
+
+workflows:
+  release:
+    jobs:
+      - release:
+          filters:
+            branches:
+              only: main
+```
+
+</TabItem>
+<TabItem label="Travis CI">
+
+```yaml
+# .travis.yml
+language: go
+go:
+  - "1.25"
+
+branches:
+  only:
+    - main
+
+install:
+  - go install github.com/SemRels/semrel/cmd/semrel@latest
+
+script:
+  - semrel release
+```
+
+</TabItem>
+</Tabs>
+
+## Gemeinsame Umgebungsvariablen
+
+Alle Vorlagen lesen dieselbe [Konfigurationsdatei](/de/guide/configuration/) und
+berücksichtigen unabhängig von der CI-Plattform folgende Umgebungsvariablen:
+
+| Variable | Beschreibung |
+| --- | --- |
+| `SEMREL_TOKEN` | Token, das von Provider-/Publisher-Plugins verwendet wird (Tags/Releases erstellen, Kommentare) |
+| `SEMREL_DRY_RUN` | Auf `true` setzen, um ein Release ohne Nebeneffekte zu simulieren |
+| `SEMREL_CONFIG` | Überschreibt den Pfad zu `.semrel.yaml` |
+
+Siehe [CI-Outputs](/de/guide/ci-outputs/) für die Weiterverarbeitung der berechneten
+Version, des Tags und des Changelogs in nachgelagerten Schritten — sowohl für GitHub
+Actions als auch für GitLab CI.
