@@ -710,8 +710,10 @@ Plugins also receive release context through standard environment variables:
 | `SEMREL_CURRENT_VERSION` | The version before this release |
 | `SEMREL_NEXT_VERSION` | The new version being released |
 | `SEMREL_TAG_NAME` | The full tag name including prefix (e.g. `v1.2.3`) |
-| `SEMREL_CHANGELOG` | Path to the written `CHANGELOG.md` file |
+| `SEMREL_CHANGELOG` | Generated changelog / release-notes text |
 | `SEMREL_DRY_RUN` | `true` if semrel was invoked with `--dry-run` |
+| `SEMREL_COMMITS` | JSON array of raw commit messages in the current release window |
+| `SEMREL_CONTRIBUTORS` | JSON array of contributor metadata for the current release window, sorted by commit count descending |
 
 semrel plugins are plain executables launched as subprocesses. They do not use gRPC.
 

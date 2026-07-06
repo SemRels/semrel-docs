@@ -40,8 +40,12 @@ semrel sets the following variables before executing any plugin:
 | `SEMREL_TAG_PREFIX` | Configured tag prefix |
 | `SEMREL_CHANGELOG` | Generated changelog content |
 | `SEMREL_DRY_RUN` | `true` when running with `--dry-run` |
+| `SEMREL_COMMITS` | JSON array of raw commit messages in the current release window |
+| `SEMREL_CONTRIBUTORS` | JSON array of contributor metadata for the current release window, sorted by commit count descending |
 
 Plugin-specific `args:` from `.semrel.yaml` are exposed as `SEMREL_PLUGIN_<KEY>=<value>` (uppercase key).
+
+`SEMREL_CONTRIBUTORS` contains objects shaped like `{"name":"Jane Doe","email":"jane@example.com","commits":3,"firstContribution":true}`. It is only available to plugins that run after semrel has analysed the release commit range (for example generator, pre-tag, provider, hook, publisher, and updater plugins).
 
 ### Schema versioning
 
