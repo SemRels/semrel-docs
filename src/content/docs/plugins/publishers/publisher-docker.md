@@ -47,13 +47,13 @@ printf '%s' "$GHCR_TOKEN" |
 semrel release
 ```
 
-Configure the publish phase:
+Configure the release phase:
 
 ```yaml
 version: 1
 plugins:
   - uses: @semrel/publisher-docker
-    phase: publish
+    phase: release
     env:
       SEMREL_PLUGIN_IMAGE: acme-api:build
       SEMREL_PLUGIN_REF: ghcr.io/acme/api:{version}
