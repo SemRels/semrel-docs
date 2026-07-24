@@ -10,7 +10,7 @@ Baut Linux-Pakete (`deb`, `rpm`, `apk`) mit `nfpm package` in der semrel-Release
 ## Installation
 
 ```bash
-semrel plugin install @semrel/nfpm
+semrel plugin install @semrel/packager-nfpm
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -20,7 +20,7 @@ semrel plugin install @semrel/nfpm
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/nfpm
+  - uses: @semrel/packager-nfpm
     args:
       config: packaging/nfpm.yaml
       target: dist/packages

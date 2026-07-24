@@ -8,7 +8,7 @@ Sendet nach einem semrel-Lauf Release-Benachrichtigungen per SMTP. Er kann Versi
 ## Installation
 
 ```bash
-semrel plugin install @semrel/email
+semrel plugin install @semrel/hook-email
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/email
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/email
+  - uses: @semrel/hook-email
     args:
       smtp_host: smtp.example.com
       smtp_port: 587

@@ -10,7 +10,7 @@ Pushes release-related changes to another Git repository or branch. Use it when 
 ### Binary
 
 ```bash
-semrel plugin install @semrel/gitplugin
+semrel plugin install @semrel/hook-gitplugin
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/release-mirror:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/gitplugin
+  - uses: @semrel/hook-gitplugin
     args:
       repo: 'https://github.com/SemRels/release-mirror.git'
       branch: main

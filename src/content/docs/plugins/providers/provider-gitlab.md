@@ -10,7 +10,7 @@ Publishes releases to GitLab. It supports GitLab.com and self-hosted GitLab inst
 ### Binary
 
 ```bash
-semrel plugin install @semrel/gitlab
+semrel plugin install @semrel/provider-gitlab
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/provider-gitlab:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/gitlab
+  - uses: @semrel/provider-gitlab
     args:
       # token is read from SEMREL_PLUGIN_TOKEN env var
       base_url: 'https://gitlab.com'

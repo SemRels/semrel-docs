@@ -8,7 +8,7 @@ Aktualisiert eine Go-Quelldatei, die die Projektversion bereitstellt. Üblicherw
 ## Installation
 
 ```bash
-semrel plugin install @semrel/go
+semrel plugin install @semrel/updater-go
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/go
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/go
+  - uses: @semrel/updater-go
     args:
       file: version.go
       variable: Version

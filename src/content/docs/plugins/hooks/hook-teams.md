@@ -10,7 +10,7 @@ Sends release notifications to Microsoft Teams via Incoming Webhooks. Use it to 
 ### Binary
 
 ```bash
-semrel plugin install @semrel/teams
+semrel plugin install @semrel/hook-teams
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -35,7 +35,7 @@ cosign verify ghcr.io/semrels/hook-teams:latest \
 
 ```yaml
 plugins:
-  - uses: hook-teams
+  - uses: @semrel/hook-teams
     args:
       webhook_url: "https://your-tenant.webhook.office.com/webhookb2/..."
       title: "ðŸš€ New Release"      # optional

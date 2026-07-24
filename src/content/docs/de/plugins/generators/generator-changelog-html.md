@@ -24,7 +24,7 @@ plugins:
       css_file: .semrel/templates/changelog.css          # optional
       signature: "true"                               # optional semrel.io footer, opt-in
       max_commits: "100"
-  - uses: @semrel/github     # receives the HTML as SEMREL_CHANGELOG
+  - uses: @semrel/provider-github     # receives the HTML as SEMREL_CHANGELOG
 ```
 
 ## Environment variables

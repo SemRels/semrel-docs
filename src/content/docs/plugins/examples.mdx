@@ -45,18 +45,18 @@ Official plugins are published in the [SemRels](https://github.com/SemRels) orga
 
 ```yaml
 plugins:
-  - uses: updater-go
+  - uses: @semrel/updater-go
     args:
       file: internal/version/version.go
       var_name: Version
 
-  - uses: packager-nfpm
+  - uses: @semrel/packager-nfpm
     args:
       config: packaging/nfpm.yaml
       target: dist/packages
       packagers: deb,rpm,apk
 
-  - uses: publisher-oci
+  - uses: @semrel/publisher-oci
     args:
       ref: ghcr.io/semrels/myapp:{version}
       artifacts: dist/packages/myapp_amd64.deb,dist/packages/myapp_amd64.rpm
@@ -66,12 +66,12 @@ plugins:
 
 ```yaml
 plugins:
-  - uses: updater-docker
+  - uses: @semrel/updater-docker
     args:
       file: Dockerfile
       arg_name: VERSION
 
-  - uses: publisher-generic-http
+  - uses: @semrel/publisher-generic-http
     args:
       url: https://uploads.example.com/releases/{version}/{artifact}
       method: PUT
@@ -83,12 +83,12 @@ plugins:
 
 ```yaml
 plugins:
-  - uses: updater-helm
+  - uses: @semrel/updater-helm
     args:
       file: charts/myapp/Chart.yaml
       update_app_version: "true"
 
-  - uses: publisher-oci
+  - uses: @semrel/publisher-oci
     args:
       ref: ghcr.io/semrels/charts/myapp:{version}
       artifacts: dist/charts/myapp-{version}.tgz

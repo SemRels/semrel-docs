@@ -43,8 +43,8 @@ plugins:
       max_commits: "50"
       include_body: "false"
       signature: "true"                              # optional semrel.io footer, opt-in
-  - uses: @semrel/gitlab     # receives the formatted notes as SEMREL_CHANGELOG
-  - uses: @semrel/slack      # same
+  - uses: @semrel/provider-gitlab     # receives the formatted notes as SEMREL_CHANGELOG
+  - uses: @semrel/hook-slack          # same
 ```
 
 ## Environment variables

@@ -10,7 +10,7 @@ Creates git tags and optionally pushes branch updates through the local Git remo
 ### Binary
 
 ```bash
-semrel plugin install @semrel/git
+semrel plugin install @semrel/provider-git
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/provider-git:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/git
+  - uses: @semrel/provider-git
     args:
       remote: origin
       push_branch: true

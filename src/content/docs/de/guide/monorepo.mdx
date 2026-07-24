@@ -48,7 +48,7 @@ tagPrefix: "packages/api@v"
 branches:
   - name: main
 plugins:
-  - uses: @semrel/github
+  - uses: @semrel/provider-github
 ```
 
 ### Releases ausführen (CI-Matrix)
@@ -85,7 +85,7 @@ schemaVersion: 1
 branches:
   - name: main
 plugins:
-  - uses: @semrel/github   # gemeinsames Plugin für alle Packages
+  - uses: @semrel/provider-github   # gemeinsames Plugin für alle Packages
 
 workspace:
   strategy: independent    # jedes Package bekommt sein eigenes Semver

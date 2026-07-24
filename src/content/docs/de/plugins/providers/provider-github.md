@@ -8,7 +8,7 @@ Veröffentlicht Releases in GitHub mit dem erzeugten semrel-Tag, der Version und
 ## Installation
 
 ```bash
-semrel plugin install @semrel/github
+semrel plugin install @semrel/provider-github
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/github
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/github
+  - uses: @semrel/provider-github
     args:
       # Token wird aus der Umgebungsvariable SEMREL_PLUGIN_TOKEN gelesen
       owner: SemRels

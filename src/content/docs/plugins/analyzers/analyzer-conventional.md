@@ -10,7 +10,7 @@ Determines the next SemVer bump from Conventional Commit messages. It maps commi
 ### Binary
 
 ```bash
-semrel plugin install @semrel/conventional
+semrel plugin install @semrel/analyzer-conventional
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/analyzer-conventional:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/conventional
+  - uses: @semrel/analyzer-conventional
     args:
       breaking_change_label: 'BREAKING CHANGE'
       minor_types: feat

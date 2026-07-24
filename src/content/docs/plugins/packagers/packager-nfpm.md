@@ -10,7 +10,7 @@ Builds Linux packages (`deb`, `rpm`, `apk`) with `nfpm package` during the semre
 ## Installation
 
 ```bash
-semrel plugin install @semrel/nfpm
+semrel plugin install @semrel/packager-nfpm
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -20,7 +20,7 @@ semrel plugin install @semrel/nfpm
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/nfpm
+  - uses: @semrel/packager-nfpm
     args:
       config: packaging/nfpm.yaml
       target: dist/packages

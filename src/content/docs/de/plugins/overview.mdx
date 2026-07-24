@@ -101,13 +101,13 @@ Diese Ziele sind heute über ein geteiltes Modell abgedeckt: **Updater bereiten 
 
 ## Plugin-Erkennung
 
-Entdecke offizielle Plugins im [Plugin Registry](/plugins/registry/), installiere sie mit `semrel plugin install <ref>` und nutze die Anleitung [Plugins verwalten](/plugins/managing/) für Lock-Dateien und Restore-Workflows.
+Entdecke offizielle Plugins im [Plugin Registry](/de/plugins/registry/), installiere sie mit `semrel plugin install <ref>` und nutze die Anleitung [Plugins verwalten](/de/plugins/managing/) für Lock-Dateien und Restore-Workflows.
 
 semrel löst Plugins aus dem konfigurierten `uses:`-Wert auf:
 
 ```yaml
 plugins:
-  - uses: github
+  - uses: @semrel/provider-github
     name: github-release
     args:
       owner: MyOrg
@@ -120,7 +120,7 @@ plugins:
 ```
 
 <Aside type="tip">
-  `semrel plugin install @semrel/github` installiert das Plugin nach `.semrel/plugins/` und aktualisiert `.semrel.lock`. Nackte Namen wie `github` funktionieren nur, wenn der Registry-Eintrag keinen Namespace hat.
+  `semrel plugin install @semrel/provider-github` installiert das Plugin nach `.semrel/plugins/` und aktualisiert `.semrel.lock`. Legacy-Aliase wie `github` sind nur Kompatibilitätseingaben; verwende in neuen Konfigurationen den typisierten, gescopten Namen.
 </Aside>
 
 ## Plugin-Lebenszyklus
@@ -131,7 +131,7 @@ sequenceDiagram
     participant R as resolver
     participant P as plugin executable
 
-    S->>R: resolve uses: github
+    S->>R: resolve uses: @semrel/provider-github
     R-->>S: path / .semrel/plugins / ~/.semrel/plugins / $PATH
     S->>P: spawn subprocess
     Note over S,P: SEMREL_PLUGIN_* and SEMREL_* env vars

@@ -8,7 +8,7 @@ Bestätigt, dass die aktuelle Release innerhalb von GitHub Actions läuft. Das i
 ## Installation
 
 ```bash
-semrel plugin install @semrel/github-actions
+semrel plugin install @semrel/condition-github-actions
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/github-actions
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/github-actions
+  - uses: @semrel/condition-github-actions
 ```
 
 ## Umgebungsvariablen

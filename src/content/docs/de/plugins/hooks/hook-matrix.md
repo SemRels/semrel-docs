@@ -8,7 +8,7 @@ Veröffentlicht Release-Benachrichtigungen in einem Matrix-Raum. Das funktionier
 ## Installation
 
 ```bash
-semrel plugin install @semrel/matrix
+semrel plugin install @semrel/hook-matrix
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/matrix
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/matrix
+  - uses: @semrel/hook-matrix
     args:
       homeserver: 'https://matrix.example.com'
       # Token wird aus der Umgebungsvariable SEMREL_PLUGIN_TOKEN gelesen

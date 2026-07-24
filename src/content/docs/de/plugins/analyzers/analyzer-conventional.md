@@ -8,7 +8,7 @@ Ermittelt den nächsten SemVer-Bump aus Conventional-Commit-Nachrichten. Es ordn
 ## Installation
 
 ```bash
-semrel plugin install @semrel/conventional
+semrel plugin install @semrel/analyzer-conventional
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/conventional
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/conventional
+  - uses: @semrel/analyzer-conventional
     args:
       breaking_change_label: 'BREAKING CHANGE'
       minor_types: feat

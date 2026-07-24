@@ -8,7 +8,7 @@ Veröffentlicht Release-Informationen aus dem semrel-Release-Kontext in Bitbucke
 ## Installation
 
 ```bash
-semrel plugin install @semrel/bitbucket
+semrel plugin install @semrel/provider-bitbucket
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/bitbucket
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/bitbucket
+  - uses: @semrel/provider-bitbucket
     args:
       workspace: semrels
       repo: semrel

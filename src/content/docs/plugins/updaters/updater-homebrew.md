@@ -10,7 +10,7 @@ Updates a Homebrew formula with the new release URL and checksum. Use it when Se
 ### Binary
 
 ```bash
-semrel plugin install @semrel/homebrew
+semrel plugin install @semrel/updater-homebrew
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/semrel:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/homebrew
+  - uses: @semrel/updater-homebrew
     args:
       formula_file: Formula/semrel.rb
       url_template: 'https://github.com/SemRels/semrel/archive/refs/tags/v{{ .NextVersion }}.tar.gz'

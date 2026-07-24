@@ -15,37 +15,37 @@ Für die Migration von Updater-only-Flows auf Packager/Publisher-Pipelines nutze
 
 | Plugin | Kategorie | Beschreibung |
 | --- | --- | --- |
-| [`condition-generic`](/plugins/conditions/condition-generic/) | Condition | Führt einen Shell-Befehl aus und besteht nur, wenn dieser Befehl mit Status 0 endet. |
-| [`condition-gitea-actions`](/plugins/conditions/condition-gitea-actions/) | Condition | Bestätigt, dass die aktuelle Release innerhalb von Gitea Actions läuft. |
-| [`condition-github-actions`](/plugins/conditions/condition-github-actions/) | Condition | Bestätigt, dass die aktuelle Release innerhalb von GitHub Actions läuft. |
-| [`condition-gitlab-ci`](/plugins/conditions/condition-gitlab-ci/) | Condition | Bestätigt, dass die aktuelle Release innerhalb von GitLab CI läuft. |
-| [`hook-email`](/plugins/hooks/hook-email/) | Hook | Sendet nach einem semrel-Lauf Release-Benachrichtigungen per SMTP. |
-| [`hook-gitplugin`](/plugins/hooks/hook-gitplugin/) | Hook | Überträgt Release-bezogene Änderungen in ein anderes Git-Repository oder eine andere Branch. |
-| [`hook-jira`](/plugins/hooks/hook-jira/) | Hook | Aktualisiert Jira-Release-Metadaten, nachdem semrel eine Version veröffentlicht hat. |
-| [`hook-matrix`](/plugins/hooks/hook-matrix/) | Hook | Veröffentlicht Release-Benachrichtigungen in einem Matrix-Raum. |
-| [`hook-slack`](/plugins/hooks/hook-slack/) | Hook | Veröffentlicht Release-Benachrichtigungen in Slack über einen eingehenden Webhook. |
-| [`hook-teams`](/plugins/hooks/hook-teams/) | Hook | Sendet Release-Benachrichtigungen an Microsoft Teams über Incoming Webhooks. |
-| [`analyzer-conventional`](/plugins/analyzers/analyzer-conventional/) | Analyzer | Ermittelt den nächsten SemVer-Bump aus Conventional-Commit-Nachrichten. |
-| [`analyzer-default`](/plugins/analyzers/analyzer-default/) | Analyzer | Ermittelt den nächsten SemVer-Bump, indem Commit-Nachrichten mit regulären Ausdrücken abgeglichen werden. |
-| [`generator-changelog-html`](/plugins/generators/generator-changelog-html/) | Generator | Erzeugt einen HTML-Changelog für die anstehende Release. |
-| [`generator-changelog-md`](/plugins/generators/generator-changelog-md/) | Generator | Erzeugt einen Markdown-Changelog für die anstehende Release. |
-| [`generator-release-notes`](/plugins/generators/generator-release-notes/) | Generator | Erstellt kompakte Release Notes aus dem aktuellen Release-Kontext und der Commit-Historie. |
-| [`updater-cargo`](/plugins/updaters/updater-cargo/) | Updater | Aktualisiert das Versionsfeld in einem Rust-Cargo-Manifest. |
-| [`updater-docker`](/plugins/updaters/updater-docker/) | Updater | Aktualisiert ein Versionsargument in einer Dockerfile. |
-| [`updater-go`](/plugins/updaters/updater-go/) | Updater | Aktualisiert eine Go-Quelldatei, die die Projektversion bereitstellt. |
-| [`updater-gradle`](/plugins/updaters/updater-gradle/) | Updater | Aktualisiert den Versionsschlüssel in einer Gradle-Properties-Datei. |
-| [`updater-helm`](/plugins/updaters/updater-helm/) | Updater | Aktualisiert Chart-Metadaten in einer Helm-`Chart.yaml`-Datei. |
-| [`updater-homebrew`](/plugins/updaters/updater-homebrew/) | Updater | Aktualisiert eine Homebrew-Formula mit der neuen Release-URL und Prüfsumme. |
-| [`updater-maven`](/plugins/updaters/updater-maven/) | Updater | Aktualisiert die in einer Maven-`pom.xml`-Datei deklarierte Version. |
-| [`updater-npm`](/plugins/updaters/updater-npm/) | Updater | Aktualisiert das Versionsfeld in einer `package.json`-Datei. |
-| [`updater-nuget`](/plugins/updaters/updater-nuget/) | Updater | Aktualisiert die Versionseigenschaft in einer `.csproj`- oder anderen NuGet-Projektdatei. |
-| [`updater-python`](/plugins/updaters/updater-python/) | Updater | Aktualisiert Python-Paketversionsmetadaten in `pyproject.toml` oder einer ähnlichen Backend-Datei. |
-| [`updater-terraform`](/plugins/updaters/updater-terraform/) | Updater | Aktualisiert eine Terraform-Variable, die die Anwendungsversion speichert. |
-| [`packager-nfpm`](/plugins/packagers/packager-nfpm/) | Packager | Baut Linux-Pakete (`deb`, `rpm`, `apk`) mit nFPM. |
-| [`publisher-generic-http`](/plugins/publishers/publisher-generic-http/) | Publisher | Lädt Release-Artefakte zu generischen HTTP-Endpunkten hoch. |
-| [`publisher-oci`](/plugins/publishers/publisher-oci/) | Publisher | Veröffentlicht Release-Artefakte in OCI-Registries. |
-| [`provider-bitbucket`](/plugins/providers/provider-bitbucket/) | Provider | Veröffentlicht Release-Informationen aus dem semrel-Release-Kontext in Bitbucket. |
-| [`provider-git`](/plugins/providers/provider-git/) | Provider | Erstellt Git-Tags und überträgt optional Branch-Updates über das lokale Git-Remote. |
-| [`provider-gitea`](/plugins/providers/provider-gitea/) | Provider | Veröffentlicht Releases in einer Gitea-Instanz. |
-| [`provider-github`](/plugins/providers/provider-github/) | Provider | Veröffentlicht Releases in GitHub mit dem erzeugten semrel-Tag, der Version und dem Changelog. |
-| [`provider-gitlab`](/plugins/providers/provider-gitlab/) | Provider | Veröffentlicht Releases in GitLab. |
+| [`condition-generic`](/de/plugins/conditions/condition-generic/) | Condition | Führt einen Shell-Befehl aus und besteht nur, wenn dieser Befehl mit Status 0 endet. |
+| [`condition-gitea-actions`](/de/plugins/conditions/condition-gitea-actions/) | Condition | Bestätigt, dass die aktuelle Release innerhalb von Gitea Actions läuft. |
+| [`condition-github-actions`](/de/plugins/conditions/condition-github-actions/) | Condition | Bestätigt, dass die aktuelle Release innerhalb von GitHub Actions läuft. |
+| [`condition-gitlab-ci`](/de/plugins/conditions/condition-gitlab-ci/) | Condition | Bestätigt, dass die aktuelle Release innerhalb von GitLab CI läuft. |
+| [`hook-email`](/de/plugins/hooks/hook-email/) | Hook | Sendet nach einem semrel-Lauf Release-Benachrichtigungen per SMTP. |
+| [`hook-gitplugin`](/de/plugins/hooks/hook-gitplugin/) | Hook | Überträgt Release-bezogene Änderungen in ein anderes Git-Repository oder eine andere Branch. |
+| [`hook-jira`](/de/plugins/hooks/hook-jira/) | Hook | Aktualisiert Jira-Release-Metadaten, nachdem semrel eine Version veröffentlicht hat. |
+| [`hook-matrix`](/de/plugins/hooks/hook-matrix/) | Hook | Veröffentlicht Release-Benachrichtigungen in einem Matrix-Raum. |
+| [`hook-slack`](/de/plugins/hooks/hook-slack/) | Hook | Veröffentlicht Release-Benachrichtigungen in Slack über einen eingehenden Webhook. |
+| [`hook-teams`](/de/plugins/hooks/hook-teams/) | Hook | Sendet Release-Benachrichtigungen an Microsoft Teams über Incoming Webhooks. |
+| [`analyzer-conventional`](/de/plugins/analyzers/analyzer-conventional/) | Analyzer | Ermittelt den nächsten SemVer-Bump aus Conventional-Commit-Nachrichten. |
+| [`analyzer-default`](/de/plugins/analyzers/analyzer-default/) | Analyzer | Ermittelt den nächsten SemVer-Bump, indem Commit-Nachrichten mit regulären Ausdrücken abgeglichen werden. |
+| [`generator-changelog-html`](/de/plugins/generators/generator-changelog-html/) | Generator | Erzeugt einen HTML-Changelog für die anstehende Release. |
+| [`generator-changelog-md`](/de/plugins/generators/generator-changelog-md/) | Generator | Erzeugt einen Markdown-Changelog für die anstehende Release. |
+| [`generator-release-notes`](/de/plugins/generators/generator-release-notes/) | Generator | Erstellt kompakte Release Notes aus dem aktuellen Release-Kontext und der Commit-Historie. |
+| [`updater-cargo`](/de/plugins/updaters/updater-cargo/) | Updater | Aktualisiert das Versionsfeld in einem Rust-Cargo-Manifest. |
+| [`updater-docker`](/de/plugins/updaters/updater-docker/) | Updater | Aktualisiert ein Versionsargument in einer Dockerfile. |
+| [`updater-go`](/de/plugins/updaters/updater-go/) | Updater | Aktualisiert eine Go-Quelldatei, die die Projektversion bereitstellt. |
+| [`updater-gradle`](/de/plugins/updaters/updater-gradle/) | Updater | Aktualisiert den Versionsschlüssel in einer Gradle-Properties-Datei. |
+| [`updater-helm`](/de/plugins/updaters/updater-helm/) | Updater | Aktualisiert Chart-Metadaten in einer Helm-`Chart.yaml`-Datei. |
+| [`updater-homebrew`](/de/plugins/updaters/updater-homebrew/) | Updater | Aktualisiert eine Homebrew-Formula mit der neuen Release-URL und Prüfsumme. |
+| [`updater-maven`](/de/plugins/updaters/updater-maven/) | Updater | Aktualisiert die in einer Maven-`pom.xml`-Datei deklarierte Version. |
+| [`updater-npm`](/de/plugins/updaters/updater-npm/) | Updater | Aktualisiert das Versionsfeld in einer `package.json`-Datei. |
+| [`updater-nuget`](/de/plugins/updaters/updater-nuget/) | Updater | Aktualisiert die Versionseigenschaft in einer `.csproj`- oder anderen NuGet-Projektdatei. |
+| [`updater-python`](/de/plugins/updaters/updater-python/) | Updater | Aktualisiert Python-Paketversionsmetadaten in `pyproject.toml` oder einer ähnlichen Backend-Datei. |
+| [`updater-terraform`](/de/plugins/updaters/updater-terraform/) | Updater | Aktualisiert eine Terraform-Variable, die die Anwendungsversion speichert. |
+| [`packager-nfpm`](/de/plugins/packagers/packager-nfpm/) | Packager | Baut Linux-Pakete (`deb`, `rpm`, `apk`) mit nFPM. |
+| [`publisher-generic-http`](/de/plugins/publishers/publisher-generic-http/) | Publisher | Lädt Release-Artefakte zu generischen HTTP-Endpunkten hoch. |
+| [`publisher-oci`](/de/plugins/publishers/publisher-oci/) | Publisher | Veröffentlicht Release-Artefakte in OCI-Registries. |
+| [`provider-bitbucket`](/de/plugins/providers/provider-bitbucket/) | Provider | Veröffentlicht Release-Informationen aus dem semrel-Release-Kontext in Bitbucket. |
+| [`provider-git`](/de/plugins/providers/provider-git/) | Provider | Erstellt Git-Tags und überträgt optional Branch-Updates über das lokale Git-Remote. |
+| [`provider-gitea`](/de/plugins/providers/provider-gitea/) | Provider | Veröffentlicht Releases in einer Gitea-Instanz. |
+| [`provider-github`](/de/plugins/providers/provider-github/) | Provider | Veröffentlicht Releases in GitHub mit dem erzeugten semrel-Tag, der Version und dem Changelog. |
+| [`provider-gitlab`](/de/plugins/providers/provider-gitlab/) | Provider | Veröffentlicht Releases in GitLab. |

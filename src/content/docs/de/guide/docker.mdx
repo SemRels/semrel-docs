@@ -15,9 +15,11 @@ semrel ist als offizielles Docker-Image unter `ghcr.io/SemRels/semrel` verfügba
 | `ghcr.io/SemRels/semrel:1.0.0` | distroless (Debian 12) | git, ca-certificates | Fest gepinnte Version |
 | `ghcr.io/SemRels/semrel:latest-alpine` | Alpine 3.22 | git, ca-certificates, openssh-client, Shell | Für SSH-Remotes oder Shell-Scripting in CI |
 | `ghcr.io/SemRels/semrel:1.0.0-alpine` | Alpine 3.22 | git, ca-certificates, openssh-client, Shell | Fest gepinnte Alpine-Version |
+| `ghcr.io/SemRels/semrel:latest-action` | Alpine 3.22 | git, ca-certificates, openssh-client, Shell | Nur für GitHub-Docker-Container-Actions |
+| `ghcr.io/SemRels/semrel:1.0.0-action` | Alpine 3.22 | git, ca-certificates, openssh-client, Shell | Fest gepinntes GitHub-Actions-Image |
 
 <Aside type="tip">
-  Beide Image-Varianten enthalten `git` und `ca-certificates` — semrel funktioniert in beiden sofort ohne weitere Konfiguration.
+  Beide regulären Image-Varianten enthalten `git` und `ca-certificates` — semrel funktioniert in beiden sofort ohne weitere Konfiguration.
   Verwende **`latest-alpine`**, wenn du `openssh-client` (für SSH-basierte Git-Remotes) oder Shell-Scripting in deinen CI-Schritten benötigst.
 </Aside>
 
@@ -57,12 +59,17 @@ Oder als Docker-Action-Schritt:
 
 ```yaml
 - name: semrel ausführen
-  uses: docker://ghcr.io/SemRels/semrel:latest
+  uses: docker://ghcr.io/SemRels/semrel:latest-action
   with:
     args: release
   env:
     SEMREL_PLUGIN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+GitHub bindet den Action-Workspace mit der Benutzerkennung des Runners ein und
+setzt für Docker-Container-Actions root voraus. Verwende den speziellen
+`-action`-Tag nur mit `uses: docker://...`; die regulären Images bleiben bewusst
+Nicht-root-Images.
 
 ## GitLab CI
 
@@ -129,7 +136,9 @@ ghcr.io/SemRels/semrel:1.0.0-alpine  # Alpine
 
 ## Sicherheitshinweise
 
-- Beide Images laufen standardmäßig als **nicht-root-Benutzer**.
+- Beide regulären Images laufen standardmäßig als **nicht-root-Benutzer**.
+- Das optionale `-action`-Image läuft ausschließlich für GitHub-Docker-
+  Container-Actions als root. Verwende es nicht für allgemeine Container-Workloads.
 - Das `latest`-Image (distroless) hat keine Shell und keinen Paketmanager — minimale Angriffsfläche.
 - Das Alpine-Image ist auf `3.22` gepinnt und wird mit `apk upgrade --no-cache` gebaut, um alle Sicherheits-Patches einzuspielen.
 - Images werden mit [cosign](https://github.com/sigstore/cosign) signiert und enthalten eine SBOM-Attestierung.

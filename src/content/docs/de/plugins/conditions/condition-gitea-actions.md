@@ -8,7 +8,7 @@ Bestätigt, dass die aktuelle Release innerhalb von Gitea Actions läuft. Nutze 
 ## Installation
 
 ```bash
-semrel plugin install @semrel/gitea-actions
+semrel plugin install @semrel/condition-gitea-actions
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/gitea-actions
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/gitea-actions
+  - uses: @semrel/condition-gitea-actions
 ```
 
 ## Umgebungsvariablen

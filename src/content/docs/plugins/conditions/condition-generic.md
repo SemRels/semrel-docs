@@ -10,7 +10,7 @@ Runs a shell command and only passes when that command exits with status 0. Use 
 ### Binary
 
 ```bash
-semrel plugin install @semrel/generic
+semrel plugin install @semrel/condition-generic
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/condition-generic:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/generic
+  - uses: @semrel/condition-generic
     args:
       command: 'test "$SEMREL_BRANCH" = "main"'
 ```

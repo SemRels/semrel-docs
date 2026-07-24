@@ -107,7 +107,7 @@ semrel resolves plugins from the configured `uses:` value:
 
 ```yaml
 plugins:
-  - uses: github
+  - uses: @semrel/provider-github
     name: github-release
     args:
       owner: MyOrg
@@ -120,7 +120,7 @@ plugins:
 ```
 
 <Aside type="tip">
-  `semrel plugin install @semrel/github` installs the plugin into `.semrel/plugins/` and updates `.semrel.lock`. Bare names such as `github` only work when the registry entry has no namespace.
+  `semrel plugin install @semrel/provider-github` installs the plugin into `.semrel/plugins/` and updates `.semrel.lock`. Legacy aliases such as `github` are compatibility inputs only; use the typed scoped name in new configuration.
 </Aside>
 
 ## Plugin lifecycle
@@ -131,7 +131,7 @@ sequenceDiagram
     participant R as resolver
     participant P as plugin executable
 
-    S->>R: resolve uses: github
+    S->>R: resolve uses: @semrel/provider-github
     R-->>S: path / .semrel/plugins / ~/.semrel/plugins / $PATH
     S->>P: spawn subprocess
     Note over S,P: SEMREL_PLUGIN_* and SEMREL_* env vars

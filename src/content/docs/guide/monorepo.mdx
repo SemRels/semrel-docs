@@ -48,7 +48,7 @@ tagPrefix: "packages/api@v"
 branches:
   - name: main
 plugins:
-  - uses: @semrel/github
+  - uses: @semrel/provider-github
 ```
 
 ### Running releases (CI matrix)
@@ -85,7 +85,7 @@ schemaVersion: 1
 branches:
   - name: main
 plugins:
-  - uses: @semrel/github   # shared plugin for all packages
+  - uses: @semrel/provider-github   # shared plugin for all packages
 
 workspace:
   strategy: independent    # each package gets its own semver

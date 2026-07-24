@@ -10,7 +10,7 @@ Updates a Go source file that exposes the project version. It is typically used 
 ### Binary
 
 ```bash
-semrel plugin install @semrel/go
+semrel plugin install @semrel/updater-go
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/updater-go:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/go
+  - uses: @semrel/updater-go
     args:
       file: version.go
       variable: Version

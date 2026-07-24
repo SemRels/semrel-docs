@@ -58,7 +58,7 @@ plugins:
       keep_releases: "10"   # keep 10 full entries; older ones are summarised
       signature: "true"     # optional semrel.io footer, opt-in
 
-  - uses: @semrel/gitlab
+  - uses: @semrel/provider-gitlab
 ```
 
 ## How it works

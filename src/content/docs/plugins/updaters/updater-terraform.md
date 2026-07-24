@@ -10,7 +10,7 @@ Updates a Terraform variable that stores the application version. It is useful w
 ### Binary
 
 ```bash
-semrel plugin install @semrel/terraform
+semrel plugin install @semrel/updater-terraform
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/updater-terraform:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/terraform
+  - uses: @semrel/updater-terraform
     args:
       file: variables.tf
       variable: app_version

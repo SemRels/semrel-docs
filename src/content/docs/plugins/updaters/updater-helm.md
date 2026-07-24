@@ -10,7 +10,7 @@ Updates chart metadata in a Helm `Chart.yaml` file. It helps keep Helm chart pac
 ### Binary
 
 ```bash
-semrel plugin install @semrel/helm
+semrel plugin install @semrel/updater-helm
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/updater-helm:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/helm
+  - uses: @semrel/updater-helm
     args:
       file: Chart.yaml
 ```

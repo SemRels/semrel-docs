@@ -8,7 +8,7 @@ Aktualisiert eine Terraform-Variable, die die Anwendungsversion speichert. Das i
 ## Installation
 
 ```bash
-semrel plugin install @semrel/terraform
+semrel plugin install @semrel/updater-terraform
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/terraform
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/terraform
+  - uses: @semrel/updater-terraform
     args:
       file: variables.tf
       variable: app_version

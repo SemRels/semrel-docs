@@ -10,7 +10,7 @@ Confirms the current release is running inside Gitea Actions. Use it to block lo
 ### Binary
 
 ```bash
-semrel plugin install @semrel/gitea-actions
+semrel plugin install @semrel/condition-gitea-actions
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/condition-gitea-actions:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/gitea-actions
+  - uses: @semrel/condition-gitea-actions
 ```
 
 ## Environment Variables

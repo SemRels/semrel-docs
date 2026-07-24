@@ -8,7 +8,7 @@ Aktualisiert die in einer Maven-`pom.xml`-Datei deklarierte Version. Das ist nü
 ## Installation
 
 ```bash
-semrel plugin install @semrel/maven
+semrel plugin install @semrel/updater-maven
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/maven
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/maven
+  - uses: @semrel/updater-maven
     args:
       file: pom.xml
 ```

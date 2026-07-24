@@ -62,7 +62,7 @@ git log → Condition Plugin → Analyzer Plugin → SemVer Bump Decision
 tag_prefix: "v"
 
 plugins:
-  - uses: github           # provider
+  - uses: "@semrel/provider-github"  # provider
     name: github-release
     args:
       owner: MyOrg
@@ -191,8 +191,8 @@ linux/arm64, darwin/amd64, darwin/arm64, windows/amd64.
 ## Installing plugins
 
 ```bash
-semrel plugin install github          # installs provider-github
-semrel plugin install @semrel/slack   # installs hook-slack from the registry
+semrel plugin install @semrel/provider-github  # installs provider-github
+semrel plugin install @semrel/hook-slack       # installs hook-slack from the registry
 semrel plugin list                    # shows installed plugins
 semrel plugin restore                 # restores from .semrel.lock
 ```

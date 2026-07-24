@@ -8,7 +8,7 @@ Aktualisiert Jira-Release-Metadaten, nachdem semrel eine Version veröffentlicht
 ## Installation
 
 ```bash
-semrel plugin install @semrel/jira
+semrel plugin install @semrel/hook-jira
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/jira
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/jira
+  - uses: @semrel/hook-jira
     args:
       base_url: 'https://jira.example.com'
       # Token wird aus der Umgebungsvariable SEMREL_PLUGIN_TOKEN gelesen

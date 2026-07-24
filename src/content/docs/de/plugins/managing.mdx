@@ -17,7 +17,7 @@ Das Plugin-Management-System stellt sicher, dass jedes Teammitglied und jeder CI
    Alle offiziellen Plugins gehören zum Namespace `@semrel`. Dieser muss immer angegeben werden:
 
    ```bash
-   semrel plugin install @semrel/github
+   semrel plugin install @semrel/provider-github
    ```
 
    Einen nackten Namen (`github`) akzeptiert semrel nur, wenn der Registry-Eintrag **keinen** Namespace hat.
@@ -25,7 +25,7 @@ Das Plugin-Management-System stellt sicher, dass jedes Teammitglied und jeder CI
 2. **Bei Bedarf eine Version pinnen**
 
    ```bash
-   semrel plugin install @semrel/github@1.2.0
+   semrel plugin install @semrel/provider-github@1.2.0
    ```
 
 3. **Die Lock-Datei committen**
@@ -35,17 +35,18 @@ Das Plugin-Management-System stellt sicher, dass jedes Teammitglied und jeder CI
 
 </Steps>
 
-<Aside type="caution" title="Namespace erforderlich">
-  `semrel plugin install github` schlägt fehl, wenn das Plugin zum Namespace `@semrel` gehört:
+<Aside type="caution" title="Legacy-Aliase">
+  Nackte Namen wie `semrel plugin install github` sind während des
+  Deprecation-Zeitraums Kompatibilitätsaliase und können eine Warnung ausgeben.
+  Verwende den kanonischen Namen:
 
   ```
   plugin "github" belongs to namespace @semrel — use:
-    semrel plugin install @semrel/github
+    semrel plugin install @semrel/provider-github
   ```
 
-  Kategorie-Präfix-Namen wie `provider-github` oder `condition-github-actions` werden
-  zu ihren kurzen Registry-Namen (`github`, `github-actions`) aufgelöst und unterliegen
-  derselben Namespace-Regel.
+  Ungescopte typisierte Namen wie `provider-github` sind ebenfalls
+  Kompatibilitätseingaben und nicht die bevorzugte Paketidentität.
 </Aside>
 
 ### Benennung und Normalisierung
@@ -54,11 +55,11 @@ Alle Schreibweisen führen zur gleichen Binary auf der Festplatte — semrel ent
 
 | Config-Eintrag | Binary auf der Platte |
 |---|---|
-| `uses: github` | `semrel-plugin-github` |
-| `uses: provider-github` | `semrel-plugin-github` |
-| `uses: @semrel/github@1.2.0` | `semrel-plugin-github` |
-| `uses: github-actions` | `semrel-plugin-github-actions` |
-| `uses: condition-github-actions` | `semrel-plugin-github-actions` |
+| `uses: @semrel/provider-github` | `semrel-plugin-github` |
+| `uses: @semrel/provider-github` | `semrel-plugin-github` |
+| `uses: @semrel/provider-github@1.2.0` | `semrel-plugin-github` |
+| `uses: @semrel/condition-github-actions` | `semrel-plugin-github-actions` |
+| `uses: @semrel/condition-github-actions` | `semrel-plugin-github-actions` |
 
 ---
 
@@ -74,7 +75,7 @@ Die Datei wird automatisch aktualisiert, wenn `semrel plugin install` **ohne** `
   "plugins": [
     {
       "binaryName": "semrel-plugin-github",
-      "ref": "@semrel/github",
+      "ref": "@semrel/provider-github",
       "version": "1.2.0",
       "checksums": {
         "linux_amd64":   "3b4c…",
@@ -193,7 +194,7 @@ semrel plugin update --check
 semrel plugin update
 
 # Nur ein Plugin aktualisieren
-semrel plugin update @semrel/github
+semrel plugin update @semrel/provider-github
 ```
 
 Verhalten:
@@ -244,8 +245,8 @@ Das genaue Verhalten hängt davon ab, ob `.semrel.lock` committed ist:
 ```
 $ semrel release
 ⬇  plugins missing — running semrel plugin restore from .semrel.lock…
-✓  restored @semrel/github@1.2.0 → .semrel/plugins/semrel-plugin-github
-✓  restored @semrel/github-actions@0.1.0 → .semrel/plugins/semrel-plugin-github-actions
+✓  restored @semrel/provider-github@1.2.0 → .semrel/plugins/semrel-plugin-github
+✓  restored @semrel/condition-github-actions@0.1.0 → .semrel/plugins/semrel-plugin-github-actions
 Running condition checks…
 ```
 
@@ -255,7 +256,7 @@ Der Restore aus der Lock-Datei ist eine **harte Operation**: Wenn die Prüfsumme
 
 Ohne Lock-Datei versucht semrel, jedes fehlende Plugin einzeln zu installieren. Versions-Auflösung:
 
-1. **Version aus `uses:`** — `uses: github@1.2.0` pinnt die Version explizit.
+1. **Version aus `uses:`** — `uses: @semrel/provider-github@1.2.0` pinnt die Version explizit.
 2. **Neueste stabile Version** — wenn keine Version angegeben ist, wird die neueste Nicht-Prerelease-Version geladen.
 
 <Aside type="tip">
@@ -271,10 +272,10 @@ Mit `--plugin-dir` in ein anderes Verzeichnis als `.semrel/plugins/` installiere
 
 ```bash
 # Benutzerglobale Installation (aktualisiert .semrel.lock NICHT)
-semrel plugin install @semrel/github --plugin-dir ~/.semrel/plugins
+semrel plugin install @semrel/provider-github --plugin-dir ~/.semrel/plugins
 
 # Eigener Pfad
-semrel plugin install @semrel/github --plugin-dir /opt/semrel/plugins
+semrel plugin install @semrel/provider-github --plugin-dir /opt/semrel/plugins
 ```
 
 <Aside type="caution">

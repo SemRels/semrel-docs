@@ -8,7 +8,7 @@ Veröffentlicht Releases in GitLab. Es unterstützt GitLab.com und selbst gehost
 ## Installation
 
 ```bash
-semrel plugin install @semrel/gitlab
+semrel plugin install @semrel/provider-gitlab
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/gitlab
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/gitlab
+  - uses: @semrel/provider-gitlab
     args:
       # Token wird aus der Umgebungsvariable SEMREL_PLUGIN_TOKEN gelesen
       base_url: 'https://gitlab.com'

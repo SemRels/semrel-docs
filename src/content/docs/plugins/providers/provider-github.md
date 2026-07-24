@@ -10,7 +10,7 @@ Publishes releases to GitHub using the generated SemRel tag, version, and change
 ### Binary
 
 ```bash
-semrel plugin install @semrel/github
+semrel plugin install @semrel/provider-github
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/provider-github:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/github
+  - uses: @semrel/provider-github
     args:
       # token is read from SEMREL_PLUGIN_TOKEN env var
       owner: SemRels

@@ -10,7 +10,7 @@ Determines the next SemVer bump by matching commit messages against regular expr
 ### Binary
 
 ```bash
-semrel plugin install @semrel/default
+semrel plugin install @semrel/analyzer-default
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/analyzer-default:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/default
+  - uses: @semrel/analyzer-default
     args:
       major_pattern: 'BREAKING|major:'
       minor_pattern: '^feat'

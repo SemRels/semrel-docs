@@ -27,7 +27,7 @@ import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
     ```
 
     Die **alpine**-Variante bringt `git` und `ca-certificates` mit — alles, was semrel braucht.
-    Sieh in der [Docker-Anleitung](/guide/docker/) nach, wenn du mehr über Image-Varianten und darüber erfahren willst, wie du Versionen pinnst.
+    Sieh in der [Docker-Anleitung](/de/guide/docker/) nach, wenn du mehr über Image-Varianten und darüber erfahren willst, wie du Versionen pinnst.
   </TabItem>
   <TabItem label="go install">
     ```bash
@@ -93,12 +93,16 @@ semrel version v0.9.0
               fetch-depth: 0
 
           - name: Run semrel
-            uses: docker://ghcr.io/semrels/semrel:latest-alpine
+            uses: docker://ghcr.io/semrels/semrel:latest-action
             with:
               args: release
             env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     ```
+
+    Das spezielle `-action`-Image läuft als root, weil GitHub dies für den
+    Zugriff einer Docker-Container-Action auf den Runner-Workspace voraussetzt.
+    Die regulären Images bleiben Nicht-root-Images für `docker run` und Container-Jobs.
 
     Oder führe semrel in einem **container job** aus (praktisch, wenn spätere Schritte es ebenfalls brauchen):
 
@@ -137,7 +141,7 @@ semrel version v0.9.0
     ```
 
     Das `dotenv`-Artefakt stellt `SEMREL_VERSION`, `SEMREL_TAG` und `SEMREL_CHANGELOG` für Folgejobs automatisch bereit.
-    Mehr Details findest du im [CI-Outputs-Anleitung](/guide/ci-outputs/).
+    Mehr Details findest du im [CI-Outputs-Anleitung](/de/guide/ci-outputs/).
   </TabItem>
   <TabItem label="GitHub Actions (go install)">
     Installiere semrel über die Go-Toolchain, wenn du ein Setup ohne Docker bevorzugst:
@@ -207,7 +211,7 @@ semrel version v0.9.0
 
 <Aside type="tip">
   **Pinne deine Image-Version in Produktion fest.** Verwende `ghcr.io/semrels/semrel:0.9.0-alpine` statt `latest`, damit deine Releases reproduzierbar bleiben.
-  Im [Docker-Anleitung](/guide/docker/) findest du alle verfügbaren Tags.
+  Im [Docker-Anleitung](/de/guide/docker/) findest du alle verfügbaren Tags.
 </Aside>
 
 ## Plugins aus der Registry installieren
@@ -233,7 +237,7 @@ export SEMREL_CACHE_DIR=.semrel
 export SEMREL_CACHE_TTL=24h
 ```
 
-Mehr Details findest du in der [Plugin Registry-Übersicht](/plugins/registry/) und im [Plugin-Publishing-Anleitung](/plugins/publishing/).
+Mehr Details findest du in der [Plugin Registry-Übersicht](/de/plugins/registry/) und im [Plugin-Publishing-Anleitung](/de/plugins/publishing/).
 
 ## Shell-Completion
 

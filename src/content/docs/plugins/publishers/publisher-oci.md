@@ -10,7 +10,7 @@ Publishes release artifacts to OCI registries with `oras push`.
 ## Installation
 
 ```bash
-semrel plugin install @semrel/oci
+semrel plugin install @semrel/publisher-oci
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -20,7 +20,7 @@ semrel plugin install @semrel/oci
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/oci
+  - uses: @semrel/publisher-oci
     args:
       ref: ghcr.io/semrels/myapp:{version}
       artifacts: dist/myapp-linux-amd64,dist/myapp-linux-arm64

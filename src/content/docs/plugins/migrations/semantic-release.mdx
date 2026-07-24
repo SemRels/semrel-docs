@@ -33,13 +33,13 @@ This guide targets teams currently using semantic-release and migrating to semre
 
 ```yaml
 plugins:
-  - uses: @semrel/github
+  - uses: @semrel/provider-github
 
-  - uses: @semrel/conventional
+  - uses: @semrel/analyzer-conventional
 
-  - uses: @semrel/release-notes
+  - uses: @semrel/generator-release-notes
 
-  - uses: @semrel/changelog-md
+  - uses: @semrel/generator-changelog-md
     args:
       file: CHANGELOG.md
 ```
@@ -48,7 +48,7 @@ plugins:
 
 - npm package flow: keep `npm publish` in CI after semrel determines version and changelog.
 - GitHub release assets: use your CI upload step or plugin-based publishing.
-- OCI/image or generic artifacts: use `@semrel/oci` or `@semrel/generic-http`.
+- OCI/image or generic artifacts: use `@semrel/publisher-oci` or `@semrel/publisher-generic-http`.
 
 <Aside type="tip">
   If you used semantic-release channels like `next` and `beta`, keep them as branch-specific semrel configs and avoid cross-branch tag ownership.

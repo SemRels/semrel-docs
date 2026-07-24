@@ -8,7 +8,7 @@ Aktualisiert Chart-Metadaten in einer Helm-`Chart.yaml`-Datei. Das hilft dir, He
 ## Installation
 
 ```bash
-semrel plugin install @semrel/helm
+semrel plugin install @semrel/updater-helm
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/helm
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/helm
+  - uses: @semrel/updater-helm
     args:
       file: Chart.yaml
 ```

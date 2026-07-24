@@ -17,8 +17,8 @@ schemaVersion: 1
 tagPrefix: "v"
 
 plugins:
-  - uses: analyzer-conventional
-  - uses: provider-github
+  - uses: @semrel/analyzer-conventional
+  - uses: @semrel/provider-github
     args:
       token: ${{ env.GITHUB_TOKEN }}
 ```
@@ -86,7 +86,7 @@ Add a `yaml-language-server` comment on the `args:` line to get inline validatio
 ```yaml
 # yaml-language-server: $schema=https://registry.semrel.io/schemas/core/v1.json
 plugins:
-  - uses: github
+  - uses: @semrel/provider-github
     # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/github/latest.json
     args:
       token: ${{ env.GITHUB_TOKEN }}
@@ -94,7 +94,7 @@ plugins:
       repo: my-repo
       assets: dist/*.tar.gz
 
-  - uses: slack
+  - uses: @semrel/hook-slack
     # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/slack/latest.json
     args:
       webhook_url: ${{ env.SLACK_WEBHOOK }}

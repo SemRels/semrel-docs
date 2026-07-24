@@ -10,7 +10,7 @@ Updates the version key in a Gradle properties file. Use it to keep Java or Kotl
 ### Binary
 
 ```bash
-semrel plugin install @semrel/gradle
+semrel plugin install @semrel/updater-gradle
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/updater-gradle:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/gradle
+  - uses: @semrel/updater-gradle
     args:
       file: gradle.properties
       key: version

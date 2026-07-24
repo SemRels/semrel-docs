@@ -17,6 +17,8 @@ Closes #(issue number)
 ## Checklist
 
 - [ ] I have read the contribution guidelines
+- [ ] User-facing documentation changes include matching English and German updates
+- [ ] I ran `npm run check:docs`
 - [ ] I have verified links work correctly
 - [ ] Code examples are tested
 - [ ] Spelling and grammar checked

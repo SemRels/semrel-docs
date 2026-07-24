@@ -8,7 +8,7 @@ Erstellt Git-Tags und überträgt optional Branch-Updates über das lokale Git-R
 ## Installation
 
 ```bash
-semrel plugin install @semrel/git
+semrel plugin install @semrel/provider-git
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/git
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/git
+  - uses: @semrel/provider-git
     args:
       remote: origin
       push_branch: true
