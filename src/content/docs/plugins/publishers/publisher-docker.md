@@ -54,23 +54,25 @@ version: 1
 plugins:
   - uses: @semrel/publisher-docker
     phase: release
-    env:
-      SEMREL_PLUGIN_IMAGE: acme-api:build
-      SEMREL_PLUGIN_REF: ghcr.io/acme/api:{version}
+    args:
+      image: acme-api:build
+      ref: ghcr.io/acme/api:{version}
 ```
 
 References with registry ports are supported:
 
 ```yaml
-SEMREL_PLUGIN_REF: registry.example:5000/team/api:{version}
+ref: registry.example:5000/team/api:{version}
 ```
 
-## Environment variables
+## Configuration and environment variables
 
-| Name | Required | Default | Description |
+Semrel maps `args.image` and `args.ref` to the plugin subprocess environment.
+
+| Configuration / variable | Required | Default | Description |
 | --- | --- | --- | --- |
-| `SEMREL_PLUGIN_IMAGE` | yes | `—` | Existing local image reference or image ID. |
-| `SEMREL_PLUGIN_REF` | yes | `—` | Tagged destination reference containing `{version}`. Digest destinations are rejected. |
+| `image` / `SEMREL_PLUGIN_IMAGE` | yes | `—` | Existing local image reference or image ID. |
+| `ref` / `SEMREL_PLUGIN_REF` | yes | `—` | Tagged destination reference containing `{version}`. Digest destinations are rejected. |
 | `SEMREL_VERSION` | one version variable | `—` | Release version. Takes precedence over `SEMREL_NEXT_VERSION`. |
 | `SEMREL_NEXT_VERSION` | fallback | `—` | Used only when `SEMREL_VERSION` is empty. |
 | `SEMREL_DRY_RUN` | no | `false` | `true` or `1` inspects and plans without tagging or pushing. |
