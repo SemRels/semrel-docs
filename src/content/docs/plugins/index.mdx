@@ -42,6 +42,7 @@ For migration from updater-only flows to packager/publisher pipelines, follow th
 | [`updater-python`](/plugins/updaters/updater-python/) | Updater | Updates Python package version metadata in `pyproject.toml` or a similar backend file. |
 | [`updater-terraform`](/plugins/updaters/updater-terraform/) | Updater | Updates a Terraform variable that stores the application version. |
 | [`packager-nfpm`](/plugins/packagers/packager-nfpm/) | Packager | Builds Linux packages (`deb`, `rpm`, `apk`) using nFPM. |
+| [`publisher-docker`](/plugins/publishers/publisher-docker/) | Publisher | Pushes one existing local Docker image and reports its immutable digest. |
 | [`publisher-generic-http`](/plugins/publishers/publisher-generic-http/) | Publisher | Uploads release artifacts to generic HTTP endpoints. |
 | [`publisher-oci`](/plugins/publishers/publisher-oci/) | Publisher | Publishes release artifacts to OCI registries. |
 | [`provider-bitbucket`](/plugins/providers/provider-bitbucket/) | Provider | Publishes release information to Bitbucket from the SemRel release context. |

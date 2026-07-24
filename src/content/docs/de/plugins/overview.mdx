@@ -72,7 +72,7 @@ Der aktuelle offizielle Plugin-Katalog ist in acht Kategorien organisiert.
     Erstellt distributierbare Artefakte wie Linux-Pakete aus vorbereiteten Release-Eingaben.
   </Card>
   <Card title="Publisher Plugin" icon="external">
-    Veröffentlicht Release-Artefakte in OCI-Registries oder über generische HTTP-Endpunkte.
+    Veröffentlicht Docker-Images oder Release-Artefakte in Registries und über HTTP-Endpunkte.
   </Card>
   <Card title="Hook Plugin" icon="warning">
     Sendet Benachrichtigungen oder führt nach Erfolg oder Fehler nachgelagerte Automatisierung aus.
@@ -86,7 +86,8 @@ Diese Ziele sind heute über ein geteiltes Modell abgedeckt: **Updater bereiten 
 | Ziel | Aktuelle Plugins | Was sie heute tun | Typischer nächster Schritt |
 | --- | --- | --- | --- |
 | Go-Binaries | `updater-go` | Aktualisiert Go-Versionsvariablen vor dem Release-Tagging. | Binaries in CI mit `go build` bauen und danach Artefakte paketieren/veröffentlichen. |
-| Docker/Podman-Images | `updater-docker` | Aktualisiert Versionsargumente in Dockerfiles. | Images in CI mit Docker oder Podman bauen und anschließend veröffentlichen. |
+| Docker-Images | `updater-docker`, `publisher-docker` | Aktualisiert Versionsargumente in Dockerfiles; pusht ein Image, das bereits im Docker-Daemon vorhanden ist. | Vor dem Publisher in CI bauen und authentifizieren. |
+| Podman-Images | `updater-docker` | Aktualisiert Versionsargumente in Dockerfiles. | Mit Podman in CI bauen und veröffentlichen; `publisher-docker` setzt ausdrücklich den Docker-CLI-Vertrag voraus. |
 | Helm-Charts | `updater-helm` | Aktualisiert `Chart.yaml`-Version und optional `appVersion`. | Charts in CI oder OCI-kompatiblen Registries paketieren und veröffentlichen. |
 | Linux-Pakete | `packager-nfpm` | Baut `deb`-, `rpm`- und `apk`-Pakete über `nfpm`. | Erzeugte Pakete in deine Paketkanäle veröffentlichen. |
 | Generische/OCI-Artefakte | `publisher-generic-http`, `publisher-oci` | Lädt Release-Artefakte zu HTTP-Endpunkten oder OCI-Registries hoch. | Publisher nach Build-/Package-Stufen in die Pipeline einhängen. |
