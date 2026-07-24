@@ -335,6 +335,7 @@ export default defineConfig({
             {
               label: 'Publishers',
               items: [
+                { label: 'publisher-docker', link: '/plugins/publishers/publisher-docker/', ...newBadge('2026-07-24') },
                 { label: 'publisher-generic-http', link: '/plugins/publishers/publisher-generic-http/', ...newBadge('2026-06-01') },
                 { label: 'publisher-oci', link: '/plugins/publishers/publisher-oci/', ...newBadge('2026-06-01') },
               ],
