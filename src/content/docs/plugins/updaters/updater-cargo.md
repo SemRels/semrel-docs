@@ -10,7 +10,7 @@ Updates the version field in a Rust Cargo manifest. Use it to keep `Cargo.toml` 
 ### Binary
 
 ```bash
-semrel plugin install @semrel/cargo
+semrel plugin install @semrel/updater-cargo
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/updater-cargo:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/cargo
+  - uses: @semrel/updater-cargo
     args:
       file: Cargo.toml
 ```

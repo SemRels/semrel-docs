@@ -8,7 +8,7 @@ Aktualisiert Python-Paketversionsmetadaten in `pyproject.toml` oder einer ähnli
 ## Installation
 
 ```bash
-semrel plugin install @semrel/python
+semrel plugin install @semrel/updater-python
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/python
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/python
+  - uses: @semrel/updater-python
     args:
       file: pyproject.toml
       backend: pyproject

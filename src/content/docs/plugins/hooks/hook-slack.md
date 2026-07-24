@@ -10,7 +10,7 @@ Posts release notifications to Slack through an incoming webhook. Use it to shar
 ### Binary
 
 ```bash
-semrel plugin install @semrel/slack
+semrel plugin install @semrel/hook-slack
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/hook-slack:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/slack
+  - uses: @semrel/hook-slack
     args:
       webhook_url: '${{ env.SLACK_WEBHOOK_URL }}'
       channel: '#releases'

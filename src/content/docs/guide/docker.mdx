@@ -15,9 +15,11 @@ semrel is available as an official Docker image at `ghcr.io/SemRels/semrel`.
 | `ghcr.io/SemRels/semrel:1.0.0` | distroless (Debian 12) | git, ca-certificates | Version-pinned |
 | `ghcr.io/SemRels/semrel:latest-alpine` | Alpine 3.22 | git, ca-certificates, openssh-client, shell | Use when SSH or shell scripting is needed |
 | `ghcr.io/SemRels/semrel:1.0.0-alpine` | Alpine 3.22 | git, ca-certificates, openssh-client, shell | Version-pinned Alpine |
+| `ghcr.io/SemRels/semrel:latest-action` | Alpine 3.22 | git, ca-certificates, openssh-client, shell | GitHub Docker container actions only |
+| `ghcr.io/SemRels/semrel:1.0.0-action` | Alpine 3.22 | git, ca-certificates, openssh-client, shell | Version-pinned GitHub Actions image |
 
 <Aside type="tip">
-  Both image variants include `git` and `ca-certificates` — semrel works out of the box in either.
+  Both regular image variants include `git` and `ca-certificates` — semrel works out of the box in either.
   Use **`latest-alpine`** if you need `openssh-client` (for SSH-based git remotes) or shell scripting in your CI steps.
 </Aside>
 
@@ -57,12 +59,16 @@ Or use it as a Docker action step:
 
 ```yaml
 - name: Run semrel
-  uses: docker://ghcr.io/SemRels/semrel:latest
+  uses: docker://ghcr.io/SemRels/semrel:latest-action
   with:
     args: release
   env:
     SEMREL_PLUGIN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+GitHub mounts the action workspace with the runner's ownership and requires
+Docker container actions to run as root. Use the dedicated `-action` tag only
+with `uses: docker://...`; the regular images deliberately remain non-root.
 
 ## GitLab CI
 
@@ -129,7 +135,9 @@ ghcr.io/SemRels/semrel:1.0.0-alpine  # Alpine
 
 ## Security notes
 
-- Both images run as a **non-root user** by default.
+- Both regular images run as a **non-root user** by default.
+- The opt-in `-action` image runs as root solely for GitHub Docker container
+  actions. Do not use it for general container workloads.
 - The `latest` (distroless) image has no shell or package manager — minimal attack surface.
 - The Alpine image is pinned to `3.22` and built with `apk upgrade --no-cache` to apply all security patches at build time.
 - Images are signed with [cosign](https://github.com/sigstore/cosign) and include an SBOM attestation.

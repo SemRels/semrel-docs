@@ -345,13 +345,13 @@ semrel plugin install <name[@version]> [--plugin-dir <dir>]
 
 ```bash
 # Install the latest version
-semrel plugin install @semrel/github
+semrel plugin install @semrel/provider-github
 
 # Install a specific version
-semrel plugin install @semrel/github@1.2.0
+semrel plugin install @semrel/provider-github@1.2.0
 
 # Install into a custom directory
-semrel plugin install @semrel/github --plugin-dir ~/.semrel/plugins
+semrel plugin install @semrel/provider-github --plugin-dir ~/.semrel/plugins
 ```
 
 Use the full `@namespace/name` reference when the registry entry belongs to a namespace. Bare names such as `github` only work for plugins that have no namespace in the registry.
@@ -376,7 +376,7 @@ semrel plugin update --check
 semrel plugin update
 
 # Update a single plugin
-semrel plugin update @semrel/github
+semrel plugin update @semrel/provider-github
 ```
 
 ### `semrel plugin restore`

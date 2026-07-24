@@ -10,7 +10,7 @@ Confirms the current release is running inside GitLab CI. It is a simple safegua
 ### Binary
 
 ```bash
-semrel plugin install @semrel/gitlab-ci
+semrel plugin install @semrel/condition-gitlab-ci
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/condition-gitlab-ci:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/gitlab-ci
+  - uses: @semrel/condition-gitlab-ci
 ```
 
 ## Environment Variables

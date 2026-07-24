@@ -8,7 +8,7 @@ Aktualisiert den Versionsschlüssel in einer Gradle-Properties-Datei. Nutze ihn,
 ## Installation
 
 ```bash
-semrel plugin install @semrel/gradle
+semrel plugin install @semrel/updater-gradle
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/gradle
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/gradle
+  - uses: @semrel/updater-gradle
     args:
       file: gradle.properties
       key: version

@@ -10,7 +10,7 @@ Confirms the current release is running inside GitHub Actions. It is useful when
 ### Binary
 
 ```bash
-semrel plugin install @semrel/github-actions
+semrel plugin install @semrel/condition-github-actions
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/condition-github-actions:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/github-actions
+  - uses: @semrel/condition-github-actions
 ```
 
 ## Environment Variables

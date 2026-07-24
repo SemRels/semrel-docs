@@ -10,7 +10,7 @@ Updates the version declared in a Maven `pom.xml` file. It is useful for Java pr
 ### Binary
 
 ```bash
-semrel plugin install @semrel/maven
+semrel plugin install @semrel/updater-maven
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/updater-maven:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/maven
+  - uses: @semrel/updater-maven
     args:
       file: pom.xml
 ```

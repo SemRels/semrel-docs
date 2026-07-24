@@ -8,7 +8,7 @@ Führt einen Shell-Befehl aus und besteht nur, wenn dieser Befehl mit Status 0 e
 ## Installation
 
 ```bash
-semrel plugin install @semrel/generic
+semrel plugin install @semrel/condition-generic
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/generic
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/generic
+  - uses: @semrel/condition-generic
     args:
       command: 'test "$SEMREL_BRANCH" = "main"'
 ```

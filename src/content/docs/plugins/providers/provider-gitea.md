@@ -10,7 +10,7 @@ Publishes releases to a Gitea instance. It is a good fit for self-hosted teams t
 ### Binary
 
 ```bash
-semrel plugin install @semrel/gitea
+semrel plugin install @semrel/provider-gitea
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/provider-gitea:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/gitea
+  - uses: @semrel/provider-gitea
     args:
       base_url: 'https://gitea.example.com'
       # token is read from SEMREL_PLUGIN_TOKEN env var

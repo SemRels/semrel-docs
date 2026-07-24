@@ -8,7 +8,7 @@ Aktualisiert die Versionseigenschaft in einer `.csproj`- oder anderen NuGet-Proj
 ## Installation
 
 ```bash
-semrel plugin install @semrel/nuget
+semrel plugin install @semrel/updater-nuget
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/nuget
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/nuget
+  - uses: @semrel/updater-nuget
     args:
       file: src/App/App.csproj
       property: Version

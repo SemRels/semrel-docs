@@ -8,7 +8,7 @@ Aktualisiert das Versionsfeld in einem Rust-Cargo-Manifest. Nutze es, um `Cargo.
 ## Installation
 
 ```bash
-semrel plugin install @semrel/cargo
+semrel plugin install @semrel/updater-cargo
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/cargo
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/cargo
+  - uses: @semrel/updater-cargo
     args:
       file: Cargo.toml
 ```

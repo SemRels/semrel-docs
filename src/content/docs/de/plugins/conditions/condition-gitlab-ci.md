@@ -8,7 +8,7 @@ Bestätigt, dass die aktuelle Release innerhalb von GitLab CI läuft. Das ist ei
 ## Installation
 
 ```bash
-semrel plugin install @semrel/gitlab-ci
+semrel plugin install @semrel/condition-gitlab-ci
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/gitlab-ci
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/gitlab-ci
+  - uses: @semrel/condition-gitlab-ci
 ```
 
 ## Umgebungsvariablen

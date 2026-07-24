@@ -8,7 +8,7 @@ Sendet Release-Benachrichtigungen an Microsoft Teams über Incoming Webhooks. Nu
 ## Installation
 
 ```bash
-semrel plugin install @semrel/teams
+semrel plugin install @semrel/hook-teams
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -17,7 +17,7 @@ semrel plugin install @semrel/teams
 
 ```yaml
 plugins:
-  - uses: hook-teams
+  - uses: @semrel/hook-teams
     args:
       webhook_url: "https://your-tenant.webhook.office.com/webhookb2/..."
       title: "ðŸš€ New Release"      # optional

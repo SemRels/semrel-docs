@@ -8,7 +8,7 @@ Aktualisiert eine Homebrew-Formula mit der neuen Release-URL und Prüfsumme. Nut
 ## Installation
 
 ```bash
-semrel plugin install @semrel/homebrew
+semrel plugin install @semrel/updater-homebrew
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/homebrew
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/homebrew
+  - uses: @semrel/updater-homebrew
     args:
       formula_file: Formula/semrel.rb
       url_template: 'https://github.com/SemRels/semrel/archive/refs/tags/v{{ .NextVersion }}.tar.gz'

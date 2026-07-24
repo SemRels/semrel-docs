@@ -10,7 +10,7 @@ Updates the version field in a `package.json` file. Use it to keep Node.js packa
 ### Binary
 
 ```bash
-semrel plugin install @semrel/npm
+semrel plugin install @semrel/updater-npm
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/updater-npm:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/npm
+  - uses: @semrel/updater-npm
     args:
       file: package.json
 ```

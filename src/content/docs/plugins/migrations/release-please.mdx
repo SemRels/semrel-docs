@@ -33,13 +33,13 @@ This guide helps teams transition from release-please to semrel without losing r
 
 ```yaml
 plugins:
-  - uses: @semrel/github
+  - uses: @semrel/provider-github
 
-  - uses: @semrel/conventional
+  - uses: @semrel/analyzer-conventional
 
-  - uses: @semrel/release-notes
+  - uses: @semrel/generator-release-notes
 
-  - uses: @semrel/changelog-md
+  - uses: @semrel/generator-changelog-md
     args:
       file: CHANGELOG.md
 ```

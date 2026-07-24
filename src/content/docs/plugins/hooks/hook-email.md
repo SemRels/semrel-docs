@@ -10,7 +10,7 @@ Sends release notifications through SMTP after a SemRel run. It can deliver vers
 ### Binary
 
 ```bash
-semrel plugin install @semrel/email
+semrel plugin install @semrel/hook-email
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/hook-email:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/email
+  - uses: @semrel/hook-email
     args:
       smtp_host: smtp.example.com
       smtp_port: 587

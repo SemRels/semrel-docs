@@ -17,8 +17,8 @@ schemaVersion: 1
 tagPrefix: "v"
 
 plugins:
-  - uses: analyzer-conventional
-  - uses: provider-github
+  - uses: @semrel/analyzer-conventional
+  - uses: @semrel/provider-github
     args:
       token: ${{ env.GITHUB_TOKEN }}
 ```
@@ -86,7 +86,7 @@ Einen `yaml-language-server`-Kommentar an der `args:`-Zeile ergänzen, um Inline
 ```yaml
 # yaml-language-server: $schema=https://registry.semrel.io/schemas/core/v1.json
 plugins:
-  - uses: github
+  - uses: @semrel/provider-github
     # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/github/latest.json
     args:
       token: ${{ env.GITHUB_TOKEN }}
@@ -94,7 +94,7 @@ plugins:
       repo: my-repo
       assets: dist/*.tar.gz
 
-  - uses: slack
+  - uses: @semrel/hook-slack
     # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/slack/latest.json
     args:
       webhook_url: ${{ env.SLACK_WEBHOOK }}
@@ -197,4 +197,4 @@ Wenn du ein semrel-Plugin pflegst, füge deinem Repository eine Datei `schema/v1
 
 Wenn dein Plugin in der semrel-registry registriert ist, wird das Schema automatisch unter `/schemas/plugins/{name}/v1.json` ausgeliefert.
 
-Sieh im [plugin development guide](/guide/plugin-development#add-a-json-schema) nach, wenn du eine vollständige Schritt-für-Schritt-Anleitung möchtest.
+Sieh im [plugin development guide](/de/guide/plugin-development#add-a-json-schema) nach, wenn du eine vollständige Schritt-für-Schritt-Anleitung möchtest.

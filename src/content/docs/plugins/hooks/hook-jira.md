@@ -10,7 +10,7 @@ Updates Jira release metadata after SemRel publishes a version. It is useful for
 ### Binary
 
 ```bash
-semrel plugin install @semrel/jira
+semrel plugin install @semrel/hook-jira
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/hook-jira:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/jira
+  - uses: @semrel/hook-jira
     args:
       base_url: 'https://jira.example.com'
       # token is read from SEMREL_PLUGIN_TOKEN env var

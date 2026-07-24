@@ -8,7 +8,7 @@ Ermittelt den nächsten SemVer-Bump, indem Commit-Nachrichten mit regulären Aus
 ## Installation
 
 ```bash
-semrel plugin install @semrel/default
+semrel plugin install @semrel/analyzer-default
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/default
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/default
+  - uses: @semrel/analyzer-default
     args:
       major_pattern: 'BREAKING|major:'
       minor_pattern: '^feat'

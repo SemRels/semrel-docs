@@ -8,7 +8,7 @@ Updates a version argument inside a Dockerfile. It is useful when your container
 ## Installation
 
 ```bash
-semrel plugin install @semrel/docker
+semrel plugin install @semrel/updater-docker
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/docker
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/docker
+  - uses: @semrel/updater-docker
     args:
       file: Dockerfile
       arg_name: VERSION

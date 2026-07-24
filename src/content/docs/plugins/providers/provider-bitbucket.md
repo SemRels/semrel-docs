@@ -10,7 +10,7 @@ Publishes release information to Bitbucket from the SemRel release context. It c
 ### Binary
 
 ```bash
-semrel plugin install @semrel/bitbucket
+semrel plugin install @semrel/provider-bitbucket
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/provider-bitbucket:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/bitbucket
+  - uses: @semrel/provider-bitbucket
     args:
       workspace: semrels
       repo: semrel

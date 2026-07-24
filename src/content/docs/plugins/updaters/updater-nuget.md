@@ -10,7 +10,7 @@ Updates the version property inside a `.csproj` or other NuGet project file. It 
 ### Binary
 
 ```bash
-semrel plugin install @semrel/nuget
+semrel plugin install @semrel/updater-nuget
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/updater-nuget:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/nuget
+  - uses: @semrel/updater-nuget
     args:
       file: src/App/App.csproj
       property: Version

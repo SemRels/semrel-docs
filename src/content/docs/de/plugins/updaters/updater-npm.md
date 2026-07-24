@@ -8,7 +8,7 @@ Aktualisiert das Versionsfeld in einer `package.json`-Datei. Nutze es, um Node.j
 ## Installation
 
 ```bash
-semrel plugin install @semrel/npm
+semrel plugin install @semrel/updater-npm
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/npm
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/npm
+  - uses: @semrel/updater-npm
     args:
       file: package.json
 ```

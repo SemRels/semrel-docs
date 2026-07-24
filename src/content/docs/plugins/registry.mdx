@@ -45,7 +45,7 @@ You can interact with the registry directly from the CLI:
 
 ```bash
 semrel plugin search github
-semrel plugin install github
+semrel plugin install @semrel/provider-github
 ```
 
 semrel consumes the registry as structured metadata. When a plugin is not already available locally, semrel can fetch the registry index, resolve a compatible release, download the binary, verify its checksum, and install it into `~/.semrel/plugins/`.

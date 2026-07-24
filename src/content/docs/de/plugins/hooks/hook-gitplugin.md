@@ -8,7 +8,7 @@ description: Überträgt Release-bezogene Änderungen in ein anderes Git-Reposit
 ## Installation
 
 ```bash
-semrel plugin install @semrel/gitplugin
+semrel plugin install @semrel/hook-gitplugin
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/gitplugin
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/gitplugin
+  - uses: @semrel/hook-gitplugin
     args:
       repo: 'https://github.com/SemRels/release-mirror.git'
       branch: main

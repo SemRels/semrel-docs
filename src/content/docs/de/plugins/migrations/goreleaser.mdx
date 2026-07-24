@@ -15,8 +15,8 @@ Diese Anleitung ist für Teams gedacht, die von `.goreleaser.yaml` auf semrel we
 | --- | --- |
 | Versions-/Changelog-Berechnung aus Commits | Analyzer + Generator-Plugins |
 | Build-Matrix und Archive | CI-Build-Jobs (`go build`, Archivierung) |
-| nfpm Pakete | `@semrel/nfpm` |
-| Registry/Endpoint Publishing | `@semrel/oci` / `@semrel/generic-http` |
+| nfpm Pakete | `@semrel/packager-nfpm` |
+| Registry/Endpoint Publishing | `@semrel/publisher-oci` / `@semrel/publisher-generic-http` |
 
 ## Empfohlenes Rollout
 
@@ -24,7 +24,7 @@ Diese Anleitung ist für Teams gedacht, die von `.goreleaser.yaml` auf semrel we
 
 1. Build-Matrix in CI beibehalten und alle Artefakte nach `dist/` schreiben.
 2. semrel für Version/Changelog ergänzen und im Dry-Run validieren.
-3. Paketierung bei Bedarf von GoReleaser auf `@semrel/nfpm` umstellen.
+3. Paketierung bei Bedarf von GoReleaser auf `@semrel/packager-nfpm` umstellen.
 4. Publish-Ziele schrittweise auf semrel-Publisher migrieren.
 5. GoReleaser-Orchestrierung entfernen, sobald Parität erreicht ist.
 
@@ -34,21 +34,21 @@ Diese Anleitung ist für Teams gedacht, die von `.goreleaser.yaml` auf semrel we
 
 ```yaml
 plugins:
-  - uses: @semrel/github
+  - uses: @semrel/provider-github
 
-  - uses: @semrel/conventional
+  - uses: @semrel/analyzer-conventional
 
-  - uses: @semrel/changelog-md
+  - uses: @semrel/generator-changelog-md
     args:
       file: CHANGELOG.md
 
-  - uses: @semrel/nfpm
+  - uses: @semrel/packager-nfpm
     args:
       config: packaging/nfpm.yaml
       target: dist/packages
       packagers: deb,rpm,apk
 
-  - uses: @semrel/oci
+  - uses: @semrel/publisher-oci
     args:
       ref: ghcr.io/your-org/myapp:{version}
       artifacts: dist/myapp-linux-amd64,dist/myapp-linux-arm64

@@ -8,7 +8,7 @@ Veröffentlicht Release-Benachrichtigungen in Slack über einen eingehenden Webh
 ## Installation
 
 ```bash
-semrel plugin install @semrel/slack
+semrel plugin install @semrel/hook-slack
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/slack
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/slack
+  - uses: @semrel/hook-slack
     args:
       webhook_url: '${{ env.SLACK_WEBHOOK_URL }}'
       channel: '#releases'

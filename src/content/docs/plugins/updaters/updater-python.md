@@ -10,7 +10,7 @@ Updates Python package version metadata in `pyproject.toml` or a similar backend
 ### Binary
 
 ```bash
-semrel plugin install @semrel/python
+semrel plugin install @semrel/updater-python
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/updater-python:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/python
+  - uses: @semrel/updater-python
     args:
       file: pyproject.toml
       backend: pyproject

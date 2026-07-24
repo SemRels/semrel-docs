@@ -8,7 +8,7 @@ Veröffentlicht Releases in einer Gitea-Instanz. Das passt gut für selbst gehos
 ## Installation
 
 ```bash
-semrel plugin install @semrel/gitea
+semrel plugin install @semrel/provider-gitea
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -18,7 +18,7 @@ semrel plugin install @semrel/gitea
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/gitea
+  - uses: @semrel/provider-gitea
     args:
       base_url: 'https://gitea.example.com'
       # Token wird aus der Umgebungsvariable SEMREL_PLUGIN_TOKEN gelesen

@@ -10,7 +10,7 @@ Posts release notifications to a Matrix room. It works well for teams using Matr
 ### Binary
 
 ```bash
-semrel plugin install @semrel/matrix
+semrel plugin install @semrel/hook-matrix
 ```
 
 `semrel plugin install` downloads the binary to `.semrel/plugins/` and updates `.semrel.lock`. Commit `.semrel.lock` to pin the version for your team.
@@ -36,7 +36,7 @@ cosign verify ghcr.io/semrels/hook-matrix:latest \
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/matrix
+  - uses: @semrel/hook-matrix
     args:
       homeserver: 'https://matrix.example.com'
       # token is read from SEMREL_PLUGIN_TOKEN env var

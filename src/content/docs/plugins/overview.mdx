@@ -72,7 +72,7 @@ The current official plugin catalog is organized into eight categories.
     Builds distributable artifacts such as Linux packages from prepared release inputs.
   </Card>
   <Card title="Publisher Plugin" icon="external">
-    Publishes release artifacts to OCI registries and generic HTTP endpoints.
+    Publishes Docker images or release artifacts to registries and HTTP endpoints.
   </Card>
   <Card title="Hook Plugin" icon="warning">
     Sends notifications or runs follow-up automation after success or failure.
@@ -86,7 +86,8 @@ These targets are supported today with a split model: **updaters prepare version
 | Target | Current plugins | What they do today | Typical next step |
 | --- | --- | --- | --- |
 | Go binaries | `updater-go` | Updates Go version variables before release tagging. | Build binaries in CI with `go build` and then package/publish artifacts. |
-| Docker/Podman images | `updater-docker` | Updates Dockerfile version arguments. | Build images in CI with Docker or Podman, then publish image artifacts. |
+| Docker images | `updater-docker`, `publisher-docker` | Updates Dockerfile version arguments; pushes one image already present in the Docker daemon. | Build and authenticate in CI before the publisher runs. |
+| Podman images | `updater-docker` | Updates Dockerfile version arguments. | Build and publish with Podman in CI; `publisher-docker` specifically requires the Docker CLI contract. |
 | Helm charts | `updater-helm` | Updates `Chart.yaml` version and optional `appVersion`. | Package and publish charts in CI or OCI-compatible registries. |
 | Linux packages | `packager-nfpm` | Builds `deb`, `rpm`, and `apk` packages via `nfpm`. | Publish generated packages to your package channels. |
 | Generic/OCI artifacts | `publisher-generic-http`, `publisher-oci` | Uploads release artifacts to HTTP endpoints or OCI registries. | Chain publishers after build/package stages. |
@@ -107,7 +108,7 @@ semrel resolves plugins from the configured `uses:` value:
 
 ```yaml
 plugins:
-  - uses: github
+  - uses: @semrel/provider-github
     name: github-release
     args:
       owner: MyOrg
@@ -120,7 +121,7 @@ plugins:
 ```
 
 <Aside type="tip">
-  `semrel plugin install @semrel/github` installs the plugin into `.semrel/plugins/` and updates `.semrel.lock`. Bare names such as `github` only work when the registry entry has no namespace.
+  `semrel plugin install @semrel/provider-github` installs the plugin into `.semrel/plugins/` and updates `.semrel.lock`. Legacy aliases such as `github` are compatibility inputs only; use the typed scoped name in new configuration.
 </Aside>
 
 ## Plugin lifecycle
@@ -131,7 +132,7 @@ sequenceDiagram
     participant R as resolver
     participant P as plugin executable
 
-    S->>R: resolve uses: github
+    S->>R: resolve uses: @semrel/provider-github
     R-->>S: path / .semrel/plugins / ~/.semrel/plugins / $PATH
     S->>P: spawn subprocess
     Note over S,P: SEMREL_PLUGIN_* and SEMREL_* env vars

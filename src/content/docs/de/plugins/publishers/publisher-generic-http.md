@@ -10,7 +10,7 @@ Lädt Release-Artefakte per `PUT` oder `POST` zu benutzerdefinierten HTTP-Endpun
 ## Installation
 
 ```bash
-semrel plugin install @semrel/generic-http
+semrel plugin install @semrel/publisher-generic-http
 ```
 
 `semrel plugin install` lädt die Binärdatei nach `.semrel/plugins/` herunter und aktualisiert `.semrel.lock`. Committe `.semrel.lock`, um die Version für dein Team festzuschreiben.
@@ -20,7 +20,7 @@ semrel plugin install @semrel/generic-http
 ```yaml
 version: 1
 plugins:
-  - uses: @semrel/generic-http
+  - uses: @semrel/publisher-generic-http
     args:
       url: https://uploads.example.com/releases/{version}/{artifact}
       method: PUT

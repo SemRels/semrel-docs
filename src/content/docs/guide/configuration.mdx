@@ -50,10 +50,10 @@ YAML uses `camelCase` for some keys (e.g. `tagPrefix`). TOML and JSON always use
     ceiling_strategy: clamp
 
     plugins:
-      - uses: github-actions
+      - uses: @semrel/condition-github-actions
         phase: condition
 
-      - uses: github
+      - uses: @semrel/provider-github
         phase: release
         args:
           token: ${{ env.GITHUB_TOKEN }}
@@ -66,7 +66,7 @@ YAML uses `camelCase` for some keys (e.g. `tagPrefix`). TOML and JSON always use
           file: internal/version/version.go
           var_name: Version
 
-      - uses: slack
+      - uses: @semrel/hook-slack
         args:
           webhook_url: ${{ env.SLACK_WEBHOOK }}
     ```
@@ -553,7 +553,7 @@ An ordered list of plugins to load for the release pipeline.
     ```yaml
     plugins:
       # Gate: abort if not running in GitHub Actions
-      - uses: github-actions
+      - uses: @semrel/condition-github-actions
         phase: condition
 
       # Pre-tag: update Go version variable before tagging
@@ -564,7 +564,7 @@ An ordered list of plugins to load for the release pipeline.
           var_name: Version
 
       # Release: create GitHub release with changelog
-      - uses: github
+      - uses: @semrel/provider-github
         phase: release   # default, can be omitted
         args:
           token: ${{ env.GITHUB_TOKEN }}
@@ -572,7 +572,7 @@ An ordered list of plugins to load for the release pipeline.
           repo: my-repo
 
       # Hook: notify Slack after release
-      - uses: slack
+      - uses: @semrel/hook-slack
         args:
           webhook_url: ${{ env.SLACK_WEBHOOK }}
     ```
@@ -662,7 +662,7 @@ Every key in `args:` is exposed to the plugin process as an environment variable
   <TabItem label="YAML">
     ```yaml
     plugins:
-      - uses: github
+      - uses: @semrel/provider-github
         args:
           token: ${{ env.GITHUB_TOKEN }}
           owner: MyOrg
@@ -733,9 +733,9 @@ schemaVersion: 1
 tagPrefix: "v"
 
 plugins:
-  - uses: analyzer-conventional
-  - uses: generator-changelog-md
-  - uses: provider-github
+  - uses: @semrel/analyzer-conventional
+  - uses: @semrel/generator-changelog-md
+  - uses: @semrel/provider-github
 ```
 
 Your editor will now flag unknown keys, warn about missing required fields, and offer autocomplete for all known options.
@@ -747,7 +747,7 @@ Each plugin's `args:` block can be validated independently. Place the schema com
 ```yaml
 # yaml-language-server: $schema=https://registry.semrel.io/schemas/core/v1.json
 plugins:
-  - uses: provider-github
+  - uses: @semrel/provider-github
     # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/provider-github/latest.json
     args:
       token: ${{ env.GITHUB_TOKEN }}

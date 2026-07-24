@@ -93,12 +93,16 @@ semrel version v0.9.0
               fetch-depth: 0
 
           - name: Run semrel
-            uses: docker://ghcr.io/semrels/semrel:latest-alpine
+            uses: docker://ghcr.io/semrels/semrel:latest-action
             with:
               args: release
             env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     ```
+
+    The dedicated `-action` image runs as root because GitHub requires Docker
+    container actions to access its runner-owned workspace. The regular images
+    remain non-root and are intended for `docker run` and container jobs.
 
     Or run semrel in a **container job** (useful when subsequent steps also need it):
 
