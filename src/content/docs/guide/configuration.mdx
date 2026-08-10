@@ -324,6 +324,7 @@ Maps conventional commit types (and optionally scopes) to semver bump levels. If
 | `type` | string | yes | Conventional commit type (e.g. `feat`, `fix`, `deps`) |
 | `scope` | string \| `false` | no | Scope filter. A string matches commits with that exact scope. `false` matches commits with **no** scope. Omit to match any scope. |
 | `bump` | string | yes | One of `major`, `minor`, `patch` |
+| `hidden` | boolean | no | Keep matching commits out of generated changelogs while still applying their version bump. |
 
 <Aside type="note">
   Breaking changes (`BREAKING CHANGE` footer or `!` suffix like `feat!:`) always result in a `major` bump regardless of rules.
@@ -417,7 +418,7 @@ Commit types not listed in `rules` produce no release.
 
 ## `commit_changelog`
 
-Controls whether semrel commits `CHANGELOG.md` back to the repository before creating the release tag.
+Controls whether semrel writes `CHANGELOG.md` with the built-in generator. All tracked changes from the built-in generator and pre-tag plugins are committed once immediately before creating the release tag.
 
 <Tabs>
   <TabItem label="YAML">
@@ -439,8 +440,8 @@ Controls whether semrel commits `CHANGELOG.md` back to the repository before cre
 
 | Value | Behaviour |
 | --- | --- |
-| `true` (default) | semrel writes CHANGELOG.md, commits it as `chore(changelog): update for vX.Y.Z [skip ci]`, then creates the tag on that commit |
-| `false` | semrel writes CHANGELOG.md locally but does not commit it (useful if you manage the changelog externally) |
+| `true` (default) | semrel writes CHANGELOG.md and includes it in the single release commit |
+| `false` | semrel skips the built-in CHANGELOG.md write; a pre-tag changelog plugin can own the file and its changes are included in the same release commit |
 
 <Aside type="tip">
   The `[skip ci]` suffix in the changelog commit message prevents most CI systems from triggering a new pipeline run for the changelog commit itself.

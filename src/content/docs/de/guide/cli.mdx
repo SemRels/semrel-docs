@@ -31,16 +31,17 @@ semrel release [flags]
 ### Pipeline-Schritte
 
 1. `.semrel.yaml` laden und validieren
-2. **condition-phase** Plugins ausführen — bei Fehler abbrechen
-3. Prüfen, ob der aktuelle Branch für Releases konfiguriert ist
-4. Den letzten git-Tag finden und Commits seitdem sammeln
-5. Commits anhand der Regeln von Conventional Commits parsen
-6. Die nächste SemVer-Version berechnen (`major` / `minor` / `patch`)
-7. Changelog und Release Notes erzeugen
-8. **pre-tag** Plugins ausführen (z. B. Versionsdatei-Updater)
-9. `CHANGELOG.md` committen (außer bei `commit_changelog: false`)
-10. Den git-Tag erstellen und pushen
-11. **release-phase** Plugins ausführen (Packager, Publisher, Provider, Hooks)
+2. Auf neue CLI- und Plugin-Versionen prüfen (informativ, nicht blockierend)
+3. **condition-phase** Plugins ausführen — bei Fehler abbrechen
+4. Prüfen, ob der aktuelle Branch für Releases konfiguriert ist
+5. Den letzten git-Tag finden und Commits seitdem sammeln
+6. Commits anhand der Regeln von Conventional Commits parsen
+7. Die nächste SemVer-Version berechnen (`major` / `minor` / `patch`)
+8. Changelog und Release Notes erzeugen
+9. **pre-tag** Plugins ausführen (z. B. Versionsdatei-Updater)
+10. Alle getrackten Release-Änderungen einmal gemeinsam committen
+11. Den git-Tag erstellen und pushen
+12. **release-phase** Plugins ausführen (Packager, Publisher, Provider, Hooks)
 
 ### Flags
 
@@ -210,6 +211,9 @@ semrel doctor
 semrel doctor --online
 semrel doctor --output json
 ```
+
+`semrel release` prüft automatisch auf neue CLI- und konfigurierte
+Plugin-Versionen. Der Check ist informativ; Netzwerkfehler blockieren kein Release.
 
 ### Exit-Codes
 

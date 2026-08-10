@@ -324,6 +324,7 @@ Ordnet Conventional-Commit-Typen (und optional Scopes) SemVer-Bump-Stufen zu. We
 | `type` | string | ja | Conventional-Commit-Typ (z. B. `feat`, `fix`, `deps`) |
 | `scope` | string \| `false` | nein | Scope-Filter. Ein String matcht nur Commits mit exakt diesem Scope. `false` matcht nur Commits **ohne** Scope. Weglassen matcht jeden Scope. |
 | `bump` | string | ja | Einer von `major`, `minor`, `patch` |
+| `hidden` | boolean | nein | Hält passende Commits aus generierten Changelogs heraus, wendet ihren Version-Bump aber weiterhin an. |
 
 <Aside type="note">
   Breaking Changes (`BREAKING CHANGE`-Footer oder `!`-Suffix wie `feat!:`) führen unabhängig von den Regeln immer zu einem `major`-Bump.
@@ -417,7 +418,7 @@ Commit-Typen, die nicht in `rules` aufgeführt sind, erzeugen kein Release.
 
 ## `commit_changelog`
 
-Steuert, ob semrel `CHANGELOG.md` vor dem Erstellen des Release-Tags zurück ins Repository committet.
+Steuert, ob semrel `CHANGELOG.md` mit dem eingebauten Generator schreibt. Alle getrackten Änderungen des eingebauten Generators und der pre-tag-Plugins werden unmittelbar vor dem Release-Tag einmal gemeinsam committet.
 
 <Tabs>
   <TabItem label="YAML">
@@ -439,8 +440,8 @@ Steuert, ob semrel `CHANGELOG.md` vor dem Erstellen des Release-Tags zurück ins
 
 | Wert | Verhalten |
 | --- | --- |
-| `true` (Standard) | semrel schreibt `CHANGELOG.md`, committet die Datei als `chore(changelog): update for vX.Y.Z [skip ci]` und erstellt dann den Tag auf diesem Commit |
-| `false` | semrel schreibt `CHANGELOG.md` lokal, committet sie aber nicht (praktisch, wenn du den Changelog extern verwaltest) |
+| `true` (Standard) | semrel schreibt `CHANGELOG.md` und nimmt sie in den einmaligen Release-Commit auf |
+| `false` | semrel überspringt das eingebaute Schreiben; ein pre-tag-Changelog-Plugin kann die Datei übernehmen, deren Änderungen im selben Release-Commit landen |
 
 <Aside type="tip">
   Das Suffix `[skip ci]` in der Changelog-Commit-Message verhindert in den meisten CI-Systemen, dass für den Changelog-Commit selbst eine neue Pipeline ausgelöst wird.

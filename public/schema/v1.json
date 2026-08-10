@@ -83,7 +83,7 @@
     },
     "commit_changelog": {
       "type": "boolean",
-      "description": "Whether semrel commits CHANGELOG.md back to the repo before creating the release tag. Default: true.",
+      "description": "Whether semrel writes CHANGELOG.md with the built-in generator. Built-in and pre-tag plugin changes are committed together before the release tag. Default: true.",
       "default": true
     },
     "tag_exists_strategy": {
@@ -235,6 +235,11 @@
             "minor",
             "patch"
           ]
+        },
+        "hidden": {
+          "type": "boolean",
+          "default": false,
+          "description": "When true, matching commits affect the version bump but are omitted from generated changelogs."
         }
       }
     },

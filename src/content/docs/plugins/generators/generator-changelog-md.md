@@ -53,7 +53,7 @@ plugins:
     phase: condition
 
   - uses: @semrel/generator-changelog-md
-    phase: pre-tag          # must be pre-tag — runs before the tag, auto-committed by semrel
+    phase: pre-tag          # must be pre-tag — runs before the tag; changes are committed with the release
     args:
       keep_releases: "10"   # keep 10 full entries; older ones are summarised
       signature: "true"     # optional semrel.io footer, opt-in
@@ -65,7 +65,7 @@ plugins:
 
 1. semrel generates the release version and collects commits (`SEMREL_CHANGELOG` env var).
 2. The `generator-changelog-md` plugin receives `SEMREL_CHANGELOG` and writes an enhanced `CHANGELOG.md` directly to disk (`keep_releases > 0` required).
-3. semrel auto-commits any modified tracked files (including `CHANGELOG.md`) before creating the git tag.
+3. semrel commits all modified tracked release files (including `CHANGELOG.md`) once before creating the git tag.
 4. The tag points to the commit that includes the enhanced changelog.
 
 ## Environment variables

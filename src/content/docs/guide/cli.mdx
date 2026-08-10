@@ -31,16 +31,17 @@ semrel release [flags]
 ### Pipeline steps
 
 1. Load and validate `.semrel.yaml`
-2. Run **condition-phase** plugins — abort if any fail
-3. Check that the current branch is configured for release
-4. Find the last git tag and collect commits since then
-5. Parse commits against Conventional Commits rules
-6. Calculate the next SemVer version (major / minor / patch)
-7. Generate changelog and release notes
-8. Run **pre-tag** plugins (e.g. version file updaters)
-9. Commit `CHANGELOG.md` (unless `commit_changelog: false`)
-10. Create and push the git tag
-11. Run **release-phase** plugins (packagers, publishers, providers, hooks)
+2. Check for newer CLI and plugin versions (advisory, non-blocking)
+3. Run **condition-phase** plugins — abort if any fail
+4. Check that the current branch is configured for release
+5. Find the last git tag and collect commits since then
+6. Parse commits against Conventional Commits rules
+7. Calculate the next SemVer version (major / minor / patch)
+8. Generate changelog and release notes
+9. Run **pre-tag** plugins (e.g. version file updaters)
+10. Commit all tracked release changes once
+11. Create and push the git tag
+12. Run **release-phase** plugins (packagers, publishers, providers, hooks)
 
 ### Flags
 
@@ -210,6 +211,9 @@ semrel doctor
 semrel doctor --online
 semrel doctor --output json
 ```
+
+`semrel release` performs the CLI and configured-plugin update check
+automatically. It is advisory; network failures do not block a release.
 
 ### Exit codes
 

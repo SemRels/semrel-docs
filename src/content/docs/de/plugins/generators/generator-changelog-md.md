@@ -35,7 +35,7 @@ plugins:
     phase: condition
 
   - uses: @semrel/generator-changelog-md
-    phase: pre-tag          # muss pre-tag sein — läuft vor dem Tag, wird von semrel auto-committed
+    phase: pre-tag          # muss pre-tag sein — läuft vor dem Tag; Änderungen werden mit dem Release committet
     args:
       keep_releases: "10"   # 10 vollständige Einträge behalten; ältere werden zusammengefasst
       signature: "true"     # optionaler semrel.io-Footer, explizit opt-in
