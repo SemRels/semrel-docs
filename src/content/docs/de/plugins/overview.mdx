@@ -117,7 +117,7 @@ plugins:
   - uses: slack-notify
     path: /usr/local/bin/semrel-plugin-slack
     args:
-      webhook_url: ${{ env.SLACK_WEBHOOK }}
+      webhook_url: '${env.SLACK_WEBHOOK}'
 ```
 
 <Aside type="tip">

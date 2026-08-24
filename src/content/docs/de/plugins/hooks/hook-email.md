@@ -22,8 +22,8 @@ plugins:
     args:
       smtp_host: smtp.example.com
       smtp_port: 587
-      smtp_user: '${{ env.SMTP_USER }}'
-      smtp_pass: '${{ env.SMTP_PASS }}'
+      smtp_user: '${env.SMTP_USER}'
+      smtp_pass: '${env.SMTP_PASS}'
       from: 'releases@example.com'
       to: 'team@example.com,ops@example.com'
       subject_template: 'Release {{ .TagName }} is live'

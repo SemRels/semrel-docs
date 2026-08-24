@@ -38,7 +38,7 @@ version: 1
 plugins:
   - uses: @semrel/hook-slack
     args:
-      webhook_url: '${{ env.SLACK_WEBHOOK_URL }}'
+      webhook_url: '${env.SLACK_WEBHOOK_URL}'
       channel: '#releases'
       username: semrel
       icon_emoji: ':rocket:'

@@ -20,7 +20,7 @@ plugins:
   - uses: @semrel/analyzer-conventional
   - uses: @semrel/provider-github
     args:
-      token: ${{ env.GITHUB_TOKEN }}
+      token: '${env.GITHUB_TOKEN}'
 ```
 
 That's it. Your editor will now:
@@ -89,7 +89,7 @@ plugins:
   - uses: @semrel/provider-github
     # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/github/latest.json
     args:
-      token: ${{ env.GITHUB_TOKEN }}
+      token: '${env.GITHUB_TOKEN}'
       owner: MyOrg
       repo: my-repo
       assets: dist/*.tar.gz
@@ -97,7 +97,7 @@ plugins:
   - uses: @semrel/hook-slack
     # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/slack/latest.json
     args:
-      webhook_url: ${{ env.SLACK_WEBHOOK }}
+      webhook_url: '${env.SLACK_WEBHOOK}'
       channel: "#releases"
 ```
 

@@ -24,7 +24,7 @@
     },
     "tagPrefix": {
       "type": "string",
-      "description": "Prefix prepended to the version number when creating git tags. Default: \"v\".",
+      "description": "Prefix prepended to the version number when creating git tags. If omitted, defaults to \"v\"; an explicit empty string disables the prefix.",
       "default": "v",
       "examples": [
         "v",

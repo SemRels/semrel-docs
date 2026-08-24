@@ -22,8 +22,8 @@ plugins:
     args:
       workspace: semrels
       repo: semrel
-      username: '${{ env.BITBUCKET_USERNAME }}'
-      app_password: '${{ env.BITBUCKET_APP_PASSWORD }}'
+      username: '${env.BITBUCKET_USERNAME}'
+      app_password: '${env.BITBUCKET_APP_PASSWORD}'
 ```
 
 ## Umgebungsvariablen
