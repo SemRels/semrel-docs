@@ -20,7 +20,7 @@ The machine-readable registry index is served at:
 
 - **Web UI:** [https://registry.semrel.io](https://registry.semrel.io)
 - **REST API:** [https://registry.semrel.io/api/v1/plugins](https://registry.semrel.io/api/v1/plugins)
-- **Raw index:** [https://semrels.github.io/semrel-registry/plugins.json](https://semrels.github.io/semrel-registry/plugins.json)
+- **Raw index:** [https://registry.semrel.io/plugins.json](https://registry.semrel.io/plugins.json)
 - **Source:** [SemRels/semrel-registry](https://github.com/SemRels/semrel-registry)
 
 The registry currently spans plugin categories for providers, conditions, analyzers, generators, updaters, hooks, packagers, and publishers.
@@ -69,7 +69,7 @@ The registry payload starts with a small root document and then lists plugins wi
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "generatedAt": "2026-05-24T12:00:00Z",
   "plugins": [
     {
@@ -87,7 +87,11 @@ The registry payload starts with a small root document and then lists plugins wi
           "downloadUrl": "https://github.com/SemRels/provider-github/releases/download/v1.2.3/semrel-plugin-github_linux_amd64.tar.gz",
           "checksums": {
             "linux_amd64": "<sha256>",
-            "windows_amd64": "<sha256>"
+            "linux_arm64": "<sha256>",
+            "darwin_amd64": "<sha256>",
+            "darwin_arm64": "<sha256>",
+            "windows_amd64": "<sha256>",
+            "windows_arm64": "<sha256>"
           },
           "compatibility": {
             "minSemrelVersion": "0.2.0"

@@ -140,8 +140,16 @@ Plugin release workflows call this endpoint to notify the registry of a new vers
   run: |
     curl -s -X POST https://registry.semrel.io/api/v1/webhooks/release \
       -H "Content-Type: application/json" \
-      -H "X-Semrel-Signature: ${{ secrets.SEMREL_WEBHOOK_SECRET }}" \
-      -d '{"repository": "${{ github.repository }}", "tag": "${{ github.ref_name }}"}'
+      -H "X-Webhook-Secret: ${{ secrets.REGISTRY_WEBHOOK_SECRET }}" \
+      -d '{
+        "action": "release",
+        "plugin": {
+          "name": "my-plugin",
+          "namespace": "@semrel",
+          "version": "${{ steps.semrel.outputs.SEMREL_VERSION }}",
+          "repository": "https://github.com/${{ github.repository }}"
+        }
+      }'
 ```
 
 The webhook secret is provided to plugin maintainers separately. See the [plugin publishing guide](/plugins/publishing/) for the full release workflow.
@@ -160,7 +168,8 @@ Returns the [JSON Schema](https://registry.semrel.io/schemas/core/v1.json) for `
 
 ### `GET /schemas/plugins/{name}/v1.json`
 
-Returns the JSON Schema for a specific plugin's `args:` configuration.
+Returns the JSON Schema for a specific plugin's `args:` configuration. Use the
+canonical registry name, such as `provider-github` or `hook-slack`.
 
 ### `GET /schemas/plugins/{name}/latest.json`
 
