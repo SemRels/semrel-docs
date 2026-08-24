@@ -135,7 +135,7 @@ So weiß semrel, welche Version des Env-Var-Vertrags das Plugin erwartet, und ka
    plugins:
      - uses: my-provider         # resolves to semrel-plugin-my-provider
        args:
-         token: ${{ env.MY_TOKEN }}
+         token: '${env.MY_TOKEN}'
    ```
 
 6. **Teste es**

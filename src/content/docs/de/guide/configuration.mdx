@@ -19,6 +19,27 @@ semrel findet die Konfigurationsdatei automatisch in dieser Reihenfolge:
 
 YAML verwendet für einige Schlüssel `camelCase` (z. B. `tagPrefix`). TOML und JSON verwenden immer `snake_case` (z. B. `tag_prefix`).
 
+### Konfigurationsinterpolation
+
+Konfigurationswerte können Go-Templates mit Sprouts eingeschränkter
+`env`-Funktion verwenden:
+
+```yaml
+tagPrefix: '{{ env "RELEASE_TAG_PREFIX" }}'
+```
+
+Es ist ausschließlich der Zugriff auf Umgebungsvariablen verfügbar. Shell-,
+Dateisystem-, Netzwerk- und andere Funktionen mit Seiteneffekten werden nicht
+registriert. Die ältere Syntax `${env.VAR_NAME}` wird weiterhin unterstützt:
+
+```yaml
+token: '${env.GITHUB_TOKEN}'
+```
+
+Beide Formen werden beim Laden der Konfiguration durch semrel ausgewertet, nicht
+durch GitHub Actions. Eine nicht definierte Umgebungsvariable führt zu einem
+Fehler beim Laden der Konfiguration.
+
 ## Vollständiges Beispiel
 
 <Tabs>
@@ -56,7 +77,7 @@ YAML verwendet für einige Schlüssel `camelCase` (z. B. `tagPrefix`). TOML und 
       - uses: @semrel/provider-github
         phase: release
         args:
-          token: ${{ env.GITHUB_TOKEN }}
+          token: '${env.GITHUB_TOKEN}'
           owner: MyOrg
           repo: my-repo
 
@@ -68,7 +89,7 @@ YAML verwendet für einige Schlüssel `camelCase` (z. B. `tagPrefix`). TOML und 
 
       - uses: @semrel/hook-slack
         args:
-          webhook_url: ${{ env.SLACK_WEBHOOK }}
+          webhook_url: '${env.SLACK_WEBHOOK}'
     ```
   </TabItem>
   <TabItem label="TOML (.semrel.toml)">
@@ -191,14 +212,14 @@ Das Präfix wird beim Erstellen von git-Tags vor die Versionsnummer gesetzt.
 <Tabs>
   <TabItem label="YAML">
     ```yaml
-    tagPrefix: v   # creates tags like v1.2.3 (default)
-    tagPrefix: ""  # creates tags like 1.2.3
+    tagPrefix: v   # erzeugt Tags wie v1.2.3
+    tagPrefix: ""  # erzeugt ausdrücklich Tags wie 1.2.3
     ```
   </TabItem>
   <TabItem label="TOML">
     ```toml
-    tag_prefix = "v"   # creates tags like v1.2.3 (default)
-    tag_prefix = ""    # creates tags like 1.2.3
+    tag_prefix = "v"   # erzeugt Tags wie v1.2.3
+    tag_prefix = ""    # erzeugt ausdrücklich Tags wie 1.2.3
     ```
   </TabItem>
   <TabItem label="JSON">
@@ -210,7 +231,8 @@ Das Präfix wird beim Erstellen von git-Tags vor die Versionsnummer gesetzt.
 
 | Wert | Standard | Beschreibung |
 | --- | --- | --- |
-| beliebiger String | `v` | Wird jedem Tag vorangestellt, den semrel erstellt |
+| nicht angegeben (`null`) | `v` | Verwendet `v`, wenn kein Präfix konfiguriert ist |
+| beliebiger String einschließlich `""` | — | Verwendet den konfigurierten Wert; `""` deaktiviert das Präfix ausdrücklich |
 
 ## `branches`
 
@@ -568,14 +590,14 @@ Eine geordnete Liste von Plugins, die für die Release Pipeline geladen werden.
       - uses: @semrel/provider-github
         phase: release   # default, can be omitted
         args:
-          token: ${{ env.GITHUB_TOKEN }}
+          token: '${env.GITHUB_TOKEN}'
           owner: MyOrg
           repo: my-repo
 
       # Hook: notify Slack after release
       - uses: @semrel/hook-slack
         args:
-          webhook_url: ${{ env.SLACK_WEBHOOK }}
+          webhook_url: '${env.SLACK_WEBHOOK}'
     ```
   </TabItem>
   <TabItem label="TOML">
@@ -665,7 +687,7 @@ Jeder Schlüssel in `args:` wird dem Plugin-Prozess als Umgebungsvariable mit de
     plugins:
       - uses: @semrel/provider-github
         args:
-          token: ${{ env.GITHUB_TOKEN }}
+          token: '${env.GITHUB_TOKEN}'
           owner: MyOrg
           repo: my-repo
     ```
@@ -751,7 +773,7 @@ plugins:
   - uses: @semrel/provider-github
     # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/provider-github/latest.json
     args:
-      token: ${{ env.GITHUB_TOKEN }}
+      token: '${env.GITHUB_TOKEN}'
       owner: MyOrg
       repo: my-repo
 ```

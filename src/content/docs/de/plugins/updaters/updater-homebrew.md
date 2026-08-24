@@ -22,7 +22,7 @@ plugins:
     args:
       formula_file: Formula/semrel.rb
       url_template: 'https://github.com/SemRels/semrel/archive/refs/tags/v{{ .NextVersion }}.tar.gz'
-      sha256: '${{ env.RELEASE_SHA256 }}'
+      sha256: '${env.RELEASE_SHA256}'
 ```
 
 ## Umgebungsvariablen

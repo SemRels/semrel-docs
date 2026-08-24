@@ -135,7 +135,7 @@ This tells semrel which version of the env-var contract the plugin expects, enab
    plugins:
      - uses: my-provider         # resolves to semrel-plugin-my-provider
        args:
-         token: ${{ env.MY_TOKEN }}
+         token: '${env.MY_TOKEN}'
    ```
 
 6. **Test it**
