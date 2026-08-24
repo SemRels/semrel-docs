@@ -87,7 +87,7 @@ Add a `yaml-language-server` comment on the `args:` line to get inline validatio
 # yaml-language-server: $schema=https://registry.semrel.io/schemas/core/v1.json
 plugins:
   - uses: @semrel/provider-github
-    # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/github/latest.json
+    # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/provider-github/latest.json
     args:
       token: ${{ env.GITHUB_TOKEN }}
       owner: MyOrg
@@ -95,7 +95,7 @@ plugins:
       assets: dist/*.tar.gz
 
   - uses: @semrel/hook-slack
-    # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/slack/latest.json
+    # yaml-language-server: $schema=https://registry.semrel.io/schemas/plugins/hook-slack/latest.json
     args:
       webhook_url: ${{ env.SLACK_WEBHOOK }}
       channel: "#releases"
@@ -112,8 +112,11 @@ plugins:
 | Resource | URL |
 |---|---|
 | Core config | `https://registry.semrel.io/schemas/core/v1.json` |
-| Plugin (short name) | `https://registry.semrel.io/schemas/plugins/{name}/v1.json` |
+| Plugin (registry name) | `https://registry.semrel.io/schemas/plugins/{name}/v1.json` |
 | Plugin latest | `https://registry.semrel.io/schemas/plugins/{name}/latest.json` |
+
+Use the canonical registry name, including its category prefix (for example,
+`provider-github` or `hook-slack`).
 
 All schema endpoints return `Content-Type: application/schema+json` and are served with `Cache-Control: public, max-age=86400`.
 
