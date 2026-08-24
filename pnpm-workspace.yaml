@@ -5,3 +5,15 @@ minimumReleaseAgeExclude:
   - '@astrojs/markdown-satteri@0.3.1'
   - '@astrojs/mdx@7.0.0'
   - astro@7.0.0
+overrides:
+  astro: 7.2.4
+  brace-expansion: '>=2.1.4'
+  deepmerge-ts: '>=8.0.0'
+  dompurify: '>=3.4.13'
+  esbuild: '>=0.28.1'
+  js-yaml: 4.3.1
+  mermaid: '>=11.16.1'
+  nanoid: '>=3.3.18'
+  postcss: '>=8.5.23'
+  sharp: '>=0.35.0'
+  svgo: '>=4.0.2'
