@@ -159,6 +159,7 @@ semrel commitlint [message...] [flags]
 | `--from <ref>` | Start ref (exclusive) for a commit range |
 | `--to <ref>` | End ref (inclusive) for a commit range (default: `HEAD`) |
 | `--stdin` | Read a single commit message from stdin |
+| `--commit-msg-file <path>` | Read a single commit message from a file (mutually exclusive with `--stdin`) |
 
 ### Examples
 
@@ -174,6 +175,10 @@ semrel commitlint --from HEAD~5 --to HEAD
 
 # Lint from stdin (useful as a git commit-msg hook)
 echo "fix: typo" | semrel commitlint --stdin
+
+# Lint from a file — the standard shape for a git commit-msg hook
+# (.git/hooks/commit-msg calls hooks with the message file path as $1)
+semrel commitlint --commit-msg-file .git/COMMIT_EDITMSG
 
 # Machine-readable output
 semrel commitlint --output json
