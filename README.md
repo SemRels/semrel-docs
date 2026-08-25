@@ -42,4 +42,4 @@ Deploys to GitHub Pages at `semrel.io` via GitHub Actions.
 
 - [Astro Documentation](https://docs.astro.build)
 - [Starlight Documentation](https://starlight.astro.build)
-- [semrel Repository](https://github.com/GoSemantics/semrel)
+- [semrel Repository](https://github.com/SemRels/semrel)
