@@ -324,6 +324,7 @@ export default defineConfig({
                 { label: 'updater-nuget', link: '/plugins/updaters/updater-nuget/' },
                 { label: 'updater-python', link: '/plugins/updaters/updater-python/' },
                 { label: 'updater-terraform', link: '/plugins/updaters/updater-terraform/' },
+                { label: 'updater-zig', link: '/plugins/updaters/updater-zig/', ...newBadge('2026-09-13') },
               ],
             },
             {
