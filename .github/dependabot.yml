@@ -11,3 +11,9 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+    ignore:
+      # 2.0.0+ ships a broken "#/compressor.js" subpath import that fails to
+      # resolve under our Node/Astro build (see PR #27) — no fixed release
+      # exists yet. Re-enable once a working 2.x lands upstream.
+      - dependency-name: "astro-compressor"
+        versions: [">=2.0.0"]
