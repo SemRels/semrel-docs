@@ -736,7 +736,33 @@ Plugins erhalten den Release-Kontext außerdem über Standard-Umgebungsvariablen
 | `SEMREL_CHANGELOG` | Generierter Changelog-/Release-Notes-Text |
 | `SEMREL_DRY_RUN` | `true`, wenn semrel mit `--dry-run` aufgerufen wurde |
 | `SEMREL_COMMITS` | JSON-Array der rohen Commit-Messages im aktuellen Release-Fenster |
+| `SEMREL_COMMIT_HASHES` | JSON-Array vollständiger Commit-Hashes in derselben Reihenfolge wie `SEMREL_COMMITS` |
 | `SEMREL_CONTRIBUTORS` | JSON-Array der Contributor-Metadaten für das aktuelle Release-Fenster, nach Commit-Anzahl absteigend sortiert |
+
+### Kommentare zu PRs im Release
+
+Die Provider für GitHub, Gitea und Bitbucket können Kommentare zu Pull Requests verfassen, die in einem Release enthalten sind. Der GitLab-Provider unterstützt Notizen zu Merge Requests. Die Funktion ist standardmäßig deaktiviert und wird über `args:` des Providers aktiviert:
+
+| Provider | Argument |
+| --- | --- |
+| `@semrel/provider-github` | `comment-on-prs: true` |
+| `@semrel/provider-gitea` | `comment-on-prs: true` |
+| `@semrel/provider-bitbucket` | `comment-on-prs: true` |
+| `@semrel/provider-gitlab` | `comment-on-mrs: true` |
+
+Beispiel:
+
+```yaml
+plugins:
+  - uses: @semrel/provider-github
+    args:
+      token: '${env.GITHUB_TOKEN}'
+      owner: MyOrg
+      repo: my-repo
+      comment-on-prs: true
+```
+
+Der Provider nutzt `SEMREL_COMMIT_HASHES`, um zugehörige Pull Requests oder Merge Requests zu finden, und veröffentlicht anschließend einen Link zum Release. Ein versteckter Marker verhindert doppelte Kommentare zum selben Tag. Das konfigurierte Token muss Pull/Merge Requests lesen und Kommentare oder Notizen erstellen dürfen; plattformspezifische Berechtigungen stehen in der README des jeweiligen Providers.
 
 semrel-Plugins sind einfache ausführbare Dateien, die als Unterprozesse gestartet werden. Sie verwenden kein gRPC.
 
