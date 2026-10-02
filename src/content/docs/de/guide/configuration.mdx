@@ -741,14 +741,14 @@ Plugins erhalten den Release-Kontext außerdem über Standard-Umgebungsvariablen
 
 ### Kommentare zu PRs im Release
 
-Die Provider für GitHub, Gitea und Bitbucket können Kommentare zu Pull Requests verfassen, die in einem Release enthalten sind. Der GitLab-Provider unterstützt Notizen zu Merge Requests. Die Funktion ist standardmäßig deaktiviert und wird über `args:` des Providers aktiviert:
+Die Provider für GitHub, Gitea und Bitbucket kommentieren standardmäßig Pull Requests, die in einem Release enthalten sind. Der GitLab-Provider fügt entsprechend Notizen zu Merge Requests hinzu. Setze den Wert in `args:` auf `false`, um Kommentare zu deaktivieren:
 
 | Provider | Argument |
 | --- | --- |
-| `@semrel/provider-github` | `comment-on-prs: true` |
-| `@semrel/provider-gitea` | `comment-on-prs: true` |
-| `@semrel/provider-bitbucket` | `comment-on-prs: true` |
-| `@semrel/provider-gitlab` | `comment-on-mrs: true` |
+| `@semrel/provider-github` | `comment-on-prs: false` |
+| `@semrel/provider-gitea` | `comment-on-prs: false` |
+| `@semrel/provider-bitbucket` | `comment-on-prs: false` |
+| `@semrel/provider-gitlab` | `comment-on-mrs: false` |
 
 Beispiel:
 

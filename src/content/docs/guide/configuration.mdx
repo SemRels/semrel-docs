@@ -740,14 +740,14 @@ Plugins also receive release context through standard environment variables:
 
 ### Comment on pull requests included in a release
 
-The GitHub, Gitea, and Bitbucket providers can comment on pull requests included in a release. The GitLab provider supports merge request notes. This is disabled by default; enable it in the provider's `args:`:
+The GitHub, Gitea, and Bitbucket providers comment on pull requests included in a release by default. The GitLab provider similarly adds merge request notes. Set the provider's `args:` value to `false` to disable comments:
 
 | Provider | Argument |
 | --- | --- |
-| `@semrel/provider-github` | `comment-on-prs: true` |
-| `@semrel/provider-gitea` | `comment-on-prs: true` |
-| `@semrel/provider-bitbucket` | `comment-on-prs: true` |
-| `@semrel/provider-gitlab` | `comment-on-mrs: true` |
+| `@semrel/provider-github` | `comment-on-prs: false` |
+| `@semrel/provider-gitea` | `comment-on-prs: false` |
+| `@semrel/provider-bitbucket` | `comment-on-prs: false` |
+| `@semrel/provider-gitlab` | `comment-on-mrs: false` |
 
 For example:
 
