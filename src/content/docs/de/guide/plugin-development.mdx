@@ -41,6 +41,7 @@ semrel setzt vor der Ausführung jedes Plugins die folgenden Variablen:
 | `SEMREL_CHANGELOG` | Erzeugter Changelog-Inhalt |
 | `SEMREL_DRY_RUN` | `true` bei Ausführung mit `--dry-run` |
 | `SEMREL_COMMITS` | JSON-Array der rohen Commit-Messages im aktuellen Release-Fenster |
+| `SEMREL_COMMIT_HASHES` | JSON-Array vollständiger Commit-Hashes in derselben Reihenfolge wie `SEMREL_COMMITS` |
 | `SEMREL_CONTRIBUTORS` | JSON-Array der Contributor-Metadaten für das aktuelle Release-Fenster, nach Commit-Anzahl absteigend sortiert |
 
 Plugin-spezifische `args:` aus `.semrel.yaml` werden als `SEMREL_PLUGIN_<KEY>=<value>` bereitgestellt (Schlüssel in Großbuchstaben).
