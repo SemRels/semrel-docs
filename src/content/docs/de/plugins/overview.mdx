@@ -26,11 +26,26 @@ Die Release-Pipeline von semrel besteht aus eigenständigen Plugin-Binärdateien
 ## So funktionieren Plugins
 
 1. semrel liest jeden Plugin-Eintrag aus `.semrel.yaml`.
-2. Der Wert `uses:` wird zu einer Binärdatei namens `semrel-plugin-<name>` aufgelöst, nachdem semrel Namespace, Version oder Kategorie-Präfix entfernt hat.
+2. Der Wert `uses:` wird zu einer Binärdatei namens `semrel-plugin-<name>` aufgelöst, nachdem semrel Namespace und Version entfernt hat. Kategorie-Präfixe wie `updater-` oder `publisher-` bleiben Teil des Binärnamens.
 3. semrel sucht diese Binärdatei zuerst an einem expliziten `path:`, dann in `.semrel/plugins/`, dann in `~/.semrel/plugins/`, dann in `$PATH`.
 4. Plugin-`args:`-Werte werden als Umgebungsvariablen im Format `SEMREL_PLUGIN_<KEY>=<value>` bereitgestellt.
 5. Der Release-Kontext wird ebenfalls über Umgebungsvariablen übergeben, sodass jedes Plugin dieselbe Version, Branch, Tag, denselben Changelog und denselben Dry-Run-Status lesen kann.
 6. semrel führt die Binärdatei aus und verwendet das Prozessergebnis, um die Pipeline fortzusetzen oder zu stoppen.
+
+## Plugin-Lifecycle-Phasen
+
+Die Plugin-Kategorie beschreibt, was ein Plugin tut; `phase:` steuert, wann es
+läuft. Nur diese Lifecycle-Phasen sind gültig:
+
+| Phase | Ausführungszeitpunkt | Typische Kategorien |
+| --- | --- | --- |
+| `condition` | Vor Commit-Analyse und Tag-Erstellung | Conditions |
+| `generator` | Nach der Versionsberechnung; stdout ersetzt `SEMREL_CHANGELOG` | Generatoren, die Release-Inhalt zurückgeben |
+| `pre-tag` | Bevor Release-Änderungen committet und getaggt werden | Updater und dateischreibende Generatoren |
+| `release` | Nach der Tag-Erstellung; auch der Standard ohne `phase` | Provider, Packager, Publisher und Hooks |
+
+Werte wie `update` und `publish` sind Plugin-Aufgaben, aber keine gültigen
+Lifecycle-Phasen.
 
 ## Release-Kontext-Umgebung
 

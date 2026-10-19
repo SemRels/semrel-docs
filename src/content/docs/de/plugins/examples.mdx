@@ -46,6 +46,7 @@ Offizielle Plugins werden in der Organisation [SemRels](https://github.com/SemRe
 ```yaml
 plugins:
   - uses: @semrel/updater-go
+    phase: pre-tag
     args:
       file: internal/version/version.go
       var_name: Version
@@ -67,6 +68,7 @@ plugins:
 ```yaml
 plugins:
   - uses: @semrel/updater-docker
+    phase: pre-tag
     args:
       file: Dockerfile
       arg_name: VERSION
@@ -84,6 +86,7 @@ plugins:
 ```yaml
 plugins:
   - uses: @semrel/updater-helm
+    phase: pre-tag
     args:
       file: charts/myapp/Chart.yaml
       update_app_version: "true"

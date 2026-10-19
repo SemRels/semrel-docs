@@ -26,11 +26,26 @@ semrel's release pipeline is composed of standalone plugin executables. Each plu
 ## How plugins work
 
 1. semrel reads each plugin entry from `.semrel.yaml`.
-2. The `uses:` value resolves to a binary named `semrel-plugin-<name>` after semrel strips any namespace, version, or category prefix.
+2. The `uses:` value resolves to a binary named `semrel-plugin-<name>` after semrel strips any namespace and version. Category prefixes such as `updater-` or `publisher-` remain part of the binary name.
 3. semrel looks for that binary at an explicit `path:`, then in `.semrel/plugins/`, then in `~/.semrel/plugins/`, then in `$PATH`.
 4. Plugin `args:` values are exposed as environment variables in the form `SEMREL_PLUGIN_<KEY>=<value>`.
 5. Release context is also passed through environment variables so every plugin can read the same version, branch, tag, changelog, and dry-run state.
 6. semrel runs the executable and uses the process result to continue or stop the pipeline.
+
+## Plugin lifecycle phases
+
+The plugin category describes what a plugin does; `phase:` controls when it runs.
+Only these lifecycle phases are valid:
+
+| Phase | Execution point | Typical categories |
+| --- | --- | --- |
+| `condition` | Before commit analysis and tag creation | Conditions |
+| `generator` | After version calculation; stdout replaces `SEMREL_CHANGELOG` | Generators that return release content |
+| `pre-tag` | Before release changes are committed and tagged | Updaters and file-writing generators |
+| `release` | After tag creation; also the default when `phase` is omitted | Providers, packagers, publishers, and hooks |
+
+Values such as `update` and `publish` are plugin responsibilities, not valid
+lifecycle phases.
 
 ## Release context environment
 
