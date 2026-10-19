@@ -154,6 +154,7 @@ All plugins receive these environment variables during execution:
 - **updater-nuget** — Updates `.csproj` version
 - **updater-terraform** — Updates `version.tf` / `main.tf` module version
 - **updater-homebrew** — Updates Homebrew formula version and SHA256
+- **updater-replace** — Replaces regex or literal text in arbitrary files
 
 ### Hooks
 - **hook-slack** — Slack incoming webhook notification
@@ -162,6 +163,7 @@ All plugins receive these environment variables during execution:
 - **hook-jira** — Jira issue transition / comment
 - **hook-matrix** — Matrix chat room message
 - **hook-gitplugin** — Git-based post-release automation
+- **hook-exec** — Runs shell commands in any plugin phase
 
 ---
 

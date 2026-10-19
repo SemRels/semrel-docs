@@ -62,6 +62,7 @@
 - [updater-nuget](https://semrel.io/plugins/updaters/updater-nuget/)
 - [updater-terraform](https://semrel.io/plugins/updaters/updater-terraform/)
 - [updater-homebrew](https://semrel.io/plugins/updaters/updater-homebrew/)
+- [updater-replace](https://semrel.io/plugins/updaters/updater-replace/)
 
 ### Hooks
 - [hook-slack](https://semrel.io/plugins/hooks/hook-slack/)
@@ -70,6 +71,7 @@
 - [hook-jira](https://semrel.io/plugins/hooks/hook-jira/)
 - [hook-matrix](https://semrel.io/plugins/hooks/hook-matrix/)
 - [hook-gitplugin](https://semrel.io/plugins/hooks/hook-gitplugin/)
+- [hook-exec](https://semrel.io/plugins/hooks/hook-exec/)
 
 ## API & Infrastructure
 

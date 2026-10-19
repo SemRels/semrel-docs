@@ -20,6 +20,7 @@ For migration from updater-only flows to packager/publisher pipelines, follow th
 | [`condition-github-actions`](/plugins/conditions/condition-github-actions/) | Condition | Confirms the current release is running inside GitHub Actions. |
 | [`condition-gitlab-ci`](/plugins/conditions/condition-gitlab-ci/) | Condition | Confirms the current release is running inside GitLab CI. |
 | [`hook-email`](/plugins/hooks/hook-email/) | Hook | Sends release notifications through SMTP after a SemRel run. |
+| [`hook-exec`](/plugins/hooks/hook-exec/) | Hook | Runs user-defined shell commands in any semrel plugin phase. |
 | [`hook-gitplugin`](/plugins/hooks/hook-gitplugin/) | Hook | Pushes release-related changes to another Git repository or branch. |
 | [`hook-jira`](/plugins/hooks/hook-jira/) | Hook | Updates Jira release metadata after SemRel publishes a version. |
 | [`hook-matrix`](/plugins/hooks/hook-matrix/) | Hook | Posts release notifications to a Matrix room. |
@@ -40,6 +41,7 @@ For migration from updater-only flows to packager/publisher pipelines, follow th
 | [`updater-npm`](/plugins/updaters/updater-npm/) | Updater | Updates the version field in a `package.json` file. |
 | [`updater-nuget`](/plugins/updaters/updater-nuget/) | Updater | Updates the version property inside a `.csproj` or other NuGet project file. |
 | [`updater-python`](/plugins/updaters/updater-python/) | Updater | Updates Python package version metadata in `pyproject.toml` or a similar backend file. |
+| [`updater-replace`](/plugins/updaters/updater-replace/) | Updater | Replaces regular expressions or literal text in arbitrary project files. |
 | [`updater-terraform`](/plugins/updaters/updater-terraform/) | Updater | Updates a Terraform variable that stores the application version. |
 | [`packager-nfpm`](/plugins/packagers/packager-nfpm/) | Packager | Builds Linux packages (`deb`, `rpm`, `apk`) using nFPM. |
 | [`publisher-docker`](/plugins/publishers/publisher-docker/) | Publisher | Pushes one existing local Docker image and reports its immutable digest. |

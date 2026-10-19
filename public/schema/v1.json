@@ -280,6 +280,7 @@
             "hook-matrix",
             "hook-jira",
             "hook-gitplugin",
+            "hook-exec",
             "condition-github-actions",
             "condition-gitlab-ci",
             "condition-gitea-actions",
@@ -294,7 +295,8 @@
             "updater-maven",
             "updater-nuget",
             "updater-python",
-            "updater-terraform"
+            "updater-terraform",
+            "updater-replace"
           ]
         },
         "name": {
