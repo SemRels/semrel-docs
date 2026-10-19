@@ -41,15 +41,15 @@ bleibt als maschinenlesbarer Kompatibilitäts-Endpunkt verfügbar.
 | `GET /api/v1/plugins` | Plugins mit Paginierung und optionalen Filtern `category`, `search` und `sort` auflisten |
 | `GET /api/v1/plugins/:id` | Ein einzelnes Plugin anhand numerischer ID oder Plugin-Name abrufen |
 | `GET /api/v1/plugins/:id/versions` | Versionen eines Plugins mit `limit` und `offset` auflisten |
-| `POST /api/v1/plugins` | Einen Plugin-Datensatz erstellen (Admin-Token erforderlich) |
-| `PUT /api/v1/plugins/:id` | Plugin-Metadaten aktualisieren (Admin-Token erforderlich) |
-| `DELETE /api/v1/plugins/:id` | Ein Plugin per Soft-Delete löschen (Admin-Token erforderlich) |
-| `POST /api/v1/plugins/:id/versions` | Einen Plugin-Versionsdatensatz erstellen (Admin-Token erforderlich) |
-| `GET /api/v1/admin/status` | Liefert den aktuellen Admin- und Service-Status |
+| `POST /api/v1/plugins` | Einen Plugin-Datensatz erstellen (Authentifizierung erforderlich) |
+| `PUT /api/v1/plugins/:id` | Plugin-Metadaten aktualisieren (Eigentümer:in oder Admin) |
+| `DELETE /api/v1/plugins/:id` | Ein Plugin per Soft-Delete löschen (Eigentümer:in oder Admin) |
+| `POST /api/v1/plugins/:id/versions` | Einen Plugin-Versionsdatensatz erstellen (Eigentümer:in oder Admin) |
+| `GET /api/v1/admin/status` | Liefert den aktuellen Admin- und Service-Status (Admin-Zugriff erforderlich) |
 
 ## Datenbank und Bereitstellung
 
-Das aktuelle Backend-Grundgerüst nutzt:
+Das produktive Backend nutzt:
 
 - **Go + Gin** für die HTTP-API
 - **PostgreSQL 16** für persistente Plugin- und Versionsdaten
@@ -64,7 +64,7 @@ Wichtige Laufzeiteinstellungen:
 | `DATABASE_URL` | PostgreSQL-Verbindungszeichenfolge |
 | `MIGRATE_DIR` | Migrationsverzeichnis, das beim Start geladen wird |
 | `ENVIRONMENT` | Laufzeitmodus wie `dev` oder `prod` |
-| `ADMIN_TOKEN` | Bearer-Token, das Admin-Endpunkte schützt |
+| `ADMIN_TOKEN` | Optionaler statischer Admin-Zugang für die lokale Entwicklung; in Produktion werden authentifizierte Admin-Sitzungen verwendet |
 
 Für die lokale Entwicklung startest du PostgreSQL über `docker compose` und führst die API mit `go run main.go` aus.
 

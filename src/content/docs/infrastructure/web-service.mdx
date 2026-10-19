@@ -41,15 +41,15 @@ machine-readable compatibility endpoint.
 | `GET /api/v1/plugins` | List plugins with pagination and optional `category`, `search`, and `sort` filters |
 | `GET /api/v1/plugins/:id` | Fetch a single plugin by numeric ID or plugin name |
 | `GET /api/v1/plugins/:id/versions` | List versions for a plugin with `limit` and `offset` |
-| `POST /api/v1/plugins` | Create a plugin record (admin token required) |
-| `PUT /api/v1/plugins/:id` | Update plugin metadata (admin token required) |
-| `DELETE /api/v1/plugins/:id` | Soft-delete a plugin (admin token required) |
-| `POST /api/v1/plugins/:id/versions` | Create a plugin version record (admin token required) |
-| `GET /api/v1/admin/status` | Return current admin and service status |
+| `POST /api/v1/plugins` | Create a plugin record (authentication required) |
+| `PUT /api/v1/plugins/:id` | Update plugin metadata (owner or admin) |
+| `DELETE /api/v1/plugins/:id` | Soft-delete a plugin (owner or admin) |
+| `POST /api/v1/plugins/:id/versions` | Create a plugin version record (owner or admin) |
+| `GET /api/v1/admin/status` | Return current admin and service status (admin access required) |
 
 ## Database and deployment
 
-The current backend skeleton uses:
+The production backend uses:
 
 - **Go + Gin** for the HTTP API
 - **PostgreSQL 16** for persistent plugin and version data
@@ -64,7 +64,7 @@ Important runtime settings:
 | `DATABASE_URL` | PostgreSQL connection string |
 | `MIGRATE_DIR` | Migration directory loaded on startup |
 | `ENVIRONMENT` | Runtime mode such as `dev` or `prod` |
-| `ADMIN_TOKEN` | Bearer token protecting admin endpoints |
+| `ADMIN_TOKEN` | Optional static admin credential for local development; production uses authenticated admin sessions |
 
 Local development starts PostgreSQL through `docker compose` and runs the API with `go run main.go`.
 
