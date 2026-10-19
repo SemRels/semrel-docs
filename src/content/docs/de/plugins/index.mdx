@@ -20,6 +20,7 @@ Für die Migration von Updater-only-Flows auf Packager/Publisher-Pipelines nutze
 | [`condition-github-actions`](/de/plugins/conditions/condition-github-actions/) | Condition | Bestätigt, dass die aktuelle Release innerhalb von GitHub Actions läuft. |
 | [`condition-gitlab-ci`](/de/plugins/conditions/condition-gitlab-ci/) | Condition | Bestätigt, dass die aktuelle Release innerhalb von GitLab CI läuft. |
 | [`hook-email`](/de/plugins/hooks/hook-email/) | Hook | Sendet nach einem semrel-Lauf Release-Benachrichtigungen per SMTP. |
+| [`hook-exec`](/de/plugins/hooks/hook-exec/) | Hook | Führt benutzerdefinierte Shell-Befehle in jeder semrel-Plugin-Phase aus. |
 | [`hook-gitplugin`](/de/plugins/hooks/hook-gitplugin/) | Hook | Überträgt Release-bezogene Änderungen in ein anderes Git-Repository oder eine andere Branch. |
 | [`hook-jira`](/de/plugins/hooks/hook-jira/) | Hook | Aktualisiert Jira-Release-Metadaten, nachdem semrel eine Version veröffentlicht hat. |
 | [`hook-matrix`](/de/plugins/hooks/hook-matrix/) | Hook | Veröffentlicht Release-Benachrichtigungen in einem Matrix-Raum. |
@@ -40,6 +41,7 @@ Für die Migration von Updater-only-Flows auf Packager/Publisher-Pipelines nutze
 | [`updater-npm`](/de/plugins/updaters/updater-npm/) | Updater | Aktualisiert das Versionsfeld in einer `package.json`-Datei. |
 | [`updater-nuget`](/de/plugins/updaters/updater-nuget/) | Updater | Aktualisiert die Versionseigenschaft in einer `.csproj`- oder anderen NuGet-Projektdatei. |
 | [`updater-python`](/de/plugins/updaters/updater-python/) | Updater | Aktualisiert Python-Paketversionsmetadaten in `pyproject.toml` oder einer ähnlichen Backend-Datei. |
+| [`updater-replace`](/de/plugins/updaters/updater-replace/) | Updater | Ersetzt reguläre Ausdrücke oder wörtlichen Text in beliebigen Projektdateien. |
 | [`updater-terraform`](/de/plugins/updaters/updater-terraform/) | Updater | Aktualisiert eine Terraform-Variable, die die Anwendungsversion speichert. |
 | [`packager-nfpm`](/de/plugins/packagers/packager-nfpm/) | Packager | Baut Linux-Pakete (`deb`, `rpm`, `apk`) mit nFPM. |
 | [`publisher-docker`](/de/plugins/publishers/publisher-docker/) | Publisher | Pusht ein vorhandenes lokales Docker-Image und meldet dessen unveränderlichen Digest. |

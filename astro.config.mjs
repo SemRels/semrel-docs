@@ -288,6 +288,7 @@ export default defineConfig({
               label: 'Hooks',
               items: [
                 { label: 'hook-email', link: '/plugins/hooks/hook-email/' },
+                { label: 'hook-exec', link: '/plugins/hooks/hook-exec/', ...newBadge('2026-10-19') },
                 { label: 'hook-gitplugin', link: '/plugins/hooks/hook-gitplugin/' },
                 { label: 'hook-jira', link: '/plugins/hooks/hook-jira/' },
                 { label: 'hook-matrix', link: '/plugins/hooks/hook-matrix/' },
@@ -323,6 +324,7 @@ export default defineConfig({
                 { label: 'updater-npm', link: '/plugins/updaters/updater-npm/' },
                 { label: 'updater-nuget', link: '/plugins/updaters/updater-nuget/' },
                 { label: 'updater-python', link: '/plugins/updaters/updater-python/' },
+                { label: 'updater-replace', link: '/plugins/updaters/updater-replace/', ...newBadge('2026-10-19') },
                 { label: 'updater-terraform', link: '/plugins/updaters/updater-terraform/' },
                 { label: 'updater-zig', link: '/plugins/updaters/updater-zig/', ...newBadge('2026-09-13') },
               ],
