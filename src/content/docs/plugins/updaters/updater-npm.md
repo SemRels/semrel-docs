@@ -49,6 +49,7 @@ plugins:
 | Name | Required | Default | Description |
 | --- | --- | --- | --- |
 | `SEMREL_PLUGIN_FILE` | no | `package.json` | Package manifest to update. |
+| `SEMREL_PLUGIN_UPDATE_LOCKFILE` | no | `false` | When `true`, also refreshes `package-lock.json` using `npm install --package-lock-only`. |
 
 ## Release Context Variables
 

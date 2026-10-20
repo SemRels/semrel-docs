@@ -242,7 +242,7 @@ semrel config <subcommand> [flags]
 
 ### `semrel config init`
 
-Erstelle eine neue `.semrel.yaml` interaktiv oder mit Standardwerten.
+Erstelle eine neue `.semrel.yaml` interaktiv oder mit Standardwerten. Innerhalb eines Git-Repositories legt `semrel config init` außerdem automatisch (und idempotent) die passenden `.gitignore`-Einträge für `.semrel/` und `.semrel-analytics.jsonl` an.
 
 ```bash
 semrel config init [flags]
@@ -252,6 +252,7 @@ semrel config init [flags]
 |------|-------------|
 | `--no-interactive` | Prompts überspringen und eine minimale Standardkonfiguration schreiben |
 | `--force` | Eine vorhandene Konfigurationsdatei überschreiben |
+| `--no-gitignore` | Erstellen oder Aktualisieren der `.gitignore` überspringen |
 
 ```bash
 semrel config init

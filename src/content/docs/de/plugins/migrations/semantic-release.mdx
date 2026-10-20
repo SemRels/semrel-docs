@@ -13,9 +13,12 @@ Diese Anleitung richtet sich an Teams, die von semantic-release auf semrel migri
 
 | semantic-release Bereich | semrel Entsprechung |
 | --- | --- |
-| Commit-Analyzer-Plugins | Analyzer-Plugin (`analyzer-default` / `analyzer-conventional`) |
-| Release-Notes-/Changelog-Plugins | Generator-Plugins (`generator-release-notes`, `generator-changelog-*`) |
-| npm/github/docker Publish-Plugins | Publisher-Plugins (`publisher-oci`, `publisher-generic-http`) + CI-Publish-Jobs |
+| Commit-Analyzer-Plugins | `@semrel/analyzer-conventional` oder `@semrel/analyzer-default` |
+| Release-Notes-/Changelog-Plugins | `@semrel/generator-release-notes`, `@semrel/generator-changelog-md`, `@semrel/generator-changelog-html` |
+| `@semantic-release/npm` | `@semrel/updater-npm` (`pre-tag`) + `@semrel/publisher-npm` (`release`) |
+| `@semantic-release/exec` | `@semrel/hook-exec` (unterstützt `verifyConditionsCmd`, `prepareCmd`, `publishCmd`, `successCmd`) |
+| Beliebige Versions-/Regex-Ersetzungen | `@semrel/updater-replace` (`pre-tag`) |
+| Crates / PyPI / Docker / OCI Publishing | `@semrel/publisher-crates`, `@semrel/publisher-pypi`, `@semrel/publisher-docker`, `@semrel/publisher-oci`, `@semrel/publisher-generic-http` |
 
 ## Empfohlenes Rollout
 
