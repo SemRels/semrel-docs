@@ -255,7 +255,7 @@ const roadmap = [
 ];
 ---
 
-<div class="sr-landing">
+<div class="sr-landing" data-copied-label={isDe ? '✓ Kopiert!' : '✓ Copied!'}>
   <!-- ── TOP AMBIENT BANNER & VERSION PILL ───────────────────── -->
   <section class="sr-hero-shell">
     <div class="sr-ambient-orb sr-orb-1" aria-hidden="true"></div>
@@ -414,7 +414,7 @@ const roadmap = [
         <span class="sr-stat-lbl">{isDe ? 'Sprachen & Paket-Ökosysteme' : 'Languages & Ecosystems'}</span>
       </div>
       <div class="sr-stat-card">
-        <span class="sr-stat-val">0 €</span>
+        <span class="sr-stat-val">{isDe ? '0 €' : '$0'}</span>
         <span class="sr-stat-lbl">{isDe ? 'Apache 2.0 · Keine Paywall' : 'Apache 2.0 · Zero Paywalls'}</span>
       </div>
     </div>
@@ -467,7 +467,7 @@ const roadmap = [
           </tr>
           <tr>
             <td><strong>{isDe ? 'Scope-basierte Bump-Regeln' : 'Scope-Based Bump Rules'}</strong></td>
-            <td class="sr-col-highlight"><strong>✅ Nativ (inkl. <code>scope: false</code>)</strong></td>
+            <td class="sr-col-highlight"><strong>✅ {isDe ? 'Nativ (inkl.' : 'Native (incl.'} <code>scope: false</code>)</strong></td>
             <td>✅</td>
             <td>❌</td>
             <td>❌</td>
@@ -475,42 +475,42 @@ const roadmap = [
           </tr>
           <tr>
             <td><strong>{isDe ? 'Air-Gap & Offline-CI' : 'Air-Gap & Offline CI'}</strong></td>
-            <td class="sr-col-highlight"><strong>✅ Nativ via <code>.semrel.lock</code></strong></td>
-            <td>❌ npm-Netzwerkzugriff</td>
+            <td class="sr-col-highlight"><strong>✅ {isDe ? 'Nativ via' : 'Native via'} <code>.semrel.lock</code></strong></td>
+            <td>❌ {isDe ? 'npm-Netzwerkzugriff' : 'Requires npm network access'}</td>
             <td>✅</td>
-            <td>❌ Cloud API gebunden</td>
-            <td>❌ npm-Netzwerkzugriff</td>
+            <td>❌ {isDe ? 'Cloud API gebunden' : 'Cloud API bound'}</td>
+            <td>❌ {isDe ? 'npm-Netzwerkzugriff' : 'Requires npm network access'}</td>
           </tr>
           <tr>
             <td><strong>{isDe ? 'Multi-Language Version Updaters' : 'Multi-Language Version Updaters'}</strong></td>
-            <td class="sr-col-highlight"><strong>✅ 15 Ökosysteme (Go, npm, Cargo, PyPI, Helm, Maven, Gradle, NuGet, Composer, Pubspec, Zig, Terraform, Docker, Homebrew, Regex)</strong></td>
-            <td>⚠️ JS-zentrisch / Drittpakete</td>
-            <td>❌ Nur Go-Build-Fokus</td>
-            <td>⚠️ Hartkodierte Updater</td>
-            <td>❌ Nur JS/TS (package.json)</td>
+            <td class="sr-col-highlight"><strong>✅ {isDe ? '15 Ökosysteme' : '15 Ecosystems'} (Go, npm, Cargo, PyPI, Helm, Maven, Gradle, NuGet, Composer, Pubspec, Zig, Terraform, Docker, Homebrew, Regex)</strong></td>
+            <td>⚠️ {isDe ? 'JS-zentrisch / Drittpakete' : 'JS-centric / 3rd-party'}</td>
+            <td>❌ {isDe ? 'Nur Go-Build-Fokus' : 'Go build focus only'}</td>
+            <td>⚠️ {isDe ? 'Hartkodierte Updater' : 'Hardcoded updaters'}</td>
+            <td>❌ {isDe ? 'Nur JS/TS (package.json)' : 'JS/TS only (package.json)'}</td>
           </tr>
           <tr>
             <td><strong>{isDe ? 'Multi-Registry Publishers & nFPM' : 'Multi-Registry Publishers & nFPM'}</strong></td>
             <td class="sr-col-highlight"><strong>✅ OCI, Docker, npm, PyPI, crates.io, HTTP + .deb/.rpm/.apk</strong></td>
-            <td>⚠️ Nur via npm-Plugins</td>
-            <td>✅ (Teilweise Pro)</td>
-            <td>❌ Keine Artifact-Publisher</td>
-            <td>⚠️ Primär npm</td>
+            <td>⚠️ {isDe ? 'Nur via npm-Plugins' : 'Via npm plugins only'}</td>
+            <td>✅ {isDe ? '(Teilweise Pro)' : '(Partially Pro)'}</td>
+            <td>❌ {isDe ? 'Keine Artifact-Publisher' : 'No artifact publishers'}</td>
+            <td>⚠️ {isDe ? 'Primär npm' : 'Primarily npm'}</td>
           </tr>
           <tr>
             <td><strong>{isDe ? 'Git-Forges & Self-Hosted' : 'Git Forges & Self-Hosted'}</strong></td>
             <td class="sr-col-highlight"><strong>✅ GitHub, GHES, GitLab, Gitea/Forgejo, Bitbucket, Git</strong></td>
-            <td>✅ via Plugins</td>
+            <td>✅ {isDe ? 'via Plugins' : 'via plugins'}</td>
             <td>✅ GitHub, GitLab, Gitea</td>
-            <td>❌ Nur GitHub</td>
+            <td>❌ {isDe ? 'Nur GitHub' : 'GitHub only'}</td>
             <td>⚠️ GitHub / GitLab</td>
           </tr>
           <tr>
             <td><strong>{isDe ? 'Auto PR/MR Release-Kommentare' : 'Auto PR/MR Release Comments'}</strong></td>
             <td class="sr-col-highlight"><strong>✅ GitHub, GitLab, Gitea & Bitbucket (idempotent)</strong></td>
-            <td>⚠️ Nur GitHub/GitLab</td>
+            <td>⚠️ {isDe ? 'Nur GitHub/GitLab' : 'GitHub/GitLab only'}</td>
             <td>❌</td>
-            <td>⚠️ Nur Release-PR</td>
+            <td>⚠️ {isDe ? 'Nur Release-PR' : 'Release PR only'}</td>
             <td>❌</td>
           </tr>
           <tr>
@@ -524,24 +524,24 @@ const roadmap = [
           <tr>
             <td><strong>{isDe ? 'Supply-Chain Attestierung' : 'Supply-Chain Attestation'}</strong></td>
             <td class="sr-col-highlight"><strong>✅ Cosign v3 + CycloneDX/SPDX + SLSA L1</strong></td>
-            <td>❌ Hohes npm-Risiko</td>
+            <td>❌ {isDe ? 'Hohes npm-Risiko' : 'High npm supply-chain risk'}</td>
             <td>✅ Cosign + SBOM</td>
             <td>❌</td>
             <td>❌</td>
           </tr>
           <tr>
             <td><strong>{isDe ? 'Große Repos (460+ Tags)' : 'Large Repos (460+ Tags)'}</strong></td>
-            <td class="sr-col-highlight"><strong>⚡ &lt; 90 Sekunden (nebenläufiges Go)</strong></td>
-            <td>🐢 35+ Minuten (Timeouts)</td>
-            <td>⚡ Schnell</td>
-            <td>⚠️ API-Rate-Limits</td>
-            <td>🐢 Langsam</td>
+            <td class="sr-col-highlight"><strong>⚡ {isDe ? '< 90 Sekunden (nebenläufiges Go)' : '< 90 seconds (concurrent Go)'}</strong></td>
+            <td>🐢 {isDe ? '35+ Minuten (Timeouts)' : '35+ minutes (timeouts)'}</td>
+            <td>⚡ {isDe ? 'Schnell' : 'Fast'}</td>
+            <td>⚠️ {isDe ? 'API-Rate-Limits' : 'API rate limits'}</td>
+            <td>🐢 {isDe ? 'Langsam' : 'Slow'}</td>
           </tr>
           <tr>
             <td><strong>{isDe ? 'Lizenz & Enterprise-Kosten' : 'License & Enterprise Cost'}</strong></td>
-            <td class="sr-col-highlight"><strong>✅ Apache 2.0 · 100% Kostenlos</strong></td>
-            <td>✅ MIT · Kostenlos</td>
-            <td>💰 Pro kostet 3.300 $/Jahr</td>
+            <td class="sr-col-highlight"><strong>✅ {isDe ? 'Apache 2.0 · 100% Kostenlos' : 'Apache 2.0 · 100% Free'}</strong></td>
+            <td>✅ {isDe ? 'MIT · Kostenlos' : 'MIT · Free'}</td>
+            <td>💰 {isDe ? 'Pro kostet 3.300 $/Jahr' : 'Pro costs $3,300/yr'}</td>
             <td>✅ Apache 2.0</td>
             <td>✅ MIT</td>
           </tr>
@@ -760,7 +760,8 @@ plugins:
       <div class="sr-step-box">
         <div class="sr-step-num">3</div>
         <h3>{isDe ? 'Prüfen & Releasen' : 'Verify & Ship'}</h3>
-        <pre><code># 1. Pre-flight check (Config, Plugins, Tokens)
+        <pre><code>{isDe
+          ? `# 1. Pre-flight check (Config, Plugins, Tokens)
 semrel doctor
 
 # 2. Commit messages validieren
@@ -770,7 +771,18 @@ semrel commitlint --commit-msg-file .git/COMMIT_EDITMSG
 semrel release --dry-run
 
 # 4. Produktives Release (oder Monorepo: semrel workspace release)
-semrel release --github-output</code></pre>
+semrel release --github-output`
+          : `# 1. Pre-flight check (config, plugins, tokens)
+semrel doctor
+
+# 2. Validate commit messages
+semrel commitlint --commit-msg-file .git/COMMIT_EDITMSG
+
+# 3. Preview without side effects
+semrel release --dry-run
+
+# 4. Ship production release (or monorepo: semrel workspace release)
+semrel release --github-output`}</code></pre>
       </div>
     </div>
   </section>
@@ -989,8 +1001,9 @@ semrel release --github-output</code></pre>
     const text = btn.getAttribute('data-copy');
     if (!text || !navigator.clipboard) return;
     const original = btn.textContent;
+    const copiedLabel = btn.closest('.sr-landing')?.getAttribute('data-copied-label') || '✓ Copied!';
     navigator.clipboard.writeText(text).then(() => {
-      btn.textContent = '✓ Copied!';
+      btn.textContent = copiedLabel;
       btn.classList.add('is-copied');
       setTimeout(() => {
         btn.textContent = original;
