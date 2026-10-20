@@ -62,6 +62,9 @@ Diese Umgebungsvariablen stehen Plugin-Prozessen während der Ausführung zur Ve
 | `SEMREL_TAG_PREFIX` | Konfiguriertes Tag-Präfix |
 | `SEMREL_CHANGELOG` | Erzeugter Changelog-Inhalt |
 | `SEMREL_DRY_RUN` | Ob der aktuelle Lauf ein Dry-Run ist |
+| `SEMREL_COMMITS` | JSON-Array der rohen Commit-Nachrichten im aktuellen Release-Fenster |
+| `SEMREL_COMMIT_HASHES` | JSON-Array der vollständigen Commit-SHAs in derselben Reihenfolge wie `SEMREL_COMMITS` |
+| `SEMREL_CONTRIBUTORS` | JSON-Array mit Contributor-Metadaten (`name`, `email`, `commits`, `firstContribution`) für das Release-Fenster |
 
 ## Plugin-Typen
 

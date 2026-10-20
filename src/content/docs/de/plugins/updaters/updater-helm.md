@@ -31,6 +31,10 @@ plugins:
 | Name | Erforderlich | Standard | Beschreibung |
 | --- | --- | --- | --- |
 | `SEMREL_PLUGIN_FILE` | nein | `Chart.yaml` | Helm-Chart-Datei, die aktualisiert werden soll. |
+| `SEMREL_PLUGIN_UPDATE_APP_VERSION` | nein | `false` | Wenn `true`, wird zusätzlich das Feld `appVersion` aktualisiert. |
+| `SEMREL_PLUGIN_APP_VERSION_ONLY` | nein | `false` | Wenn `true`, wird nur `appVersion` aktualisiert und `version` unverändert gelassen. |
+| `SEMREL_PLUGIN_APP_VERSION` | nein | Release-Version | Expliziter Wert für `appVersion`. |
+| `SEMREL_PLUGIN_APP_VERSION_PREFIX` | nein | `""` | Optionales Präfix für `appVersion` (z. B. `"v"`). |
 
 ## Release-Kontextvariablen
 

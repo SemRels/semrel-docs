@@ -31,6 +31,7 @@ plugins:
 | Name | Erforderlich | Standard | Beschreibung |
 | --- | --- | --- | --- |
 | `SEMREL_PLUGIN_FILE` | nein | `package.json` | Paketmanifest, das aktualisiert werden soll. |
+| `SEMREL_PLUGIN_UPDATE_LOCKFILE` | nein | `false` | Wenn `true`, wird zusätzlich `package-lock.json` über `npm install --package-lock-only` synchronisiert. |
 
 ## Release-Kontextvariablen
 

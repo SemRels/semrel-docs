@@ -15,10 +15,13 @@ Für die Migration von Updater-only-Flows auf Packager/Publisher-Pipelines nutze
 
 | Plugin | Kategorie | Beschreibung |
 | --- | --- | --- |
+| [`condition-bitbucket-pipelines`](/de/plugins/conditions/condition-bitbucket-pipelines/) | Condition | Bestätigt, dass das aktuelle Release innerhalb von Bitbucket Pipelines läuft. |
+| [`condition-circleci`](/de/plugins/conditions/condition-circleci/) | Condition | Bestätigt, dass das aktuelle Release innerhalb von CircleCI läuft. |
 | [`condition-generic`](/de/plugins/conditions/condition-generic/) | Condition | Führt einen Shell-Befehl aus und besteht nur, wenn dieser Befehl mit Status 0 endet. |
 | [`condition-gitea-actions`](/de/plugins/conditions/condition-gitea-actions/) | Condition | Bestätigt, dass die aktuelle Release innerhalb von Gitea Actions läuft. |
-| [`condition-github-actions`](/de/plugins/conditions/condition-github-actions/) | Condition | Bestätigt, dass die aktuelle Release innerhalb von GitHub Actions läuft. |
+| [`condition-github-actions`](/de/plugins/conditions/condition-github-actions/) | Condition | Bestätigt, dass das aktuelle Release in GitHub Actions läuft (inkl. GHES & Data Residency). |
 | [`condition-gitlab-ci`](/de/plugins/conditions/condition-gitlab-ci/) | Condition | Bestätigt, dass die aktuelle Release innerhalb von GitLab CI läuft. |
+| [`hook-discord`](/de/plugins/hooks/hook-discord/) | Hook | Veröffentlicht Release-Embeds inklusive Contributor-Ehrungen über einen Discord-Webhook. |
 | [`hook-email`](/de/plugins/hooks/hook-email/) | Hook | Sendet nach einem semrel-Lauf Release-Benachrichtigungen per SMTP. |
 | [`hook-exec`](/de/plugins/hooks/hook-exec/) | Hook | Führt benutzerdefinierte Shell-Befehle in jeder semrel-Plugin-Phase aus. |
 | [`hook-gitplugin`](/de/plugins/hooks/hook-gitplugin/) | Hook | Überträgt Release-bezogene Änderungen in ein anderes Git-Repository oder eine andere Branch. |
@@ -32,23 +35,29 @@ Für die Migration von Updater-only-Flows auf Packager/Publisher-Pipelines nutze
 | [`generator-changelog-md`](/de/plugins/generators/generator-changelog-md/) | Generator | Erzeugt einen Markdown-Changelog für die anstehende Release. |
 | [`generator-release-notes`](/de/plugins/generators/generator-release-notes/) | Generator | Erstellt kompakte Release Notes aus dem aktuellen Release-Kontext und der Commit-Historie. |
 | [`updater-cargo`](/de/plugins/updaters/updater-cargo/) | Updater | Aktualisiert das Versionsfeld in einem Rust-Cargo-Manifest. |
+| [`updater-composer`](/de/plugins/updaters/updater-composer/) | Updater | Aktualisiert das Versionsfeld in einer PHP-`composer.json`-Datei (Opt-in). |
 | [`updater-docker`](/de/plugins/updaters/updater-docker/) | Updater | Aktualisiert ein Versionsargument in einer Dockerfile. |
 | [`updater-go`](/de/plugins/updaters/updater-go/) | Updater | Aktualisiert eine Go-Quelldatei, die die Projektversion bereitstellt. |
 | [`updater-gradle`](/de/plugins/updaters/updater-gradle/) | Updater | Aktualisiert den Versionsschlüssel in einer Gradle-Properties-Datei. |
 | [`updater-helm`](/de/plugins/updaters/updater-helm/) | Updater | Aktualisiert Chart-Metadaten in einer Helm-`Chart.yaml`-Datei. |
 | [`updater-homebrew`](/de/plugins/updaters/updater-homebrew/) | Updater | Aktualisiert eine Homebrew-Formula mit der neuen Release-URL und Prüfsumme. |
 | [`updater-maven`](/de/plugins/updaters/updater-maven/) | Updater | Aktualisiert die in einer Maven-`pom.xml`-Datei deklarierte Version. |
-| [`updater-npm`](/de/plugins/updaters/updater-npm/) | Updater | Aktualisiert das Versionsfeld in einer `package.json`-Datei. |
+| [`updater-npm`](/de/plugins/updaters/updater-npm/) | Updater | Aktualisiert das Versionsfeld in `package.json` (und optional `package-lock.json`). |
 | [`updater-nuget`](/de/plugins/updaters/updater-nuget/) | Updater | Aktualisiert die Versionseigenschaft in einer `.csproj`- oder anderen NuGet-Projektdatei. |
+| [`updater-pubspec`](/de/plugins/updaters/updater-pubspec/) | Updater | Aktualisiert das Versionsfeld in `pubspec.yaml` für Dart- und Flutter-Projekte. |
 | [`updater-python`](/de/plugins/updaters/updater-python/) | Updater | Aktualisiert Python-Paketversionsmetadaten in `pyproject.toml` oder einer ähnlichen Backend-Datei. |
 | [`updater-replace`](/de/plugins/updaters/updater-replace/) | Updater | Ersetzt reguläre Ausdrücke oder wörtlichen Text in beliebigen Projektdateien. |
 | [`updater-terraform`](/de/plugins/updaters/updater-terraform/) | Updater | Aktualisiert eine Terraform-Variable, die die Anwendungsversion speichert. |
+| [`updater-zig`](/de/plugins/updaters/updater-zig/) | Updater | Aktualisiert das oberste `.version`-Feld in einem Zig-`build.zig.zon`-Manifest. |
 | [`packager-nfpm`](/de/plugins/packagers/packager-nfpm/) | Packager | Baut Linux-Pakete (`deb`, `rpm`, `apk`) mit nFPM. |
+| [`publisher-crates`](/de/plugins/publishers/publisher-crates/) | Publisher | Veröffentlicht Rust-Crates auf crates.io mit `cargo publish`. |
 | [`publisher-docker`](/de/plugins/publishers/publisher-docker/) | Publisher | Pusht ein vorhandenes lokales Docker-Image und meldet dessen unveränderlichen Digest. |
 | [`publisher-generic-http`](/de/plugins/publishers/publisher-generic-http/) | Publisher | Lädt Release-Artefakte zu generischen HTTP-Endpunkten hoch. |
+| [`publisher-npm`](/de/plugins/publishers/publisher-npm/) | Publisher | Veröffentlicht Pakete in der npm-Registry mit automatischer npm/pnpm/yarn-Erkennung und Provenance. |
 | [`publisher-oci`](/de/plugins/publishers/publisher-oci/) | Publisher | Veröffentlicht Release-Artefakte in OCI-Registries. |
-| [`provider-bitbucket`](/de/plugins/providers/provider-bitbucket/) | Provider | Veröffentlicht Release-Informationen aus dem semrel-Release-Kontext in Bitbucket. |
+| [`publisher-pypi`](/de/plugins/publishers/publisher-pypi/) | Publisher | Baut und veröffentlicht Python-Distributionen auf PyPI oder TestPyPI mittels `build` und `twine`. |
+| [`provider-bitbucket`](/de/plugins/providers/provider-bitbucket/) | Provider | Veröffentlicht Release-Informationen in Bitbucket und kommentiert enthaltene PRs. |
 | [`provider-git`](/de/plugins/providers/provider-git/) | Provider | Erstellt Git-Tags und überträgt optional Branch-Updates über das lokale Git-Remote. |
-| [`provider-gitea`](/de/plugins/providers/provider-gitea/) | Provider | Veröffentlicht Releases in einer Gitea-Instanz. |
-| [`provider-github`](/de/plugins/providers/provider-github/) | Provider | Veröffentlicht Releases in GitHub mit dem erzeugten semrel-Tag, der Version und dem Changelog. |
-| [`provider-gitlab`](/de/plugins/providers/provider-gitlab/) | Provider | Veröffentlicht Releases in GitLab. |
+| [`provider-gitea`](/de/plugins/providers/provider-gitea/) | Provider | Veröffentlicht Releases in einer Gitea-Instanz und kommentiert enthaltene PRs. |
+| [`provider-github`](/de/plugins/providers/provider-github/) | Provider | Veröffentlicht Releases auf GitHub (und GHES) und kommentiert enthaltene PRs. |
+| [`provider-gitlab`](/de/plugins/providers/provider-gitlab/) | Provider | Veröffentlicht Releases in GitLab und kommentiert enthaltene Merge Requests. |
