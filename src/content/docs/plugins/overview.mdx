@@ -65,6 +65,8 @@ These environment variables are available to plugin processes during execution.
 | `SEMREL_COMMITS` | JSON array of raw commit messages in the current release window |
 | `SEMREL_COMMIT_HASHES` | JSON array of full commit SHAs in the same order as `SEMREL_COMMITS` |
 | `SEMREL_CONTRIBUTORS` | JSON array of contributor metadata (`name`, `email`, `commits`, `firstContribution`) for the release window |
+| `SEMREL_PACKAGE_NAME` | Workspace package name (e.g. `packages/api`); set when running via `semrel workspace` |
+| `SEMREL_PACKAGE_PATH` | Absolute package root directory; set when running via `semrel workspace` |
 
 ## Plugin types
 

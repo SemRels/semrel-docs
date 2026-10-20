@@ -65,6 +65,8 @@ Diese Umgebungsvariablen stehen Plugin-Prozessen während der Ausführung zur Ve
 | `SEMREL_COMMITS` | JSON-Array der rohen Commit-Nachrichten im aktuellen Release-Fenster |
 | `SEMREL_COMMIT_HASHES` | JSON-Array der vollständigen Commit-SHAs in derselben Reihenfolge wie `SEMREL_COMMITS` |
 | `SEMREL_CONTRIBUTORS` | JSON-Array mit Contributor-Metadaten (`name`, `email`, `commits`, `firstContribution`) für das Release-Fenster |
+| `SEMREL_PACKAGE_NAME` | Workspace-Paketname (z. B. `packages/api`); gesetzt bei Ausführung über `semrel workspace` |
+| `SEMREL_PACKAGE_PATH` | Absolutes Wurzelverzeichnis des Pakets; gesetzt bei Ausführung über `semrel workspace` |
 
 ## Plugin-Typen
 

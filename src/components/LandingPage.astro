@@ -10,8 +10,8 @@ const prefix = isDe ? '/de' : '';
 
 const shareUrl = isDe ? 'https://semrel.io/de/' : 'https://semrel.io/';
 const shareText = isDe
-  ? 'semrel v0.27.0 — Die zero-dependency, Go-native Alternative zu semantic-release. 46 Plugins, .semrel.lock, Air-Gap & Cosign v3! 🚀'
-  : 'semrel v0.27.0 — The zero-dependency, Go-native alternative to semantic-release. 46 plugins, .semrel.lock, Air-Gap & Cosign v3! 🚀';
+  ? 'semrel v0.28.2 — Die zero-dependency, Go-native Alternative zu semantic-release. 46 Plugins, .semrel.lock, Air-Gap & Cosign v3! 🚀'
+  : 'semrel v0.28.2 — The zero-dependency, Go-native alternative to semantic-release. 46 plugins, .semrel.lock, Air-Gap & Cosign v3! 🚀';
 
 const badgeMarkdown = '[![Released with semrel](https://img.shields.io/badge/released%20with-semrel.io-6366f1?style=flat-square&logo=go&logoColor=white)](https://semrel.io)';
 const badgeHtml = '<a href="https://semrel.io"><img src="https://img.shields.io/badge/released%20with-semrel.io-6366f1?style=flat-square&logo=go&logoColor=white" alt="Released with semrel" /></a>';
@@ -229,15 +229,15 @@ const roadmap = [
       : 'Scope-based bump rules, SEMREL_CONTRIBUTORS for MVP shoutouts, AI co-author disclosure badges, and registry download analytics.',
   },
   {
-    ver: 'v0.26 – v0.27',
+    ver: 'v0.26 – v0.28.2',
     status: 'shipped',
-    title: isDe ? 'Cosign v3, GHES, PR-Comments & 46 Official Plugins' : 'Cosign v3, GHES, PR Comments & 46 Official Plugins',
+    title: isDe ? 'Cosign v3, GHES, Workspace-Scopes & 46 Official Plugins' : 'Cosign v3, GHES, Workspace Scopes & 46 Official Plugins',
     desc: isDe
-      ? 'Sigstore Cosign v3 (--bundle), Env-Var-Interpolation, automatische PR/MR-Release-Kommentare, GitHub Enterprise Server Support und 46 offizielle Plugins (inkl. Zig, Pubspec, Composer, Crates, PyPI, npm, Discord, Exec, Replace).'
-      : 'Sigstore Cosign v3 (--bundle), env-var interpolation, automatic PR/MR release comments, GitHub Enterprise Server support, and 46 official plugins (including Zig, Pubspec, Composer, Crates, PyPI, npm, Discord, Exec, Replace).',
+      ? 'Sigstore Cosign v3 (--bundle), Env-Var-Interpolation, Monorepo sharedPaths/ignorePaths & paket-gescopte Commits, automatische .gitignore-Generierung, PR/MR-Release-Kommentare, GHES-Support und 46 offizielle Plugins.'
+      : 'Sigstore Cosign v3 (--bundle), env-var interpolation, monorepo sharedPaths/ignorePaths & package-scoped commits, automatic .gitignore generation, PR/MR release comments, GHES support, and 46 official plugins.',
   },
   {
-    ver: 'v0.28+',
+    ver: 'v0.29+',
     status: 'active',
     title: isDe ? 'Ecosystem & Enterprise Adopter Expansion' : 'Ecosystem & Enterprise Adopter Expansion',
     desc: isDe
@@ -264,7 +264,7 @@ const roadmap = [
     <div class="sr-pill-row">
       <span class="sr-pill sr-pill-accent">
         <span class="sr-dot"></span>
-        v0.27.0 · {isDe ? '46 Offizielle Plugins' : '46 Official Plugins'}
+        v0.28.2 · {isDe ? '46 Offizielle Plugins' : '46 Official Plugins'}
       </span>
       <span class="sr-pill">Go-Native · Zero Node.js</span>
       <span class="sr-pill">Cosign v3 · SBOM · SLSA L1</span>
@@ -441,7 +441,7 @@ const roadmap = [
         <thead>
           <tr>
             <th>{isDe ? 'Fähigkeit / Kriterium' : 'Capability / Criterion'}</th>
-            <th class="sr-col-highlight">🚀 semrel <span class="sr-th-ver">v0.27.0</span></th>
+            <th class="sr-col-highlight">🚀 semrel <span class="sr-th-ver">v0.28.2</span></th>
             <th>semantic-release <span class="sr-th-ver">v24.x</span></th>
             <th>GoReleaser <span class="sr-th-ver">v2.x OSS/Pro</span></th>
             <th>release-please <span class="sr-th-ver">v17.x</span></th>
@@ -551,8 +551,8 @@ const roadmap = [
 
     <p class="sr-comp-disclaimer">
       {isDe
-        ? 'ℹ️ Stand des Funktions- und Preisvergleichs: Oktober 2026 (semrel v0.27.0, semantic-release v24.x, GoReleaser v2.x OSS/Pro, release-please v17.x, release-it v17.x, @changesets/cli v2.x) auf Basis der öffentlich dokumentierten Standardfunktionen der jeweiligen Projekte. Sollte sich bei einem der verglichenen Projekte seither etwas geändert haben, freuen wir uns über einen Hinweis oder Pull Request.'
-        : 'ℹ️ Comparison snapshot as of October 2026 (semrel v0.27.0, semantic-release v24.x, GoReleaser v2.x OSS/Pro, release-please v17.x, release-it v17.x, @changesets/cli v2.x) based on each project’s publicly documented default capabilities. If any compared tool has added features since this date, please open an issue or PR so we can update this table.'}
+        ? 'ℹ️ Stand des Funktions- und Preisvergleichs: Oktober 2026 (semrel v0.28.2, semantic-release v24.x, GoReleaser v2.x OSS/Pro, release-please v17.x, release-it v17.x, @changesets/cli v2.x) auf Basis der öffentlich dokumentierten Standardfunktionen der jeweiligen Projekte. Sollte sich bei einem der verglichenen Projekte seither etwas geändert haben, freuen wir uns über einen Hinweis oder Pull Request.'
+        : 'ℹ️ Comparison snapshot as of October 2026 (semrel v0.28.2, semantic-release v24.x, GoReleaser v2.x OSS/Pro, release-please v17.x, release-it v17.x, @changesets/cli v2.x) based on each project’s publicly documented default capabilities. If any compared tool has added features since this date, please open an issue or PR so we can update this table.'}
     </p>
 
     <div class="sr-section-cta">
