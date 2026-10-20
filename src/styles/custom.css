@@ -946,6 +946,33 @@ article.card div.body {
   color: var(--sl-color-white);
 }
 
+.sr-th-ver {
+  display: inline-block;
+  margin-left: 0.3rem;
+  padding: 0.1rem 0.42rem;
+  border-radius: 5px;
+  font-family: var(--sl-font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--sl-color-gray-3);
+}
+
+:root[data-theme='light'] .sr-th-ver {
+  background: rgba(15, 23, 42, 0.07);
+}
+
+.sr-comp-disclaimer {
+  font-size: 0.8rem !important;
+  line-height: 1.55 !important;
+  color: var(--sl-color-gray-3) !important;
+  margin: -0.75rem 0 0 0 !important;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--sl-color-border);
+  background: rgba(120, 120, 120, 0.04);
+}
+
 .sr-section-cta {
   display: flex;
   flex-wrap: wrap;
