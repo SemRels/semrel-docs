@@ -1,9 +1,14 @@
-# semrel.io – robots.txt
+# www.semrel.io – robots.txt
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://semrel.io/sitemap-index.xml
+# Sitemap (canonical HTTPS www host)
+Sitemap: https://www.semrel.io/sitemap-index.xml
+
+# AI & LLM discovery (https://llmstxt.org)
+# llms.txt: https://www.semrel.io/llms.txt
+# llms-full.txt: https://www.semrel.io/llms-full.txt
 
 # Block common bot traps
 Disallow: /cdn-cgi/
+

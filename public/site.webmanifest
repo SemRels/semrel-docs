@@ -1,10 +1,10 @@
 {
-  "name": "semrel – Semantic Release Automation",
+  "name": "semrel — Semantic Release Automation Without Node.js",
   "short_name": "semrel",
-  "description": "Automated semantic versioning and release management for Go projects.",
+  "description": "Zero-dependency, Go-native semantic release automation and SemVer tool with 46 official plugins — the open-source alternative to semantic-release, GoReleaser, and release-please.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f0f13",
+  "background_color": "#030712",
   "theme_color": "#7c3aed",
   "lang": "en",
   "icons": [
