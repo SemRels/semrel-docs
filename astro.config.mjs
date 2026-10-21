@@ -215,6 +215,7 @@ export default defineConfig({
               'https://github.com/SemRels/semrel',
               'https://github.com/SemRels',
               'https://registry.semrel.io',
+              'https://discord.gg/w8zTm2r3jg',
             ],
           }),
         },
@@ -233,6 +234,7 @@ export default defineConfig({
               'https://github.com/SemRels',
               'https://github.com/SemRels/semrel',
               'https://registry.semrel.io',
+              'https://discord.gg/w8zTm2r3jg',
             ],
           }),
         },
@@ -256,6 +258,7 @@ export default defineConfig({
         baseUrl: 'https://github.com/SemRels/semrel-docs/edit/main/',
       },
       social: [
+        { icon: 'discord', label: 'Discord', href: 'https://discord.gg/w8zTm2r3jg' },
         { icon: 'github', label: 'GitHub', href: 'https://github.com/SemRels/semrel' },
         { icon: 'external', label: 'Registry', href: 'https://registry.semrel.io' },
       ],
