@@ -269,8 +269,8 @@ const roadmap = [
       <span class="sr-pill">Go-Native · Zero Node.js</span>
       <span class="sr-pill">Cosign v3 · SBOM · SLSA L1</span>
       <span class="sr-pill">Apache 2.0 · 100% Free</span>
-      <a href="#community" class="sr-pill sr-pill-cta">
-        {isDe ? '🤝 Contributors gesucht →' : '🤝 Open for Contributors →'}
+      <a href="https://discord.gg/w8zTm2r3jg" target="_blank" rel="noopener" class="sr-pill sr-pill-cta">
+        {isDe ? '💬 Discord Community (Release Ping) →' : '💬 Join Discord (Release Ping) →'}
       </a>
     </div>
 
@@ -342,11 +342,11 @@ const roadmap = [
           <a href="https://github.com/SemRels/semrel" target="_blank" rel="noopener" class="sr-btn sr-btn-github">
             ⭐ {isDe ? 'Star auf GitHub' : 'Star on GitHub'}
           </a>
-          <a href={`${prefix}/plugins/`} class="sr-btn sr-btn-secondary">
-            🧩 {isDe ? 'Alle 46 Plugins' : 'Explore 46 Plugins'}
+          <a href="https://discord.gg/w8zTm2r3jg" target="_blank" rel="noopener" class="sr-btn sr-btn-secondary">
+            💬 {isDe ? 'Discord beitreten' : 'Join Discord'}
           </a>
-          <a href="#share-semrel" class="sr-btn sr-btn-ghost">
-            📣 {isDe ? 'Weiterempfehlen' : 'Spread the Word'}
+          <a href={`${prefix}/plugins/`} class="sr-btn sr-btn-ghost">
+            🧩 {isDe ? 'Alle 46 Plugins' : 'Explore 46 Plugins'}
           </a>
         </div>
       </div>
@@ -865,15 +865,15 @@ semrel release --github-output`}</code></pre>
       </div>
 
       <div class="sr-contrib-card">
-        <div class="sr-contrib-icon">🏢</div>
-        <h3>{isDe ? 'Adopter werden & Case Study teilen' : 'Become an Adopter & Showcase'}</h3>
+        <div class="sr-contrib-icon">💬</div>
+        <h3>{isDe ? 'Discord Community & Release Ping' : 'Discord Community & Release Ping'}</h3>
         <p>
           {isDe
-            ? 'Ihr nutzt semrel in Produktion oder habt von semantic-release migriert? Teilt eure Erfahrung in den GitHub Discussions und werdet als Adopter gelistet!'
-            : 'Running semrel in production or migrated from semantic-release? Share your setup in GitHub Discussions and get featured as an official adopter!'}
+            ? 'Tritt unserem offiziellen Discord-Server bei! Erhalte direkte Hilfe von den Maintainern, tausche dich mit Adoptern aus und abonniere den automatischen Release Ping.'
+            : 'Join our official Discord server! Get direct support from the maintainers, connect with adopters, and receive automatic Release Ping notifications.'}
         </p>
-        <a href="https://github.com/orgs/SemRels/discussions" target="_blank" rel="noopener" class="sr-card-link">
-          {isDe ? 'Zu den GitHub Discussions →' : 'Join GitHub Discussions →'}
+        <a href="https://discord.gg/w8zTm2r3jg" target="_blank" rel="noopener" class="sr-card-link">
+          {isDe ? 'Discord-Server beitreten →' : 'Join Discord Server →'}
         </a>
       </div>
 
@@ -882,8 +882,8 @@ semrel release --github-output`}</code></pre>
         <h3>{isDe ? 'Docs, Blueprints & CI-Templates' : 'Docs, Blueprints & CI Templates'}</h3>
         <p>
           {isDe
-            ? 'Hilf uns mit neuen CI/CD-Kochrezepten, Migrationsleitfäden, Übersetzungen oder Video-Tutorials, noch mehr Entwicklerteams zu erreichen.'
-            : 'Help us reach more engineering teams with CI/CD recipes, migration guides, translations, or blog posts.'}
+            ? 'Hilf uns mit neuen CI/CD-Kochrezepten, Migrationsleitfäden, Übersetzungen oder teile dein Produktions-Setup in den GitHub Discussions.'
+            : 'Help us reach more engineering teams with CI/CD recipes, migration guides, translations, or share your setup in GitHub Discussions.'}
         </p>
         <a href="https://github.com/SemRels/semrel-docs" target="_blank" rel="noopener" class="sr-card-link">
           {isDe ? 'Im Docs-Repo mitwirken →' : 'Contribute to Docs Repo →'}
@@ -902,8 +902,8 @@ semrel release --github-output`}</code></pre>
         </h3>
         <p>
           {isDe
-            ? 'Open Source lebt von Sichtbarkeit. Ein GitHub-Star, ein kurzer Post auf LinkedIn/X oder das offizielle „Released with semrel.io"-Badge in deiner README.md hilft anderen Teams enorm, von langsamen Legacy-Tools wegzukommen.'
-            : 'Open source thrives on visibility. Giving a GitHub Star, sharing on LinkedIn/X, or adding the official "Released with semrel.io" badge to your README.md helps other teams escape slow legacy release tools.'}
+            ? 'Open Source lebt von Sichtbarkeit. Ein GitHub-Star, unser Discord-Server, ein kurzer Post auf LinkedIn/X oder das offizielle „Released with semrel.io"-Badge in deiner README.md hilft anderen Teams enorm, von langsamen Legacy-Tools wegzukommen.'
+            : 'Open source thrives on visibility. Giving a GitHub Star, joining our Discord, sharing on LinkedIn/X, or adding the official "Released with semrel.io" badge to your README.md helps other teams escape slow legacy release tools.'}
         </p>
 
         <div class="sr-share-buttons">
@@ -914,6 +914,14 @@ semrel release --github-output`}</code></pre>
             class="sr-share-btn sr-share-gh"
           >
             ⭐ {isDe ? 'Auf GitHub sternen' : 'Star SemRels/semrel'}
+          </a>
+          <a
+            href="https://discord.gg/w8zTm2r3jg"
+            target="_blank"
+            rel="noopener"
+            class="sr-share-btn"
+          >
+            💬 {isDe ? 'Discord (Release Ping)' : 'Join Discord'}
           </a>
           <a
             href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}

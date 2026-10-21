@@ -101,6 +101,7 @@
 
 - [GitHub Organisation](https://github.com/SemRels): All open-source repositories.
 - [Core Repository](https://github.com/SemRels/semrel): `semrel` CLI & engine source code.
+- [Discord Community](https://discord.gg/w8zTm2r3jg): Official Discord server with automatic Release Ping notifications, support, and plugin discussions.
 - [Plugin Registry UI](https://registry.semrel.io): Browse and install community plugins.
 - [Registry API](https://registry.semrel.io/api/v1/plugins): Machine-readable plugin list (JSON).
 
