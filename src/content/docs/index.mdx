@@ -1,9 +1,10 @@
 ---
-title: semrel
-description: semrel is a zero-dependency, Go-native semantic release automation tool — the open-source alternative to semantic-release without the Node.js overhead. Single binary, Conventional Commits, monorepo-ready, air-gap safe.
+title: semrel — Semantic Release Automation Without Node.js (Alternative to semantic-release)
+description: semrel is the open-source, zero-dependency semantic release automation tool written in Go — the fast, supply-chain secure alternative to semantic-release, GoReleaser, and release-please. Single binary, Conventional Commits, SemVer, 46 plugins, monorepo-ready, air-gap safe.
 template: splash
 hero:
-  tagline: Zero Node.js. Zero runtime overhead. One binary that reads your commits, bumps SemVer, and ships the release — automatically.
+  title: Semantic Release Automation Without Node.js
+  tagline: Zero Node.js. Zero runtime overhead. One static Go binary (~12 MB) that parses Conventional Commits, computes SemVer, generates changelogs, and ships supply-chain secure releases across 15+ ecosystems — automatically.
   actions:
     - text: Get Started
       link: /getting-started/introduction/
@@ -27,7 +28,7 @@ head:
             "name": "What is semrel?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "semrel is an open-source, plugin-based semantic release automation tool for Go. It reads Conventional Commits, determines the correct SemVer bump, generates a changelog, and publishes the release — automatically. It ships as a single static binary with zero runtime dependencies."
+              "text": "semrel is an open-source, plugin-based semantic release automation tool written in Go. It reads Conventional Commits, determines the correct Semantic Versioning (SemVer) bump, generates a changelog, updates version manifests across 15+ ecosystems, and publishes releases — automatically. It ships as a single static binary (~12 MB) with zero runtime dependencies."
             }
           },
           {
@@ -35,23 +36,23 @@ head:
             "name": "Does semrel require Node.js?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. semrel is a single static Go binary with zero Node.js dependency. There is no npm install, no node_modules, no V8 startup time. It works in Alpine Linux containers, air-gapped pipelines, and minimal CI runners without any runtime setup."
+              "text": "No. semrel is a single static Go binary with zero Node.js dependency. There is no npm install, no node_modules, and no V8 startup overhead. It runs natively in Alpine Linux containers, air-gapped CI/CD pipelines, and minimal runners for Go, Rust, Python, Java, .NET, TypeScript, Docker, and Kubernetes projects."
             }
           },
           {
             "@type": "Question",
-            "name": "Is semrel a semantic-release alternative?",
+            "name": "Is semrel a drop-in semantic-release alternative?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. semrel is the Go-native, zero-dependency alternative to semantic-release. It implements the same Conventional Commits-driven SemVer automation without requiring Node.js. It is significantly faster in large repositories (semantic-release can take 35+ minutes on repos with 460+ tags), eliminates the npm supply-chain attack surface, and is fully compatible with air-gapped CI environments."
+              "text": "Yes. semrel is the Go-native, zero-dependency alternative to Node.js semantic-release. It implements the same Conventional Commits-driven SemVer automation, changelog generation, and multi-registry publishing without requiring Node.js. It runs in seconds instead of minutes on large repositories, eliminates the 400+ transitive npm supply-chain attack surface, and works offline in air-gapped CI environments."
             }
           },
           {
             "@type": "Question",
-            "name": "How does semrel compare to goreleaser?",
+            "name": "How does semrel compare to GoReleaser and release-please?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "goreleaser is primarily a Go binary packaging and distribution tool — it compiles binaries, creates .deb/.rpm packages, and uploads release assets. semrel is a semantic versioning and changelog automation tool that calculates the next SemVer version from Conventional Commits and orchestrates the full release pipeline. They serve different purposes and can be used together: semrel to determine the version, goreleaser to build and distribute the artifacts."
+              "text": "GoReleaser OSS requires manual git tags and charges $3,300/yr for GoReleaser Pro features, whereas semrel automatically computes the next SemVer version from Conventional Commits and includes monorepo workspaces, Linux packaging (.deb/.rpm/.apk via packager-nfpm), and enterprise GHES support 100% free under Apache 2.0. Compared to release-please, semrel requires no intermediate Release PRs and supports 46 standalone plugins in any language."
             }
           },
           {
@@ -59,7 +60,7 @@ head:
             "name": "Does semrel work in air-gapped or restricted CI environments?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. semrel is designed for air-gapped use. Install plugins once with semrel plugin install and commit the .semrel/plugins/ directory to your cache. From that point on, CI requires zero outbound network access during release execution. This makes semrel fully compatible with enterprise pipelines under NIS2, DORA, and other compliance mandates."
+              "text": "Yes. semrel is purpose-built for air-gapped CI/CD. Pin plugins with SHA-256 checksums in .semrel.lock and run semrel plugin restore from cache or a private mirror. Release execution requires zero outbound internet access, satisfying strict NIS2, DORA, and enterprise compliance mandates."
             }
           },
           {
@@ -67,23 +68,23 @@ head:
             "name": "Is semrel supply-chain secure?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. Every official semrel release is signed with Sigstore Cosign, includes a CycloneDX and SPDX SBOM, and carries SLSA Level 1 provenance attestation. Unlike semantic-release, which depends on hundreds of transitive npm packages with broad supply-chain exposure, semrel is a single statically compiled binary with zero runtime dependencies."
+              "text": "Yes. Every official semrel binary and plugin is signed with Sigstore Cosign v3, ships with CycloneDX and SPDX SBOMs, and includes SLSA Level 1 build provenance attestations. Because semrel is a compiled static binary with zero runtime dependencies, it eliminates npm post-install script attacks."
             }
           },
           {
             "@type": "Question",
-            "name": "Does semrel support monorepos?",
+            "name": "Does semrel support monorepos and multi-language repositories?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. semrel can version multiple independent modules inside one repository, each with its own .semrel.yaml config and tag series. Use per-package matrix CI jobs or the semrel workspace command for single-step monorepo releases with automatic dependency ordering."
+              "text": "Yes. semrel supports both independent per-package versioning and lockstep monorepo workspaces via semrel workspace release, complete with topological dependency ordering, sharedPaths/ignorePaths filtering, and 15 official manifest updaters (Go, npm, Cargo/Rust, Python/PyPI, Maven, Gradle, NuGet/.NET, Composer/PHP, Dart/Flutter, Zig, Docker, Helm, Terraform, Homebrew, and regex replace)."
             }
           },
           {
             "@type": "Question",
-            "name": "Is semrel free?",
+            "name": "Is semrel free and open source?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Yes. semrel is open-source under the Apache 2.0 license. There is no Pro tier, no pay-wall for monorepo or enterprise features, and no usage limits. See https://github.com/SemRels/semrel."
+              "text": "Yes. semrel and all 46 official plugins are 100% free and open source under the Apache 2.0 license. There is no Pro tier, no paywall for monorepos or GitHub Enterprise Server (GHES), and no usage limits. Source code is available at https://github.com/SemRels/semrel."
             }
           }
         ]
@@ -95,16 +96,10 @@ head:
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "semrel",
-        "url": "https://semrel.io",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": {
-            "@type": "EntryPoint",
-            "urlTemplate": "https://semrel.io/search?q={search_term_string}"
-          },
-          "query-input": "required name=search_term_string"
-        }
+        "name": "semrel — Semantic Release Automation",
+        "alternateName": ["semrel", "semrel.io", "SemRel"],
+        "url": "https://www.semrel.io/",
+        "inLanguage": "en-US"
       }
 ---
 

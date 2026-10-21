@@ -28,7 +28,7 @@ function newBadge(addedAt) {
 }
 
 export default defineConfig({
-  site: 'https://semrel.io',
+  site: 'https://www.semrel.io',
 
   // Instant link prefetching — every visible link is preloaded on hover/intersection
   prefetch: {
@@ -123,7 +123,11 @@ export default defineConfig({
         },
         {
           tag: 'meta',
-          attrs: { property: 'og:image', content: 'https://semrel.io/semrel.jpg' },
+          attrs: { property: 'og:image', content: 'https://www.semrel.io/semrel.jpg' },
+        },
+        {
+          tag: 'meta',
+          attrs: { property: 'og:image:alt', content: 'semrel — Semantic Release Automation Without Node.js' },
         },
         {
           tag: 'meta',
@@ -144,7 +148,7 @@ export default defineConfig({
         },
         {
           tag: 'meta',
-          attrs: { name: 'twitter:image', content: 'https://semrel.io/semrel.jpg' },
+          attrs: { name: 'twitter:image', content: 'https://www.semrel.io/semrel.jpg' },
         },
         // Global keywords
         {
@@ -152,7 +156,7 @@ export default defineConfig({
           attrs: {
             name: 'keywords',
             content:
-              'semantic release alternative, zero dependency semantic release, go semver automation, semantic versioning, semver, release automation, go release automation, conventional commits, changelog generator, monorepo release, ci cd release automation, automated github releases, air gapped release automation, goreleaser alternative, standard-version alternative, supply chain secure release, fastest semantic release tool, git tagging automation, gitlab ci semantic release',
+              'semantic release, semantic-release, semantic-release alternative, zero dependency semantic release, go semantic release, semantic versioning, semver automation, release automation, conventional commits, changelog generator, monorepo release automation, ci cd release automation, automated github releases, gitlab ci semantic release, air gapped release automation, goreleaser alternative, release-please alternative, release-it alternative, changesets alternative, standard-version alternative, supply chain secure release, cosign release signing, git tag automation',
           },
         },
         // Web App Manifest
@@ -173,29 +177,43 @@ export default defineConfig({
             '@context': 'https://schema.org',
             '@type': 'SoftwareApplication',
             name: 'semrel',
-            url: 'https://semrel.io',
+            alternateName: ['SemRel', 'semrel.io', 'Go Semantic Release'],
+            url: 'https://www.semrel.io/',
             applicationCategory: 'DeveloperApplication',
+            applicationSubCategory: 'Release Automation & Semantic Versioning Tool',
             operatingSystem: 'Linux, macOS, Windows',
             license: 'https://www.apache.org/licenses/LICENSE-2.0',
+            isAccessibleForFree: true,
+            offers: {
+              '@type': 'Offer',
+              price: '0',
+              priceCurrency: 'USD',
+            },
             description:
-              'semrel automates semantic versioning and release management for Go projects using Conventional Commits, a fully pluggable pipeline, and a global plugin registry.',
+              'semrel is an open-source, zero-dependency semantic release automation tool written in Go — the fast, supply-chain secure alternative to semantic-release, release-please, and GoReleaser with 46 official plugins and monorepo workspace support.',
             author: {
               '@type': 'Organization',
               name: 'SemRels',
               url: 'https://github.com/SemRels',
             },
-            softwareVersion: 'latest',
+            softwareVersion: '0.28.2',
             downloadUrl: 'https://github.com/SemRels/semrel/releases',
+            codeRepository: 'https://github.com/SemRels/semrel',
+            programmingLanguage: 'Go',
+            keywords: 'semantic release, semantic-release alternative, semver, conventional commits, changelog generator, release automation, monorepo release, goreleaser, release-please',
             featureList: [
-              'Automated SemVer bumping from Conventional Commits',
-              'Pluggable release pipeline',
-              'Monorepo support',
-              'Global plugin registry',
-              'Supply-chain security (Cosign, SBOM, SLSA)',
-              'Dry-run mode',
+              'Automated Semantic Versioning (SemVer) from Conventional Commits',
+              'Zero Node.js dependency — single ~12 MB static Go binary',
+              '46 official plugins across 8 pipeline categories (Conditions, Analyzers, Generators, Updaters, Packagers, Publishers, Providers, Hooks)',
+              'Monorepo workspace support with topological dependency ordering',
+              'Air-gap ready with SHA-256 pinned .semrel.lock and semrel plugin restore',
+              'Supply-chain security with Sigstore Cosign v3, CycloneDX/SPDX SBOM, and SLSA Level 1 provenance',
+              'Multi-forge support for GitHub, GitHub Enterprise Server (GHES), GitLab, Gitea, Forgejo, and Bitbucket',
+              'Built-in commitlint, pre-flight doctor diagnostics, and dry-run mode',
             ],
             sameAs: [
               'https://github.com/SemRels/semrel',
+              'https://github.com/SemRels',
               'https://registry.semrel.io',
             ],
           }),
@@ -208,10 +226,12 @@ export default defineConfig({
             '@context': 'https://schema.org',
             '@type': 'Organization',
             name: 'SemRels',
-            url: 'https://semrel.io',
-            logo: 'https://semrel.io/semrel.png',
+            alternateName: 'semrel',
+            url: 'https://www.semrel.io/',
+            logo: 'https://www.semrel.io/semrel.png',
             sameAs: [
               'https://github.com/SemRels',
+              'https://github.com/SemRels/semrel',
               'https://registry.semrel.io',
             ],
           }),
@@ -404,7 +424,7 @@ export default defineConfig({
       lastmod: new Date(),
       serialize(item) {
         // Boost priority for landing + getting-started pages
-        if (item.url === 'https://semrel.io/' || item.url === 'https://semrel.io/de/') {
+        if (item.url === 'https://www.semrel.io/' || item.url === 'https://www.semrel.io/de/') {
           item.priority = 1.0;
           item.changefreq = 'daily';
         } else if (

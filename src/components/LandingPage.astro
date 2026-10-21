@@ -8,13 +8,13 @@ const { locale = 'en' } = Astro.props;
 const isDe = locale === 'de';
 const prefix = isDe ? '/de' : '';
 
-const shareUrl = isDe ? 'https://semrel.io/de/' : 'https://semrel.io/';
+const shareUrl = isDe ? 'https://www.semrel.io/de/' : 'https://www.semrel.io/';
 const shareText = isDe
   ? 'semrel v0.28.2 — Die zero-dependency, Go-native Alternative zu semantic-release. 46 Plugins, .semrel.lock, Air-Gap & Cosign v3! 🚀'
   : 'semrel v0.28.2 — The zero-dependency, Go-native alternative to semantic-release. 46 plugins, .semrel.lock, Air-Gap & Cosign v3! 🚀';
 
-const badgeMarkdown = '[![Released with semrel](https://img.shields.io/badge/released%20with-semrel.io-6366f1?style=flat-square&logo=go&logoColor=white)](https://semrel.io)';
-const badgeHtml = '<a href="https://semrel.io"><img src="https://img.shields.io/badge/released%20with-semrel.io-6366f1?style=flat-square&logo=go&logoColor=white" alt="Released with semrel" /></a>';
+const badgeMarkdown = '[![Released with semrel](https://img.shields.io/badge/released%20with-semrel.io-6366f1?style=flat-square&logo=go&logoColor=white)](https://www.semrel.io)';
+const badgeHtml = '<a href="https://www.semrel.io"><img src="https://img.shields.io/badge/released%20with-semrel.io-6366f1?style=flat-square&logo=go&logoColor=white" alt="Released with semrel" /></a>';
 
 const pluginCategories = [
   {
