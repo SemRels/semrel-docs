@@ -418,6 +418,17 @@ article.card div.body {
   display: none !important;
 }
 
+/* Keep the landing pages visually sidebar-free while retaining Starlight's mobile menu. */
+@media (min-width: 50rem) {
+  html:has(.sr-landing)[data-has-sidebar] {
+    --sl-content-inline-start: 0px;
+  }
+
+  html:has(.sr-landing)[data-has-sidebar] .sidebar-pane {
+    display: none;
+  }
+}
+
 .sr-landing {
   display: flex;
   flex-direction: column;
@@ -1625,5 +1636,3 @@ article.card div.body {
 .sr-maint-info strong {
   color: var(--sl-color-white);
 }
-
-
