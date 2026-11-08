@@ -53,8 +53,8 @@ importers:
         version: 3.1.0
     devDependencies:
       chrome-launcher:
-        specifier: ^1.2.2
-        version: 1.2.2(supports-color@7.2.0)
+        specifier: ^1.2.3
+        version: 1.2.3(supports-color@7.2.0)
       lighthouse:
         specifier: ^13.5.0
         version: 13.5.0(@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1))(supports-color@7.2.0)
@@ -1297,8 +1297,8 @@ packages:
     resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
     engines: {node: '>= 20.19.0'}
 
-  chrome-launcher@1.2.2:
-    resolution: {integrity: sha512-sI90u5qf3854bTrWsQMMdsQfSjjMbeSn7QtxVb9zrikf+QgMfHQ71KepHW7ZfixQKrDlAFKb+qnVlSR+xepBzw==}
+  chrome-launcher@1.2.3:
+    resolution: {integrity: sha512-IpQuNUYnpXXq3VBRJInM7zTZDiAp/cu+zy0X74NjyQtFcZIQBbI64i0PYQO25wNwgmgw2cPBYitVmFz53N11Rg==}
     engines: {node: '>=12.13.0'}
     hasBin: true
 
@@ -4431,7 +4431,7 @@ snapshots:
     dependencies:
       readdirp: 5.0.0
 
-  chrome-launcher@1.2.2(supports-color@7.2.0):
+  chrome-launcher@1.2.3(supports-color@7.2.0):
     dependencies:
       '@types/node': 26.1.2
       escape-string-regexp: 4.0.0
@@ -5339,7 +5339,7 @@ snapshots:
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
       axe-core: 4.13.0
-      chrome-launcher: 1.2.2(supports-color@7.2.0)
+      chrome-launcher: 1.2.3(supports-color@7.2.0)
       configstore: 7.1.0
       csp_evaluator: 1.1.8
       devtools-protocol: 0.0.1687809
