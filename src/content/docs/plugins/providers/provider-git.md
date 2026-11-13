@@ -63,6 +63,22 @@ plugins:
 
 For `v1.4.0`, the provider can create the tag locally and push it to `origin`. If `push_branch` is `true`, it can also push the release commit on the current branch.
 
+### GitLab releases
+
+Use both providers when you want the release commits on the GitLab branch and a GitLab Release entry:
+
+```yaml
+plugins:
+  - uses: "@semrel/provider-git"
+    phase: release
+    args:
+      push_branch: true
+  - uses: "@semrel/provider-gitlab"
+    phase: release
+```
+
+`provider-git` pushes the already-created local tag and branch; `provider-gitlab` creates the Release entry. Keep them in this order. Git pushes use credentials configured for the Git remote, not `SEMREL_PLUGIN_TOKEN`. In GitLab CI, the runner's `origin` can use `CI_JOB_TOKEN`; enable job-token Git pushes in the project settings and ensure the token user's permissions allow pushing to the target branch. No `git remote set-url` step is needed when `origin` already uses that job token.
+
 ## Source
 
 - [SemRels/provider-git](https://github.com/SemRels/provider-git)
