@@ -38,7 +38,7 @@ export default defineConfig({
 
   // Inline small CSS directly into HTML to eliminate extra round-trips
   build: {
-    inlineStylesheets: 'auto',
+    inlineStylesheets: 'always',
   },
 
   // Explicit HTML compression (default in prod, stated here for clarity)
@@ -82,6 +82,7 @@ export default defineConfig({
       },
       components: {
         Head: './src/components/SeoHead.astro',
+        Footer: './src/components/CookieFooter.astro',
       },
       description: 'semrel — automated semantic versioning and release management for Go projects. Plugin-based, monorepo-ready, supply-chain secure.',
       defaultLocale: 'root',
@@ -110,6 +111,8 @@ export default defineConfig({
           attrs: {
             rel: 'stylesheet',
             href: 'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=optional',
+            media: 'print',
+            onload: "this.media='all'",
           },
         },
         // Open Graph defaults (overridden per-page via frontmatter)

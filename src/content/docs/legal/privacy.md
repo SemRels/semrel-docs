@@ -19,7 +19,9 @@ We are committed to protecting your privacy. This page explains what data is col
 The documentation site is a statically generated site served via CDN (GitHub Pages / Cloudflare Pages).
 
 - **Server logs:** The CDN provider may collect standard HTTP access logs (IP address, browser, requested URL, referrer). These logs are retained according to the provider's policy and are not processed by us for analytics.
-- **No cookies** are set by the documentation site itself.
+- **Analytics:** Google Analytics 4 is loaded only after you explicitly accept analytics cookies. It records usage statistics and basic performance measurements. The `_ga` and `_ga_*` cookies are configured to expire after up to 14 months. Your choice is stored locally in your browser.
+- You can reject analytics or withdraw consent at any time using **Cookie settings** in the footer. When you withdraw consent, analytics is disabled and the analytics cookies are deleted.
+- The legal basis for analytics is your consent. The Google Analytics script is not loaded before consent is given.
 
 ### 2.2 Plugin Registry (registry.semrel.io)
 
@@ -34,13 +36,17 @@ The registry does **not** set tracking cookies and does **not** use third-party 
 
 ## 3. Cookies
 
-A cookie banner is displayed on first visit to registry.semrel.io.
-The only cookies stored are functional session cookies required for admin authentication.
-No advertising or tracking cookies are used.
+A cookie notice is displayed on first visit to semrel.io. It offers separate choices to accept only necessary storage or to enable analytics. No analytics cookies are set before consent.
+
+The documentation site stores the preference in browser local storage. If you consent to analytics, Google Analytics 4 may set `_ga` and `_ga_*` cookies for up to 14 months. No advertising cookies are used.
+
+The plugin registry is a separate service. Its functional session and analytics practices are described by the registry operator.
 
 ## 4. Third-party services
 
 - **GitHub** — Repository hosting and OAuth provider. Subject to [GitHub's Privacy Policy](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement).
+- **Google Analytics 4** — Optional analytics loaded only after consent. Subject to [Google's Privacy Policy](https://policies.google.com/privacy).
+- **Google Fonts** — The site loads the Outfit and JetBrains Mono fonts from Google Fonts. This makes a request to Google when a page is opened; see [Google's Privacy Policy](https://policies.google.com/privacy).
 - **CDN/Hosting provider** — May process access logs as described in §2.1.
 
 ## 5. Your rights
