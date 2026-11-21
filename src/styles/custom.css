@@ -368,36 +368,115 @@ article.card div.body {
   width: 30%;
 }
 
-/* Comparison tables: auto layout so each column sizes to its content */
-.sl-markdown-content .tablist-wrapper table,
-.sl-markdown-content [role=tabpanel] table {
-  table-layout: auto;
+/* Comparison tables wrap on wide screens and become labeled cards on mobile. */
+.sl-markdown-content .comparison-table-tabs [role=tabpanel] {
+  overflow: visible;
+}
+
+.sl-markdown-content .comparison-table-tabs table {
+  table-layout: fixed;
   font-size: 0.85rem;
-  min-width: 100%;
+  min-width: 0;
+  width: 100%;
 }
 
-/* Make tab panels scrollable horizontally on narrow viewports */
-.sl-markdown-content [role=tabpanel] {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.sl-markdown-content .tablist-wrapper table td,
-.sl-markdown-content .tablist-wrapper table th,
-.sl-markdown-content [role=tabpanel] table td,
-.sl-markdown-content [role=tabpanel] table th {
-  white-space: nowrap;
+.sl-markdown-content .comparison-table-tabs table td,
+.sl-markdown-content .comparison-table-tabs table th {
+  white-space: normal;
+  overflow-wrap: anywhere;
   padding-inline: 0.6rem;
 }
 
-/* First column in tab tables: label, allow wrapping */
-.sl-markdown-content .tablist-wrapper table td:first-child,
-.sl-markdown-content .tablist-wrapper table th:first-child,
-.sl-markdown-content [role=tabpanel] table td:first-child,
-.sl-markdown-content [role=tabpanel] table th:first-child {
-  width: auto;
-  white-space: normal;
-  min-width: 10rem;
+.sl-markdown-content .comparison-table-tabs table td:first-child,
+.sl-markdown-content .comparison-table-tabs table th:first-child {
+  width: 22%;
+}
+
+@media (max-width: 640px) {
+  .sl-markdown-content .comparison-table-tabs [role=tabpanel] {
+    overflow: visible;
+  }
+
+  .sl-markdown-content .comparison-table-tabs table {
+    display: block;
+    border: 0;
+  }
+
+  .sl-markdown-content .comparison-table-tabs table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .sl-markdown-content .comparison-table-tabs table tbody {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .sl-markdown-content .comparison-table-tabs table tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid var(--sl-color-border);
+    border-radius: 0.75rem;
+    background: var(--card-bg);
+  }
+
+  .sl-markdown-content .comparison-table-tabs table td {
+    display: block;
+    min-width: 0;
+    padding: 0.5rem !important;
+    border: 0;
+    border-radius: 0.5rem;
+    overflow-wrap: anywhere;
+    font-size: 0.82rem;
+  }
+
+  .sl-markdown-content .comparison-table-tabs table td:first-child {
+    grid-column: 1 / -1;
+    width: auto;
+    background: var(--sl-color-bg-nav);
+    font-weight: 700;
+  }
+
+  .sl-markdown-content .comparison-table-tabs table td:not(:first-child)::before {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--sl-color-gray-3);
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .sl-markdown-content .comparison-table-tabs table td:nth-child(2)::before {
+    content: "semrel";
+  }
+
+  .sl-markdown-content .comparison-table-tabs table td:nth-child(3)::before {
+    content: "semantic-release";
+  }
+
+  .sl-markdown-content .comparison-table-tabs table td:nth-child(4)::before {
+    content: "GoReleaser";
+  }
+
+  .sl-markdown-content .comparison-table-tabs table td:nth-child(5)::before {
+    content: "release-please";
+  }
+
+  .sl-markdown-content .comparison-table-tabs table td:nth-child(6)::before {
+    content: "release-it";
+  }
+
+  .sl-markdown-content .comparison-table-tabs table td:nth-child(7)::before {
+    content: "Changesets";
+  }
 }
 
 /* ── Massive Marketing Landing Page (.sr-landing) ──────────────────── */
@@ -777,7 +856,7 @@ article.card div.body {
   font-size: inherit !important;
 }
 
-.t-dim { color: #64748b; }
+.t-dim { color: #94a3b8; }
 .t-cmd { color: #f8fafc; font-weight: 700; }
 .t-ok { color: #10b981; font-weight: 700; }
 .t-info { color: #38bdf8; font-weight: 700; }
@@ -944,7 +1023,7 @@ article.card div.body {
 
 .sr-comp-table {
   width: 100% !important;
-  table-layout: auto !important;
+  table-layout: fixed !important;
   border-collapse: collapse;
   font-size: 0.88rem;
   margin: 0 !important;
@@ -958,7 +1037,7 @@ article.card div.body {
   vertical-align: top;
   line-height: 1.55;
   word-break: normal !important;
-  overflow-wrap: normal !important;
+  overflow-wrap: anywhere !important;
 }
 
 .sr-comp-table th:first-child,
@@ -971,7 +1050,91 @@ article.card div.body {
   background: rgba(99, 102, 241, 0.08);
   font-weight: 800;
   color: var(--sl-color-white);
-  white-space: nowrap;
+  white-space: normal;
+}
+
+@media (max-width: 640px) {
+  .sr-table-wrap {
+    overflow: visible;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .sr-comp-table {
+    display: block;
+    font-size: 0.88rem;
+  }
+
+  .sr-comp-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .sr-comp-table tbody {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .sr-comp-table tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid var(--sl-color-border);
+    border-radius: 0.75rem;
+    background: var(--card-bg);
+  }
+
+  .sr-comp-table td {
+    display: block;
+    min-width: 0;
+    width: auto !important;
+    padding: 0.5rem !important;
+    border: 0;
+    border-radius: 0.5rem;
+    font-size: 0.82rem;
+  }
+
+  .sr-comp-table td:first-child {
+    grid-column: 1 / -1;
+    background: var(--sl-color-bg-nav);
+  }
+
+  .sr-comp-table td:not(:first-child)::before {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--sl-color-gray-3);
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .sr-comp-table td:nth-child(2)::before {
+    content: "semrel";
+  }
+
+  .sr-comp-table td:nth-child(3)::before {
+    content: "semantic-release";
+  }
+
+  .sr-comp-table td:nth-child(4)::before {
+    content: "GoReleaser";
+  }
+
+  .sr-comp-table td:nth-child(5)::before {
+    content: "release-please";
+  }
+
+  .sr-comp-table td:nth-child(6)::before {
+    content: "release-it / Changesets";
+  }
 }
 
 .sr-col-highlight {
@@ -994,6 +1157,7 @@ article.card div.body {
 
 :root[data-theme='light'] .sr-th-ver {
   background: rgba(15, 23, 42, 0.07);
+  color: #475569;
 }
 
 .sr-comp-disclaimer {
@@ -1133,7 +1297,7 @@ article.card div.body {
   color: var(--sl-color-gray-3);
 }
 
-.sr-stage-card h4 {
+.sr-stage-card h3 {
   font-size: 1.04rem !important;
   font-weight: 700 !important;
   margin: 0 0 0.5rem 0 !important;
@@ -1252,7 +1416,7 @@ article.card div.body {
 }
 
 :root[data-theme='light'] .sr-mini-badge {
-  color: #047857;
+  color: #065f46;
 }
 
 .sr-plugin-desc {
@@ -1375,7 +1539,7 @@ article.card div.body {
 }
 
 :root[data-theme='light'] .sr-status-shipped {
-  color: #047857;
+  color: #065f46;
 }
 
 .sr-status-active {
@@ -1385,7 +1549,7 @@ article.card div.body {
 }
 
 :root[data-theme='light'] .sr-status-active {
-  color: #b45309;
+  color: #92400e;
 }
 
 .sr-status-planned {
@@ -1398,7 +1562,7 @@ article.card div.body {
   color: #4338ca;
 }
 
-.sr-rm-content h4 {
+.sr-rm-content h3 {
   font-size: 1rem !important;
   font-weight: 700 !important;
   margin: 0 0 0.3rem 0 !important;
@@ -1584,7 +1748,7 @@ article.card div.body {
 }
 
 .sr-shield-right {
-  background: #6366f1;
+  background: #5b5ce2;
   color: #ffffff;
   padding: 0.32rem 0.55rem;
 }
