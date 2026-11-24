@@ -1,6 +1,6 @@
 ---
 title: semrel vs semantic-release vs GoReleaser vs release-please — Full Comparison
-description: Version-checked comparison of semrel v0.28.x, semantic-release v26.0.x, GoReleaser v2.20.x, release-please v17.11.x, release-it v21.1.x, and Changesets v3.0.x.
+description: "Compare semrel with semantic-release, GoReleaser and other release tools: no Node.js runtime, monorepos, plugin lockfiles, air-gap workflows and security."
 head:
   - tag: script
     attrs:
@@ -15,7 +15,7 @@ head:
             "name": "What is the best semantic-release alternative for Go projects?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "semrel is a Go-native release tool that derives versions from commits and configured rules without requiring a Node.js runtime. Its configuration and plugin APIs differ from semantic-release, so migration requires reviewing the existing release workflow."
+              "text": "semrel is a Go-native release tool without a Node.js runtime. It derives versions from commits, supports native monorepo workspaces and scope-based rules, and pins external plugin versions and checksums in .semrel.lock. Its configuration and plugin APIs differ from semantic-release."
             }
           },
           {
@@ -37,8 +37,16 @@ import { Aside, Badge, Card, CardGrid, Tabs, TabItem } from '@astrojs/starlight/
 The release automation market has several established tools. This page gives you the information to choose the right one — or migrate from what you have.
 
 <Aside type="tip">
-  **TL;DR** — If you want a Go-native release tool without a Node.js runtime, semrel is an option. It shares commit-driven versioning concepts with semantic-release, but configuration, plugins, and release behavior need to be reviewed during migration.
+  **TL;DR** — semrel combines commit-driven releases without a Node.js runtime with native monorepo workspaces, scope-based rules, executable plugins and a checksum-pinned plugin lockfile. Its configuration and plugin APIs differ from semantic-release, so review your workflow when migrating.
 </Aside>
+
+### semrel's key strengths
+
+- **No Node.js runtime:** the Go core runs as a standalone binary; external plugins are installed separately.
+- **Monorepos without a Pro tier:** native workspaces support independently versioned packages, dependency ordering and path filters. See the [monorepo guide](/guide/monorepo/).
+- **Reproducible and air-gap-ready plugins:** [`.semrel.lock`](/plugins/managing/) records versions and platform checksums. Prepare the required binaries before isolating the runner; remote publishing still needs network access.
+- **Language-independent extensions:** plugins are [standalone executables](/guide/plugin-development/) and can be written in any language that implements the plugin contract.
+- **Supply-chain controls:** semrel's own release pipeline signs checksums and container images with Cosign; official images include SBOM attestations and provenance. These protect semrel artifacts, not automatically every artifact produced by a user's pipeline. See [Docker image verification](/guide/docker/).
 
 <Aside type="note" title="Verified versions (November 19, 2026)">
   Latest stable release lines checked against the projects’ GitHub releases: [semrel v0.28.x](https://github.com/SemRels/semrel/releases/tag/v0.28.3), [semantic-release v26.0.x](https://github.com/semantic-release/semantic-release/releases/tag/v26.0.1), [GoReleaser v2.20.x](https://github.com/goreleaser/goreleaser/releases/tag/v2.20.2), [release-please v17.11.x](https://github.com/googleapis/release-please/releases/tag/v17.11.2), [release-it v21.1.x](https://github.com/release-it/release-it/releases/tag/21.1.2), and [Changesets CLI v3.0.x](https://github.com/changesets/changesets/releases/tag/%40changesets/cli%403.0.3). Patch numbers are omitted from labels; each link points to the exact release checked. Feature notes were reviewed against the projects’ current documentation. A controlled local dry-run benchmark is documented below; prices and install sizes are omitted because they vary by plan and setup.
@@ -65,8 +73,8 @@ The release automation market has several established tools. This page gives you
 | Version source | Conventional Commits / configured rules | Commits / configured release rules and plugins | Existing Git tag | Conventional Commits, normally through a release PR | Configured increment or Conventional Commits plugin | Manually authored changeset files |
 | Conventional Commits workflow | Built in | Built in | Not the version source | Built in | Available through plugin | Not the version source |
 | Scope-based bump rules | Native rules | Configurable release rules | Not applicable to tag input | Strategy/configuration dependent | Plugin/configuration dependent | Changeset authors select bump |
-| Multi-package / monorepo workflow | Native workspace support | Commonly configured with community packages | GoReleaser Pro | Manifest and component strategies | Plugin/configuration dependent | Core use case |
-| Extension model | External executable plugins | JavaScript plugins | GoReleaser configuration and Go extensions | Built-in release strategies | JavaScript plugins | Changesets packages and configuration |
+| Multi-package / monorepo workflow | **Native workspaces; no Pro tier** | Commonly configured with community packages | GoReleaser Pro | Manifest and component strategies | Plugin/configuration dependent | Core use case |
+| Extension model | **Standalone executables in any language** | JavaScript plugins | GoReleaser configuration and Go extensions | Built-in release strategies | JavaScript plugins | Changesets packages and configuration |
 
   </TabItem>
   <TabItem label="Security">
@@ -74,7 +82,8 @@ The release automation market has several established tools. This page gives you
 | | semrel | semantic-release | GoReleaser | release-please | release-it | Changesets |
 |---|---|---|---|---|---|---|
 | Primary release artifact | Single Go executable | Node.js tool and plugins | Go executable | Node.js package / GitHub Action | Node.js tool and plugins | Node.js workspace packages |
-| Release/signing configuration | Cosign, SBOM, and provenance support in the semrel release pipeline | Depends on configured plugins and CI | Signing and SBOM options depend on configuration and edition | Workflow and artifact configuration | Depends on configured plugins and CI | Depends on configured publishing workflow |
+| Release/signing configuration | **semrel artifacts:** Cosign-signed checksums/images; image SBOM and provenance | Depends on configured plugins and CI | Signing and SBOM options depend on configuration and edition | Workflow and artifact configuration | Depends on configured plugins and CI | Depends on configured publishing workflow |
+| Pinned plugin checksums | **`.semrel.lock` pins versions and platform checksums** | npm lockfile; plugin configuration dependent | Binary provenance and configured extensions | Action pinning and workflow dependent | npm lockfile and plugins | npm lockfile and workspace packages |
 | Security assessment | Review the binary, pinned plugin checksums, and workflow permissions | Review npm dependency tree, plugins, and workflow permissions | Review binary provenance, configuration, and publishing credentials | Review action pinning, GitHub token permissions, and workflow | Review npm dependency tree, plugins, and workflow permissions | Review npm dependency tree and publishing workflow |
 
   </TabItem>

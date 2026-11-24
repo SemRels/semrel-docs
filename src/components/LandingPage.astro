@@ -431,8 +431,8 @@ const roadmap = [
       </h2>
       <p>
         {isDe
-          ? 'Die Tools unterscheiden sich vor allem darin, ob Versionen aus Commits oder Tags abgeleitet werden, wie Multi-Package-Releases organisiert sind und welche Runtime beziehungsweise Edition benötigt wird.'
-          : 'The tools differ mainly in whether versions are derived from commits or tags, how multi-package releases are handled, and which runtime or edition is required.'}
+          ? 'semrel kombiniert Releases ohne Node.js-Runtime mit nativen Monorepo-Workspaces, sprachunabhängigen Plugins und einem prüfsummengepinnten Lockfile. Die Tabelle zeigt, wie sich die Tools unterscheiden.'
+          : 'semrel combines releases without a Node.js runtime with native monorepo workspaces, language-independent plugins, and a checksum-pinned lockfile. Compare how the tools differ below.'}
       </p>
     </div>
 
@@ -474,8 +474,24 @@ const roadmap = [
             <td>{isDe ? 'release-it: Plugin/Konfiguration; Changesets: Bump explizit in Changeset-Datei' : 'release-it: plugin/configuration; Changesets: bump explicitly recorded in changeset'}</td>
           </tr>
           <tr>
+            <td><strong>{isDe ? 'Monorepo-Workspaces' : 'Monorepo workspaces'}</strong></td>
+            <td class="sr-col-highlight"><strong>{isDe ? 'Nativ und Open Source; paketweise Versionen und Abhängigkeitsreihenfolge' : 'Native and open source; per-package versions and dependency ordering'}</strong></td>
+            <td>{isDe ? 'Oft Community-Pakete' : 'Often community packages'}</td>
+            <td>GoReleaser Pro</td>
+            <td>{isDe ? 'Manifest und Komponenten' : 'Manifest and components'}</td>
+            <td>{isDe ? 'release-it: Plugin-abhängig; Changesets: Kernfunktion' : 'release-it: plugin dependent; Changesets: core feature'}</td>
+          </tr>
+          <tr>
+            <td><strong>{isDe ? 'Plugin-Erweiterbarkeit' : 'Plugin extensibility'}</strong></td>
+            <td class="sr-col-highlight"><strong>{isDe ? 'Eigenständige Programme in beliebiger Sprache' : 'Standalone executables in any language'}</strong></td>
+            <td>JavaScript-Plugins</td>
+            <td>{isDe ? 'Konfiguration und Go-Erweiterungen' : 'Configuration and Go extensions'}</td>
+            <td>{isDe ? 'Eingebaute Strategien' : 'Built-in strategies'}</td>
+            <td>{isDe ? 'JavaScript-Plugins / Workspace-Pakete' : 'JavaScript plugins / workspace packages'}</td>
+          </tr>
+          <tr>
             <td><strong>{isDe ? 'Offline-Schritte' : 'Offline steps'}</strong></td>
-            <td class="sr-col-highlight"><strong>{isDe ? 'Plugins vorab pinnen/wiederherstellen; Publishing braucht Netzwerk' : 'Pin/restore plugins ahead of time; publishing needs network'}</strong></td>
+            <td class="sr-col-highlight"><strong>{isDe ? 'Air-Gap-fähig: Plugins vorab mit .semrel.lock und Prüfsummen bereitstellen; Remote-Publishing braucht Netzwerk' : 'Air-gap-ready: prepare plugins with .semrel.lock and checksums; remote publishing needs network'}</strong></td>
             <td>{isDe ? 'Lokale Analyse offline; Publishing braucht Netzwerk' : 'Local analysis offline; publishing needs network'}</td>
             <td>{isDe ? 'Lokale Builds offline; Publishing braucht Netzwerk' : 'Local builds offline; publishing needs network'}</td>
             <td>{isDe ? 'Standard-Workflow benötigt GitHub API' : 'Standard workflow requires GitHub API'}</td>
@@ -523,7 +539,7 @@ const roadmap = [
           </tr>
           <tr>
             <td><strong>{isDe ? 'Supply-Chain Attestierung' : 'Supply-Chain Attestation'}</strong></td>
-            <td class="sr-col-highlight"><strong>✅ Cosign v3 + CycloneDX/SPDX + SLSA L1</strong></td>
+            <td class="sr-col-highlight"><strong>{isDe ? 'semrel-Releases: Cosign-signierte Prüfsummen/Images; Image-SBOM und Provenienz' : 'semrel releases: Cosign-signed checksums/images; image SBOM and provenance'}</strong></td>
             <td>{isDe ? 'Abhängig von Plugins und CI' : 'Depends on plugins and CI'}</td>
             <td>{isDe ? 'Signatur/SBOM abhängig von Konfiguration und Edition' : 'Signing/SBOM depends on configuration and edition'}</td>
             <td>{isDe ? 'Workflow- und Artefakt-Konfiguration' : 'Workflow and artifact configuration'}</td>

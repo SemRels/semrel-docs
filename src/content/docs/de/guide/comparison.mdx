@@ -1,6 +1,6 @@
 ---
 title: semrel vs semantic-release vs GoReleaser vs release-please — Vollständiger Vergleich
-description: Versionsgeprüfter Vergleich von semrel v0.28.x, semantic-release v26.0.x, GoReleaser v2.20.x, release-please v17.11.x, release-it v21.1.x und Changesets v3.0.x.
+description: "semrel im Vergleich zu semantic-release, GoReleaser und anderen Release-Tools: ohne Node.js-Runtime, Monorepos, Plugin-Lockfile, Air-Gap und Sicherheit."
 head:
   - tag: script
     attrs:
@@ -15,7 +15,7 @@ head:
             "name": "Was ist die beste semantic-release Alternative für Go-Projekte?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "semrel ist ein Go-natives Release-Tool, das Versionen aus Commits und konfigurierten Regeln ableitet, ohne eine Node.js-Runtime vorauszusetzen. Konfiguration und Plugin-APIs unterscheiden sich von semantic-release; bei einer Migration muss der bestehende Release-Workflow überprüft werden."
+              "text": "semrel ist ein Go-natives Release-Tool ohne Node.js-Runtime. Es leitet Versionen aus Commits ab, unterstützt native Monorepo-Workspaces und Scope-Regeln und pinnt externe Plugin-Versionen und Prüfsummen in .semrel.lock. Konfiguration und Plugin-APIs unterscheiden sich von semantic-release."
             }
           },
           {
@@ -37,8 +37,16 @@ import { Aside, Badge, Card, CardGrid, Tabs, TabItem } from '@astrojs/starlight/
 Der Markt für Release-Automatisierung bietet mehrere etablierte Tools. Diese Seite gibt dir die Informationen, um das richtige zu wählen — oder von deinem bisherigen Tool zu migrieren.
 
 <Aside type="tip">
-  **Kurz zusammengefasst** — Wenn du ein Go-natives Release-Tool ohne Node.js-Runtime suchst, ist semrel eine Option. Es teilt commit-basierte Versionierungskonzepte mit semantic-release, aber Konfiguration, Plugins und Release-Verhalten müssen bei einer Migration geprüft werden.
+  **Kurz zusammengefasst** — semrel verbindet commit-basierte Releases ohne Node.js-Runtime mit nativen Monorepo-Workspaces, Scope-Regeln, ausführbaren Plugins und einem prüfsummengepinnten Plugin-Lockfile. Konfiguration und Plugin-APIs unterscheiden sich von semantic-release; prüfe daher deinen Workflow bei der Migration.
 </Aside>
+
+### Die wichtigsten Stärken von semrel
+
+- **Keine Node.js-Runtime:** Der Go-Kern läuft als eigenständige Binärdatei; externe Plugins werden separat installiert.
+- **Monorepos ohne Pro-Tarif:** Native Workspaces unterstützen unabhängig versionierte Pakete, Abhängigkeitsreihenfolge und Pfadfilter. Siehe den [Monorepo-Guide](/de/guide/monorepo/).
+- **Reproduzierbare und Air-Gap-fähige Plugins:** [`.semrel.lock`](/de/plugins/managing/) hält Versionen und Plattform-Prüfsummen fest. Benötigte Binärdateien vor der Isolation des Runners bereitstellen; Remote-Publishing benötigt weiterhin Netzwerk.
+- **Sprachunabhängige Erweiterungen:** Plugins sind [eigenständige ausführbare Programme](/de/guide/plugin-development/) und können in jeder Sprache geschrieben werden, die den Plugin-Vertrag erfüllt.
+- **Supply-Chain-Schutz:** Die Release-Pipeline von semrel signiert Prüfsummen und Container-Images mit Cosign; offizielle Images enthalten SBOM-Attestierungen und Provenienz. Das schützt semrel-Artefakte, nicht automatisch alle Artefakte einer Nutzer-Pipeline. Siehe [Docker-Image-Verifikation](/de/guide/docker/).
 
 <Aside type="note" title="Geprüfte Versionen (19. November 2026)">
   Die neuesten stabilen Release-Linien wurden anhand der GitHub-Releases geprüft: [semrel v0.28.x](https://github.com/SemRels/semrel/releases/tag/v0.28.3), [semantic-release v26.0.x](https://github.com/semantic-release/semantic-release/releases/tag/v26.0.1), [GoReleaser v2.20.x](https://github.com/goreleaser/goreleaser/releases/tag/v2.20.2), [release-please v17.11.x](https://github.com/googleapis/release-please/releases/tag/v17.11.2), [release-it v21.1.x](https://github.com/release-it/release-it/releases/tag/21.1.2) und [Changesets CLI v3.0.x](https://github.com/changesets/changesets/releases/tag/%40changesets/cli%403.0.3). Patch-Versionen sind in den Bezeichnungen ausgelassen; jeder Link führt zum exakt geprüften Release. Die Funktionshinweise wurden anhand der aktuellen Projektdokumentation überprüft. Ein kontrollierter lokaler Dry-Run-Benchmark ist unten dokumentiert; Preise und Installationsgrößen variieren je nach Tarif und Setup.
@@ -65,8 +73,8 @@ Der Markt für Release-Automatisierung bietet mehrere etablierte Tools. Diese Se
 | Versionsquelle | Conventional Commits / konfigurierte Regeln | Commits / konfigurierte Release-Regeln und Plugins | Vorhandener Git-Tag | Conventional Commits, üblicherweise über einen Release-PR | Konfigurierter Versionssprung oder Conventional-Commits-Plugin | Manuell erstellte Changeset-Dateien |
 | Conventional-Commits-Workflow | Eingebaut | Eingebaut | Nicht die Versionsquelle | Eingebaut | Über Plugin verfügbar | Nicht die Versionsquelle |
 | Scope-basierte Bump-Regeln | Nativ | Konfigurierbare Release-Regeln | Für Tag-Eingabe nicht relevant | Abhängig von Strategie/Konfiguration | Abhängig von Plugin/Konfiguration | Bump wird in Changeset-Datei angegeben |
-| Multi-Package-/Monorepo-Workflow | Native Workspace-Unterstützung | Häufig über Community-Pakete konfiguriert | GoReleaser Pro | Manifest- und Component-Strategien | Abhängig von Plugin/Konfiguration | Kernanwendungsfall |
-| Erweiterungsmodell | Externe ausführbare Plugins | JavaScript-Plugins | GoReleaser-Konfiguration und Go-Erweiterungen | Eingebaute Release-Strategien | JavaScript-Plugins | Changesets-Pakete und Konfiguration |
+| Multi-Package-/Monorepo-Workflow | **Native Workspaces; kein Pro-Tarif** | Häufig über Community-Pakete konfiguriert | GoReleaser Pro | Manifest- und Component-Strategien | Abhängig von Plugin/Konfiguration | Kernanwendungsfall |
+| Erweiterungsmodell | **Ausführbare Plugins in beliebiger Sprache** | JavaScript-Plugins | GoReleaser-Konfiguration und Go-Erweiterungen | Eingebaute Release-Strategien | JavaScript-Plugins | Changesets-Pakete und Konfiguration |
 
   </TabItem>
   <TabItem label="Sicherheit">
@@ -74,7 +82,8 @@ Der Markt für Release-Automatisierung bietet mehrere etablierte Tools. Diese Se
 | | semrel | semantic-release | GoReleaser | release-please | release-it | Changesets |
 |---|---|---|---|---|---|---|
 | Primäres Release-Artefakt | Einzelne Go-Binärdatei | Node.js-Tool und Plugins | Go-Binärdatei | Node.js-Paket / GitHub Action | Node.js-Tool und Plugins | Node.js-Workspace-Pakete |
-| Release-/Signatur-Konfiguration | Cosign-, SBOM- und Provenienz-Unterstützung in der semrel-Release-Pipeline | Abhängig von konfigurierten Plugins und CI | Signatur- und SBOM-Optionen abhängig von Konfiguration und Edition | Workflow- und Artefakt-Konfiguration | Abhängig von konfigurierten Plugins und CI | Abhängig vom konfigurierten Publishing-Workflow |
+| Release-/Signatur-Konfiguration | **semrel-Artefakte:** Cosign-signierte Prüfsummen/Images; Image-SBOM und Provenienz | Abhängig von konfigurierten Plugins und CI | Signatur- und SBOM-Optionen abhängig von Konfiguration und Edition | Workflow- und Artefakt-Konfiguration | Abhängig von konfigurierten Plugins und CI | Abhängig vom konfigurierten Publishing-Workflow |
+| Gepinnte Plugin-Prüfsummen | **`.semrel.lock` pinnt Versionen und Plattform-Prüfsummen** | npm-Lockfile; abhängig von Plugin-Konfiguration | Binär-Provenienz und konfigurierte Erweiterungen | Abhängig von Action-Pinning und Workflow | npm-Lockfile und Plugins | npm-Lockfile und Workspace-Pakete |
 | Sicherheitsprüfung | Binärdatei, gepinnte Plugin-Prüfsummen und Workflow-Berechtigungen prüfen | npm-Abhängigkeitsbaum, Plugins und Workflow-Berechtigungen prüfen | Binär-Provenienz, Konfiguration und Publishing-Zugangsdaten prüfen | Action-Pinning, GitHub-Token-Berechtigungen und Workflow prüfen | npm-Abhängigkeitsbaum, Plugins und Workflow-Berechtigungen prüfen | npm-Abhängigkeitsbaum und Publishing-Workflow prüfen |
 
   </TabItem>
