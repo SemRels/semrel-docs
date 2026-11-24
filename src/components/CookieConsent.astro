@@ -137,6 +137,7 @@
       const accept = document.querySelector('[data-cookie-accept]');
       const reject = document.querySelector('[data-cookie-reject]');
       const save = document.querySelector('[data-cookie-save]');
+      let previousFocus = null;
 
       if (!banner || !preferences || !settings || !settingsPanel || !analyticsToggle || !accept || !reject || !save) {
         console.error('Cookie consent controls are missing from the page.');
@@ -152,7 +153,21 @@
         banner.hidden = false;
       }
 
+      banner.addEventListener('focusin', (event) => {
+        const from = event.relatedTarget;
+        if (from instanceof HTMLElement && from !== document.body && !banner.contains(from)) {
+          previousFocus = from;
+        }
+      });
+
+      function closeBanner() {
+        banner.hidden = true;
+        if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+        previousFocus = null;
+      }
+
       preferences.addEventListener('click', () => {
+        previousFocus = preferences;
         analyticsToggle.checked = state.consent;
         settingsPanel.hidden = false;
         settings.setAttribute('aria-expanded', 'true');
@@ -166,18 +181,15 @@
       });
       accept.addEventListener('click', () => {
         saveChoice(true);
-        banner.hidden = true;
-        preferences.focus();
+        closeBanner();
       });
       reject.addEventListener('click', () => {
         saveChoice(false);
-        banner.hidden = true;
-        preferences.focus();
+        closeBanner();
       });
       save.addEventListener('click', () => {
         saveChoice(analyticsToggle.checked);
-        banner.hidden = true;
-        preferences.focus();
+        closeBanner();
       });
     }
 
