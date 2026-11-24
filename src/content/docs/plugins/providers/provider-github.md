@@ -45,7 +45,7 @@ plugins:
       repo: semrel
       draft: false
       prerelease: false
-      assets: 'dist/*.tar.gz,dist/*.zip'
+      assets: 'dist/*.tar.gz,dist/*.zip,dist/*.sbom.json,dist/*.sig'
       comment_on_prs: "true"
 ```
 
@@ -62,7 +62,7 @@ plugins:
 | `SEMREL_PLUGIN_INSECURE_SKIP_VERIFY` | no | `false` | Skip TLS certificate verification (`true`/`1`). Use only as a last resort. |
 | `SEMREL_PLUGIN_DRAFT` | no | `false` | Create the release as a draft. |
 | `SEMREL_PLUGIN_PRERELEASE` | no | `false` | Mark the release as a prerelease. |
-| `SEMREL_PLUGIN_ASSETS` | no | `—` | Comma-separated file paths or glob patterns for release assets to upload. |
+| `SEMREL_PLUGIN_ASSETS` | no | `—` | Comma-separated file paths or glob patterns for release assets. Every pattern must match; missing files and upload failures fail the plugin. |
 | `SEMREL_PLUGIN_COMMENT_ON_PRS` | no | `true` | Automatically post an idempotent release comment on merged pull requests included in the release (`SEMREL_COMMIT_HASHES`). |
 
 ## Release Context Variables
@@ -77,7 +77,7 @@ plugins:
 
 ## Behavior
 
-For `v1.4.0`, the provider creates a GitHub release, attaches files matching `SEMREL_PLUGIN_ASSETS`, publishes the SemRel changelog as release notes, and comments on merged pull requests included in the release with a link to the new release. Works out of the box with GitHub Enterprise Server (GHES) and Data Residency (`*.ghe.com`).
+For `v1.4.0`, the provider creates a GitHub release, attaches files matching `SEMREL_PLUGIN_ASSETS`, publishes the SemRel changelog as release notes, and comments on merged pull requests included in the release with a link to the new release. Each configured pattern must match at least one regular file; missing files and upload errors fail the plugin. Works out of the box with GitHub Enterprise Server (GHES) and Data Residency (`*.ghe.com`).
 
 ## Source
 

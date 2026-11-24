@@ -26,6 +26,7 @@ plugins:
       repo: semrel
       username: '${env.BITBUCKET_USERNAME}'
       app_password: '${env.BITBUCKET_APP_PASSWORD}'
+      assets: 'dist/*.tar.gz,dist/*.zip,dist/*.sbom.json,dist/*.sig'
 ```
 
 ## Umgebungsvariablen
@@ -36,6 +37,7 @@ plugins:
 | `SEMREL_PLUGIN_REPO` | nein | `aktuelles Repository` | Repository-Slug, in dem veröffentlicht wird. |
 | `SEMREL_PLUGIN_APP_PASSWORD` | ja | `—` | Bitbucket-App-Passwort. |
 | `SEMREL_PLUGIN_USERNAME` | ja | `—` | Bitbucket-Benutzername. |
+| `SEMREL_PLUGIN_ASSETS` | nein | `—` | Kommagetrennte Dateipfade oder Glob-Muster zum Hochladen in Bitbucket-Repository-Downloads. Jedes Muster muss Dateien finden; Upload-Fehler lassen das Plugin fehlschlagen. Dies sind keine release-spezifischen Anhänge. |
 | `SEMREL_PLUGIN_COMMENT_ON_PRS` | nein | `true` | Hinterlässt automatisch einen idempotenten Release-Kommentar in allen enthaltenen Pull Requests (`SEMREL_COMMIT_HASHES`). |
 
 ## Release-Kontextvariablen
@@ -49,7 +51,7 @@ plugins:
 
 ## Verhalten
 
-Für `v1.4.0` kann der Provider einen Bitbucket-Release-Eintrag mit dem erzeugten Tag, dem Versionstext und dem Changelog-Text veröffentlichen.
+Für `v1.4.0` lädt der Provider die Changelog-Datei und Dateien passend zu `SEMREL_PLUGIN_ASSETS` in die Bitbucket-Repository-Downloads hoch. Bitbucket Cloud verknüpft diese Downloads nicht mit einem einzelnen Release-Eintrag. Fehlende Treffer oder Upload-Fehler lassen das Plugin fehlschlagen.
 
 ## Quelle
 

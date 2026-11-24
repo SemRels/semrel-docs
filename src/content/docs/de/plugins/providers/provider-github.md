@@ -27,7 +27,7 @@ plugins:
       repo: semrel
       draft: false
       prerelease: false
-      assets: 'dist/*.tar.gz,dist/*.zip'
+      assets: 'dist/*.tar.gz,dist/*.zip,dist/*.sbom.json,dist/*.sig'
       comment_on_prs: "true"
 ```
 
@@ -44,7 +44,7 @@ plugins:
 | `SEMREL_PLUGIN_INSECURE_SKIP_VERIFY` | nein | `false` | TLS-Zertifikatsprüfung überspringen (`true`/`1`). Nur als letzter Ausweg. |
 | `SEMREL_PLUGIN_DRAFT` | nein | `false` | Das Release als Draft erstellen. |
 | `SEMREL_PLUGIN_PRERELEASE` | nein | `false` | Das Release als Prerelease markieren. |
-| `SEMREL_PLUGIN_ASSETS` | nein | `—` | Kommagetrennte Dateipfade oder Glob-Muster für hochzuladende Release-Assets. |
+| `SEMREL_PLUGIN_ASSETS` | nein | `—` | Kommagetrennte Dateipfade oder Glob-Muster für Release-Assets. Jedes Muster muss Dateien finden; fehlende Dateien und Upload-Fehler lassen das Plugin fehlschlagen. |
 | `SEMREL_PLUGIN_COMMENT_ON_PRS` | nein | `true` | Kommentiert automatisch (idempotent) alle im Release enthaltenen Pull Requests (`SEMREL_COMMIT_HASHES`). |
 
 ## Release-Kontextvariablen
@@ -59,7 +59,7 @@ plugins:
 
 ## Verhalten
 
-Für `v1.4.0` erstellt der Provider ein GitHub-Release, hängt Dateien passend zu `SEMREL_PLUGIN_ASSETS` an, veröffentlicht den semrel-Changelog als Release Notes und hinterlässt automatisch einen Release-Kommentar in allen zugehörigen Pull Requests. Unterstützt GitHub Enterprise Server (GHES) und Data Residency (`*.ghe.com`) ohne Zusatzaufwand.
+Für `v1.4.0` erstellt der Provider ein GitHub-Release, hängt Dateien passend zu `SEMREL_PLUGIN_ASSETS` an, veröffentlicht den semrel-Changelog als Release Notes und hinterlässt automatisch einen Release-Kommentar in allen zugehörigen Pull Requests. Jedes konfigurierte Muster muss mindestens eine reguläre Datei finden; fehlende Dateien und Upload-Fehler lassen das Plugin fehlschlagen. Unterstützt GitHub Enterprise Server (GHES) und Data Residency (`*.ghe.com`) ohne Zusatzaufwand.
 
 ## Quelle
 

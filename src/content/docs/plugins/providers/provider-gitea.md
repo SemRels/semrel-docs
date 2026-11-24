@@ -45,6 +45,7 @@ plugins:
       owner: SemRels
       repo: semrel
       draft: false
+      assets: 'dist/*.tar.gz,dist/*.zip,dist/*.sbom.json,dist/*.sig'
 ```
 
 ## Environment Variables
@@ -56,6 +57,7 @@ plugins:
 | `SEMREL_PLUGIN_OWNER` | no | `current repository owner` | Repository owner or organization. |
 | `SEMREL_PLUGIN_REPO` | no | `current repository name` | Repository name to publish into. |
 | `SEMREL_PLUGIN_DRAFT` | no | `false` | Create the release as a draft. |
+| `SEMREL_PLUGIN_ASSETS` | no | `—` | Comma-separated file paths or glob patterns to attach to the Gitea release. Every pattern must match; upload failures fail the plugin. |
 | `SEMREL_PLUGIN_COMMENT_ON_PRS` | no | `true` | Post an idempotent release comment on merged pull requests included in the release (`SEMREL_COMMIT_HASHES`). |
 
 ## Release Context Variables
@@ -69,7 +71,7 @@ plugins:
 
 ## Behavior
 
-For `v1.4.0`, the provider can create a Gitea release that uses the SemRel tag name and publishes the generated changelog body.
+For `v1.4.0`, the provider creates a Gitea release that uses the SemRel tag name, publishes the generated changelog body, and attaches files matched by `SEMREL_PLUGIN_ASSETS`. A missing match or failed upload returns an error.
 
 ## Source
 

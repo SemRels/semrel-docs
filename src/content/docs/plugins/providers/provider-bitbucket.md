@@ -44,6 +44,7 @@ plugins:
       repo: semrel
       username: '${env.BITBUCKET_USERNAME}'
       app_password: '${env.BITBUCKET_APP_PASSWORD}'
+      assets: 'dist/*.tar.gz,dist/*.zip,dist/*.sbom.json,dist/*.sig'
 ```
 
 ## Environment Variables
@@ -54,6 +55,7 @@ plugins:
 | `SEMREL_PLUGIN_REPO` | no | `current repository` | Repository slug to publish into. |
 | `SEMREL_PLUGIN_APP_PASSWORD` | yes | `—` | Bitbucket app password. |
 | `SEMREL_PLUGIN_USERNAME` | yes | `—` | Bitbucket username. |
+| `SEMREL_PLUGIN_ASSETS` | no | `—` | Comma-separated file paths or glob patterns uploaded to Bitbucket repository downloads. Every pattern must match; upload failures fail the plugin. These are not release-specific attachments. |
 | `SEMREL_PLUGIN_COMMENT_ON_PRS` | no | `true` | Post an idempotent release comment on pull requests included in the release (`SEMREL_COMMIT_HASHES`). |
 
 ## Release Context Variables
@@ -67,7 +69,7 @@ plugins:
 
 ## Behavior
 
-For `v1.4.0`, the provider can publish a Bitbucket release entry using the generated tag, version text, and changelog body.
+For `v1.4.0`, the provider uploads the changelog file and files matched by `SEMREL_PLUGIN_ASSETS` to Bitbucket repository downloads. Bitbucket Cloud does not associate these downloads with an individual release entry. A missing match or failed upload returns an error.
 
 ## Source
 

@@ -27,6 +27,7 @@ plugins:
       owner: SemRels
       repo: semrel
       draft: false
+      assets: 'dist/*.tar.gz,dist/*.zip,dist/*.sbom.json,dist/*.sig'
 ```
 
 ## Umgebungsvariablen
@@ -38,6 +39,7 @@ plugins:
 | `SEMREL_PLUGIN_OWNER` | nein | `aktueller Repository-Eigentümer` | Repository-Eigentümer oder Organisation. |
 | `SEMREL_PLUGIN_REPO` | nein | `aktueller Repository-Name` | Repository-Name, in dem veröffentlicht wird. |
 | `SEMREL_PLUGIN_DRAFT` | nein | `false` | Die Release als Draft erstellen. |
+| `SEMREL_PLUGIN_ASSETS` | nein | `—` | Kommagetrennte Dateipfade oder Glob-Muster, die an das Gitea-Release angehängt werden. Jedes Muster muss Dateien finden; Upload-Fehler lassen das Plugin fehlschlagen. |
 | `SEMREL_PLUGIN_COMMENT_ON_PRS` | nein | `true` | Hinterlässt automatisch einen idempotenten Release-Kommentar in allen enthaltenen Pull Requests (`SEMREL_COMMIT_HASHES`). |
 
 ## Release-Kontextvariablen
@@ -51,7 +53,7 @@ plugins:
 
 ## Verhalten
 
-Für `v1.4.0` kann der Provider eine Gitea-Release erstellen, die den semrel-Tag-Namen verwendet und den erzeugten Changelog-Text veröffentlicht.
+Für `v1.4.0` erstellt der Provider ein Gitea-Release mit dem semrel-Tag-Namen, veröffentlicht den erzeugten Changelog-Text und hängt Dateien passend zu `SEMREL_PLUGIN_ASSETS` an. Fehlende Treffer oder Upload-Fehler lassen das Plugin fehlschlagen.
 
 ## Quelle
 
