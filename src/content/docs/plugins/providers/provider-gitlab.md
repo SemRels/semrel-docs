@@ -44,6 +44,7 @@ plugins:
       base_url: 'https://gitlab.com'
       project_id: 12345678
       milestone: v1.4.0
+      assets: 'dist/*.tar.gz,dist/*.zip,dist/*.sbom.json,dist/*.sig'
 ```
 
 ## Environment Variables
@@ -56,6 +57,7 @@ plugins:
 | `SEMREL_PLUGIN_BASE_URL` | no | `https://gitlab.com` | Base URL for the GitLab instance. |
 | `SEMREL_PLUGIN_PROJECT_ID` | no | `current project` | Numeric or URL-encoded project identifier. |
 | `SEMREL_PLUGIN_MILESTONE` | no | `—` | Optional milestone to associate with the release. |
+| `SEMREL_PLUGIN_ASSETS` | no | `—` | Comma-separated file paths or glob patterns. Matching files are uploaded and linked from the release. Every pattern must match; upload failures fail the plugin. |
 | `SEMREL_PLUGIN_COMMENT_ON_MRS` | no | `true` | Post an idempotent release notification comment on merge requests included in the release (`SEMREL_COMMIT_HASHES`). |
 
 ## Release Context Variables
@@ -69,7 +71,7 @@ plugins:
 
 ## Behavior
 
-For `v1.4.0`, the provider can create a GitLab release tied to the tag, attach the changelog text, and link the configured milestone.
+For `v1.4.0`, the provider creates a GitLab release tied to the tag, uses the changelog as its description, links the configured milestone, and uploads files matched by `SEMREL_PLUGIN_ASSETS` as release asset links. A missing match or failed upload returns an error.
 
 ## Source
 

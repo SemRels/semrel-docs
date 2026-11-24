@@ -26,6 +26,7 @@ plugins:
       base_url: 'https://gitlab.com'
       project_id: 12345678
       milestone: v1.4.0
+      assets: 'dist/*.tar.gz,dist/*.zip,dist/*.sbom.json,dist/*.sig'
 ```
 
 ## Umgebungsvariablen
@@ -38,6 +39,7 @@ plugins:
 | `SEMREL_PLUGIN_BASE_URL` | nein | `https://gitlab.com` | Basis-URL der GitLab-Instanz. |
 | `SEMREL_PLUGIN_PROJECT_ID` | nein | `aktuelles Projekt` | Numerische oder URL-kodierte Projektkennung. |
 | `SEMREL_PLUGIN_MILESTONE` | nein | `—` | Optionales Milestone, das mit dem Release verknüpft wird. |
+| `SEMREL_PLUGIN_ASSETS` | nein | `—` | Kommagetrennte Dateipfade oder Glob-Muster. Passende Dateien werden hochgeladen und im Release verlinkt. Jedes Muster muss Dateien finden; Upload-Fehler lassen das Plugin fehlschlagen. |
 | `SEMREL_PLUGIN_COMMENT_ON_MRS` | nein | `true` | Hinterlässt automatisch einen idempotenten Release-Kommentar in allen zugehörigen Merge Requests (`SEMREL_COMMIT_HASHES`). |
 
 ## Release-Kontextvariablen
@@ -51,7 +53,7 @@ plugins:
 
 ## Verhalten
 
-Für `v1.4.0` kann der Provider eine GitLab-Release anlegen, die an das Tag gebunden ist, den Changelog-Text anhängen und das konfigurierte Milestone verknüpfen.
+Für `v1.4.0` erstellt der Provider eine an das Tag gebundene GitLab-Release, verwendet den Changelog als Beschreibung, verknüpft das konfigurierte Milestone und lädt Dateien passend zu `SEMREL_PLUGIN_ASSETS` als Release-Assets hoch. Fehlende Treffer oder Upload-Fehler lassen das Plugin fehlschlagen.
 
 ## Quelle
 
