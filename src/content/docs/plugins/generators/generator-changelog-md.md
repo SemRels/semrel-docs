@@ -85,12 +85,16 @@ plugins:
 | `SEMREL_PLUGIN_AI_DISCLOSURE_BADGE` | no | `🤖` | Badge appended to AI-assisted lines. Set to `[AI]` for plain-text environments. |
 | `SEMREL_PLUGIN_AI_DISCLOSURE_SECTION` | no | `false` | Append a collapsible **🤖 AI-Assisted Contributions** section listing all AI-co-authored commits (requires `SEMREL_PLUGIN_AI_DISCLOSURE=true`). |
 | `SEMREL_PLUGIN_SECTIONS_JSON` | no | built-in | JSON array overriding the commit-type → section mapping (e.g. `[{"type":"feat","section":"Features"},{"type":"docs","hidden":true}]`). |
-| `SEMREL_PLUGIN_NEW_CONTRIBUTORS` | no | `true` | Append a **New Contributors** section listing first-time contributors from `SEMREL_CONTRIBUTORS` or `SEMREL_PLUGIN_CONTRIBUTORS_JSON`. |
-| `SEMREL_PLUGIN_MVP` | no | `false` | Append a **🏆 MVP** section highlighting the top contributor for the release. |
+| `SEMREL_PLUGIN_NEW_CONTRIBUTORS` | no | `true` | Append a **New Contributors** section listing first-time contributors from core metadata or `SEMREL_PLUGIN_CONTRIBUTORS_JSON`. |
+| `SEMREL_CONTRIBUTORS` | supplied by semrel core | — | Release contributor metadata. First-contribution flags filter the New Contributors list; commit counts drive MVP selection. |
+| `SEMREL_PLUGIN_CONTRIBUTORS_JSON` | no | — | Legacy JSON array of first-time contributors for standalone use. `SEMREL_CONTRIBUTORS` takes precedence when present. |
+| `SEMREL_PLUGIN_MVP` | no | `false` | Append a **🏆 MVP** section highlighting the top contributor when contributor metadata is available. |
 | `SEMREL_PLUGIN_MVP_METRIC` | no | `commits` | Metric used to select the MVP (`commits`, `prs`, or `reviews`). |
 | `SEMREL_PLUGIN_ARCHIVE_LINK` | no | `release_url` | How archived releases are linked (`release_url`, `file`, or `both`). |
 | `SEMREL_PLUGIN_CHANGELOG_DIR` | no | `changelogs/` | Directory for per-release archive files when `archive_link` is `file` or `both`. |
 | `SEMREL_PLUGIN_CHANGELOG_FILE` | no | `CHANGELOG.md` | Output file path. |
+
+`semrel config init` enables AI disclosure (badges and the collapsible contribution list) and MVP recognition for its default changelog generator. These options remain opt-in for standalone plugin use.
 
 When `SEMREL_PLUGIN_SIGNATURE=true`, the generated Markdown entry ends with:
 
