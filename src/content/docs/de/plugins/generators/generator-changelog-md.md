@@ -67,12 +67,16 @@ plugins:
 | `SEMREL_PLUGIN_AI_DISCLOSURE_BADGE` | nein | `🤖` | Badge, der an KI-unterstützte Zeilen angehängt wird. Für Plaintext-Umgebungen `[AI]` verwenden. |
 | `SEMREL_PLUGIN_AI_DISCLOSURE_SECTION` | nein | `false` | Hängt einen aufklappbaren **🤖 KI-unterstützte Beiträge**-Abschnitt an (erfordert `SEMREL_PLUGIN_AI_DISCLOSURE=true`). |
 | `SEMREL_PLUGIN_SECTIONS_JSON` | nein | eingebaut | JSON-Array zum Überschreiben der Zuordnung von Commit-Typen zu Changelog-Überschriften (z. B. `[{"type":"feat","section":"Features"},{"type":"docs","hidden":true}]`). |
-| `SEMREL_PLUGIN_NEW_CONTRIBUTORS` | nein | `true` | Hängt einen Abschnitt **New Contributors** für Erstbeitragende aus `SEMREL_CONTRIBUTORS` bzw. `SEMREL_PLUGIN_CONTRIBUTORS_JSON` an. |
-| `SEMREL_PLUGIN_MVP` | nein | `false` | Hängt einen Abschnitt **🏆 MVP** für den aktivsten Contributor des Releases an. |
+| `SEMREL_PLUGIN_NEW_CONTRIBUTORS` | nein | `true` | Hängt einen Abschnitt **New Contributors** für Erstbeitragende aus Core-Metadaten oder `SEMREL_PLUGIN_CONTRIBUTORS_JSON` an. |
+| `SEMREL_CONTRIBUTORS` | von semrel Core gesetzt | — | Contributor-Metadaten des Releases. First-Contribution-Flags filtern die New-Contributors-Liste; Commit-Anzahlen bestimmen den MVP. |
+| `SEMREL_PLUGIN_CONTRIBUTORS_JSON` | nein | — | Legacy-JSON-Array mit Erstbeitragenden für die Standalone-Nutzung. `SEMREL_CONTRIBUTORS` hat Vorrang, falls vorhanden. |
+| `SEMREL_PLUGIN_MVP` | nein | `false` | Hängt einen Abschnitt **🏆 MVP** für den aktivsten Contributor an, sofern Contributor-Metadaten vorliegen. |
 | `SEMREL_PLUGIN_MVP_METRIC` | nein | `commits` | Bewertungsmetrik für den MVP (`commits`, `prs` oder `reviews`). |
 | `SEMREL_PLUGIN_ARCHIVE_LINK` | nein | `release_url` | Darstellung archivierter Releases (`release_url`, `file` oder `both`). |
 | `SEMREL_PLUGIN_CHANGELOG_DIR` | nein | `changelogs/` | Zielverzeichnis für archivierte Einzel-Changelogs bei `archive_link: file` oder `both`. |
 | `SEMREL_PLUGIN_CHANGELOG_FILE` | nein | `CHANGELOG.md` | Ausgabedateipfad. |
+
+`semrel config init` aktiviert AI-Disclosure (Badges und den aufklappbaren Beitragsabschnitt) sowie MVP-Auszeichnungen für den Standard-Changelog-Generator. Bei eigenständiger Nutzung des Plugins bleiben diese Optionen deaktiviert.
 
 Wenn `SEMREL_PLUGIN_SIGNATURE=true`, endet der generierte Markdown-Eintrag mit:
 
